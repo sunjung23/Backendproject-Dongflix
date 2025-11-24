@@ -1,0 +1,44 @@
+# ===============================================
+# Java / Eclipse / Tomcat / Docker Project Ignore
+# ===============================================
+
+# ---- Eclipse project files ----
+.metadata/
+
+# ---- Build / Output ----
+bin/
+target/
+build/
+
+# ---- IDE settings ----
+*.iml
+.idea/
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+
+# ---- Logs ----
+*.log
+
+# ---- Docker volumes ----
+mysql_data/
+docker-data/
+volume/
+
+# ---- Docker Compose stuff ----
+*.pid
+
+# ---- Compiled classes ----
+*.class
+
+# ---- Temporary files ----
+~$*
+*.tmp
+*.swp
+*.swo
+
+# ---- WebContent build caches ----
+src/main/webapp/WEB-INF/lib/
+# But DO include necessary JARs (like MySQL Connector)
+!src/main/webapp/WEB-INF/lib/*.jar
