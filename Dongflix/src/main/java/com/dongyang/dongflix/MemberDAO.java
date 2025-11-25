@@ -16,9 +16,13 @@ public class MemberDAO {
 	        ps.setString(1, dto.getUserid());
 	        ps.setString(2, dto.getPassword());
 	        ps.setString(3, dto.getUsername());
-	        ps.setString(4, "bronze");  // basic → bronze로 변경
-	        return ps.executeUpdate();
+	        ps.setString(4, "bronze");  // 기본 등급을 bronze로
+	        
+	        int result = ps.executeUpdate();
+	        System.out.println(">>> 회원가입 결과: " + result);
+	        return result;
 	    } catch (Exception e) {
+	        System.out.println(">>> 회원가입 실패");
 	        e.printStackTrace();
 	    }
 	    return 0;

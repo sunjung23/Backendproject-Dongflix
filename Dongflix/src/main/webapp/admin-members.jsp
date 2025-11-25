@@ -1,0 +1,256 @@
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page import="com.dongyang.dongflix.MemberDTO" %>
+<%@ page import="java.util.List" %>
+
+<%
+    MemberDTO adminUser = (MemberDTO) session.getAttribute("adminUser");
+    if (adminUser == null || !"admin".equals(adminUser.getGrade())) {
+        response.sendRedirect("admin-login.jsp");
+        return;
+    }
+    
+    List<MemberDTO> members = (List<MemberDTO>) request.getAttribute("members");
+%>
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 관리 - DONGFLIX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #141414;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: #000;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        .header .logo img {
+            height: 35px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .back-btn {
+            background-color: #333;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-btn:hover {
+            background-color: #555;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        .table-container {
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+        th {
+            background-color: #2a2a2a;
+            color: #2036CA;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #2a2a2a;
+        }
+        select {
+            padding: 6px 12px;
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        select:focus {
+            outline: none;
+            border-color: #2036CA;
+        }
+        .btn-update {
+            background-color: #2036CA;
+            color: white;
+            padding: 6px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-update:hover {
+            background-color: #1a2ba3;
+        }
+        .grade-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .grade-admin {
+            background-color: #2036CA;
+            color: white;
+        }
+        .grade-gold {
+            background-color: #ffd700;
+            color: #000;
+        }
+        .grade-silver {
+            background-color: #c0c0c0;
+            color: #000;
+        }
+        .grade-bronze {
+            background-color: #cd7f32;
+            color: white;
+        }
+    </style>
+    <script>
+        function updateGrade(userid, selectElement) {
+            var newGrade = selectElement.value;
+            if (confirm(userid + ' 회원의 등급을 ' + newGrade.toUpperCase() + '(으)로 변경하시겠습니까?')) {
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'admin-member.do';
+                
+                var useridInput = document.createElement('input');
+                useridInput.type = 'hidden';
+                useridInput.name = 'userid';
+                useridInput.value = userid;
+                
+                var gradeInput = document.createElement('input');
+                gradeInput.type = 'hidden';
+                gradeInput.name = 'grade';
+                gradeInput.value = newGrade;
+                
+                form.appendChild(useridInput);
+                form.appendChild(gradeInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="header">
+    <div class="logo">
+        <img src="img/logo.png" alt="DONGFLIX">
+    </div>
+    <div class="header-right">
+        <span>👥 회원 관리</span>
+        <a href="admin-dashboard.jsp" class="back-btn">← 대시보드로</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2>전체 회원 목록</h2>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>아이디</th>
+                    <th>이름</th>
+                    <th>현재 등급</th>
+                    <th>등급 변경</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%
+                    if (members != null && !members.isEmpty()) {
+                        for (MemberDTO member : members) {
+                            String gradeClass = "";
+                            String currentGrade = member.getGrade();
+                            if (currentGrade == null) currentGrade = "bronze";
+                            
+                            // 등급별 CSS 클래스 설정
+                            switch(currentGrade) {
+                                case "admin":
+                                    gradeClass = "grade-admin";
+                                    break;
+                                case "gold":
+                                    gradeClass = "grade-gold";
+                                    break;
+                                case "silver":
+                                    gradeClass = "grade-silver";
+                                    break;
+                                case "bronze":
+                                default:
+                                    gradeClass = "grade-bronze";
+                                    break;
+                            }
+                %>
+                <tr>
+                    <td><%= member.getUserid() %></td>
+                    <td><%= member.getUsername() %></td>
+                    <td>
+                        <span class="grade-badge <%= gradeClass %>">
+                            <%= currentGrade.toUpperCase() %>
+                        </span>
+                    </td>
+                    <td>
+                        <% if (!"admin".equals(member.getUserid())) { %>
+                            <select onchange="updateGrade('<%= member.getUserid() %>', this)">
+                                <option value="">등급 선택</option>
+                                <option value="bronze" <%= "bronze".equals(currentGrade) ? "selected" : "" %>>Bronze</option>
+                                <option value="silver" <%= "silver".equals(currentGrade) ? "selected" : "" %>>Silver</option>
+                                <option value="gold" <%= "gold".equals(currentGrade) ? "selected" : "" %>>Gold</option>
+                            </select>
+                        <% } else { %>
+                            <span style="color: #666;">변경 불가</span>
+                        <% } %>
+                    </td>
+                </tr>
+                <%
+                        }
+                    } else {
+                %>
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #666;">
+                        등록된 회원이 없습니다.
+                    </td>
+                </tr>
+                <%
+                    }
+                %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
