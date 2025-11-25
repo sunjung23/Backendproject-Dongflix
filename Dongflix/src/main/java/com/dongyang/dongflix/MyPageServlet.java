@@ -34,5 +34,12 @@ public class MyPageServlet extends HttpServlet {
         request.setAttribute("reviews", reviews);
 
         request.getRequestDispatcher("mypage.jsp").forward(request, response);
+        
+        //좋아요 목록
+        LikeMovieDAO likeDao = new LikeMovieDAO();
+        List<LikeMovieDTO> likedMovies = likeDao.getLikedMovies(user.getUserid());
+
+        request.setAttribute("likedMovies", likedMovies);
+
     }
 }
