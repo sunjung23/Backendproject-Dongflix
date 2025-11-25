@@ -20,7 +20,7 @@
         </ul>
     </nav>
 
-    <div class="mypage"><a href="#">마이페이지</a></div>
+   <div class="mypage"><a href="mypage.do">마이페이지</a></div>
 </header>
 
 <div class="main-banner">
