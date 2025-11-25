@@ -1,0 +1,104 @@
+/* ===== 기본 설정 ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: radial-gradient(circle at top, #222 0, #000 55%);
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== 배경 반투명 박스 ===== */
+.login-wrapper {
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 60px 68px 40px;
+    border-radius: 4px;
+    width: 350px;
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.7);
+}
+
+/* ===== 제목 ===== */
+.login-wrapper h2 {
+    font-size: 32px;
+    margin-bottom: 28px;
+}
+
+/* ===== 입력 영역 ===== */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* label + input 묶음 */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.form-group label {
+    color: #b3b3b3;
+}
+
+.form-input {
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 4px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    font-size: 14px;
+}
+
+.form-input::placeholder {
+    color: #8c8c8c;
+}
+
+.form-input:focus {
+    outline: 2px solid #2036CA;
+    background-color: #454545;
+}
+
+/* ===== 로그인 버튼 ===== */
+.btn-login {
+    margin-top: 24px;
+    height: 48px;
+    border: none;
+    border-radius: 4px;
+    background-color: #2036CA;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-login:hover {
+    background-color: #2036CA;
+}
+
+/* ===== 아래쪽 문구 ===== */
+.helper-text {
+    margin-top: 16px;
+    font-size: 13px;
+    color: #b3b3b3;
+}
+
+.helper-text a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.helper-text a:hover {
+    text-decoration: underline;
+}

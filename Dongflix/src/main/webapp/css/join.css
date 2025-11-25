@@ -1,0 +1,88 @@
+/* ===== 전체 기본 설정 ===== */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #fff;
+}
+
+/* ===== 회원가입 박스 ===== */
+.join-wrapper {
+    width: 100%;
+    max-width: 420px;
+    margin: 120px auto;
+    padding: 60px 60px 50px;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.join-wrapper h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+/* ===== 입력 폼 ===== */
+.join-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* input */
+.form-input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 4px;
+    border: none;
+    background-color: #333;
+    color: white;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    outline: none;
+    background-color: #454545;
+}
+
+/* ===== 가입 버튼 ===== */
+.btn-join {
+    width: 100%;
+    padding: 14px;
+    background-color: #2036CA;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.btn-join:hover {
+    background-color: #2036CA;
+}
+
+/* ===== 하단 텍스트 ===== */
+.helper-text {
+    margin-top: 25px;
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.helper-text a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.helper-text a:hover {
+    text-decoration: underline;
+}
