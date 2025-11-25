@@ -64,7 +64,7 @@ nav ul li a {
     flex-direction: column;
     justify-content: flex-end;
     padding: 40px;
-    padding-top: 110px;  /* 🔥 헤더 높이 + 여유 */
+    padding-top: 110px; 
 
     box-sizing: border-box;
     position: relative;
@@ -97,7 +97,7 @@ nav ul li a {
 }
 
 .movie img {
-    width: 70%;
+    width: 40%;
     display: block;
     margin: 0 auto;
 }
@@ -116,4 +116,52 @@ nav ul li a {
     .movie-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ============================
+   TMDB Hover 설명 박스 스타일
+============================ */
+.movie {
+    position: relative;
+    overflow: visible;
+}
+
+.movie img {
+    width: 100%;
+    border-radius: 8px;
+    transition: transform 0.25s ease-out;
+}
+
+/* hover 시 확대 효과 */
+.movie img:hover {
+    transform: scale(1.05);
+}
+
+/* 설명 박스 */
+.hover-info {
+    display: none;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    background: rgba(0, 0, 0, 0.90);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* hover 시 설명 보이기 */
+.movie:hover .hover-info {
+    display: block;
+    opacity: 1;
+}
+
+/* 영화 이미지 그림자 */
+.movie img {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.6);
 }
