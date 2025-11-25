@@ -4,6 +4,7 @@ public class MemberDTO {
 	private String userid;
 	private String userpw;
 	private String username;
+	private String grade;
 	
 
     public MemberDTO() {}
@@ -22,4 +23,7 @@ public class MemberDTO {
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
+    
+    public String getGrade() { return grade; }
+    public void setGrade(String grade) { this.grade = grade; }
 }
