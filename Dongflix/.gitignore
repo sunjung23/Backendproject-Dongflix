@@ -2,8 +2,6 @@
 # Java / Eclipse / Tomcat / Docker Project Ignore
 # ===============================================
 
-src/main/java/com/dongyang/dongflix/DBConnection.java
-
 # ---- Eclipse project files ----
 .metadata/
 

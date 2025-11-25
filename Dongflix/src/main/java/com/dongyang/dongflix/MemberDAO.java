@@ -8,15 +8,18 @@ public class MemberDAO {
 
     // 회원가입
     public int join(MemberDTO dto) {
-        String sql = "INSERT INTO member(userid, password, username) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO member(userid, userpw, name, grade) VALUES (?, ?, ?, ?)";
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, dto.getUserid());
-            ps.setString(2, dto.getPassword());
-            ps.setString(3, dto.getUsername());
+            ps.setString(2, dto.getPassword());   // userpw
+            ps.setString(3, dto.getUsername());  // name
+            ps.setString(4, "basic");            // grade 기본값 (원하면 변경)
 
-            return ps.executeUpdate();   
+            return ps.executeUpdate();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -25,7 +28,8 @@ public class MemberDAO {
 
     // 로그인
     public MemberDTO login(String userid, String password) {
-        String sql = "SELECT * FROM member WHERE userid=? AND password=?";
+        String sql = "SELECT * FROM member WHERE userid=? AND userpw=?";
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -36,10 +40,11 @@ public class MemberDAO {
             if (rs.next()) {
                 return new MemberDTO(
                         rs.getString("userid"),
-                        rs.getString("password"),
-                        rs.getString("username")
+                        rs.getString("userpw"),
+                        rs.getString("name")
                 );
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
