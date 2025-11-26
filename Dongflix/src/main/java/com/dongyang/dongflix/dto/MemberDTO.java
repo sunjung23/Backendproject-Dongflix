@@ -1,4 +1,4 @@
-package com.dongyang.dongflix;
+package com.dongyang.dongflix.dto;
 
 public class MemberDTO {
     private String userid;

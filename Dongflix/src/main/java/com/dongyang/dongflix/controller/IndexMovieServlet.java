@@ -1,4 +1,4 @@
-package com.dongyang.dongflix;
+package com.dongyang.dongflix.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
+import com.dongyang.dongflix.model.TMDBmovie;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,16 +30,18 @@ public class IndexMovieServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            // 애니메이션(16), 로맨스(10749), 액션(28)
+            // 영화 목록 가져오기
             List<TMDBmovie> animationList = fetchByGenre("16");
             List<TMDBmovie> romanceList   = fetchByGenre("10749");
             List<TMDBmovie> actionList    = fetchByGenre("28");
 
+            request.setAttribute("fromServlet", true);
+
+            //데이터 저장
             request.setAttribute("animationList", animationList);
             request.setAttribute("romanceList", romanceList);
             request.setAttribute("actionList", actionList);
 
-            // index.jsp로 포워드
             request.getRequestDispatcher("index.jsp").forward(request, response);
 
         } catch (Exception e) {
@@ -73,7 +75,6 @@ public class IndexMovieServlet extends HttpServlet {
 
         List<TMDBmovie> list = new ArrayList<>();
 
-        // 6개 정도만 가져오자 (있으면)
         int limit = Math.min(results.length(), 6);
         for (int i = 0; i < limit; i++) {
             JSONObject m = results.getJSONObject(i);

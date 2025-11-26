@@ -1,8 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.dongyang.dongflix.MemberDTO" %>
-<%@ page import="com.dongyang.dongflix.ReviewDTO" %>
-<%@ page import="com.dongyang.dongflix.LikeMovieDTO" %>
+<%@ page import="com.dongyang.dongflix.dto.MemberDTO" %>
+<%@ page import="com.dongyang.dongflix.dto.ReviewDTO" %>
+<%@ page import="com.dongyang.dongflix.dto.LikeMovieDTO" %>
 
 <%
     MemberDTO user = (MemberDTO) session.getAttribute("loginUser");

@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
-<%@ page import="com.dongyang.dongflix.MemberDTO" %>
+<%@ page import="com.dongyang.dongflix.dto.MemberDTO" %>
 
 <%
     MemberDTO user = (MemberDTO) session.getAttribute("loginUser");

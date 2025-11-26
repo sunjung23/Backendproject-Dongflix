@@ -1,19 +1,25 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.dongyang.dongflix.TMDBmovie" %>
+<%@ page import="com.dongyang.dongflix.model.TMDBmovie" %>
+
+<%
+    if (request.getAttribute("fromServlet") == null) {
+        response.sendRedirect("indexMovie");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>DONGFLIX</title>
-
     <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
 
 <header>
     <div class="logo"><img src="img/logo.png"></div>
-
     <nav>
         <ul>
             <li><a href="indexMovie">홈</a></li>
@@ -21,7 +27,6 @@
             <li><a href="#">시리즈</a></li>
         </ul>
     </nav>
-    
     <div class="mypage"><a href="mypage.jsp">마이페이지 / </a><a href="logout.do"> 로그아웃</a></div>
 </header>
 
@@ -29,7 +34,6 @@
     <h1>오늘의 추천 영화</h1>
     <p><a href="#">추천글 보러 가기</a></p>
 </div>
-
 
 <!-- 애니메이션 -->
 <div class="category">애니메이션</div>
@@ -49,8 +53,7 @@
 %>
 </div>
 
-
-<!-- 로맨스-->
+<!-- 로맨스 -->
 <div class="category">로맨스</div>
 <div class="movie-grid">
 <%
@@ -68,8 +71,7 @@
 %>
 </div>
 
-
-<!-- 액션 / 스릴러 -->
+<!-- 액션 -->
 <div class="category">액션 / 스릴러</div>
 <div class="movie-grid">
 <%

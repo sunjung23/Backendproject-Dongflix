@@ -1,9 +1,12 @@
-package com.dongyang.dongflix;
+package com.dongyang.dongflix.controller;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+
+import com.dongyang.dongflix.dao.MemberDAO;
+import com.dongyang.dongflix.dto.MemberDTO;
 
 @WebServlet("/changePassword.do")
 public class ChangePasswordServlet extends HttpServlet {
