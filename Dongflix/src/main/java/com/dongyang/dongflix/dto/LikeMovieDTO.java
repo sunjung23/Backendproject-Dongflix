@@ -1,4 +1,4 @@
-package com.dongyang.dongflix;
+package com.dongyang.dongflix.dto;
 
 public class LikeMovieDTO {
     private int id;

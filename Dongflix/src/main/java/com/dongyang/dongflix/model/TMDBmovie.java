@@ -1,4 +1,4 @@
-package com.dongyang.dongflix;
+package com.dongyang.dongflix.model;
 
 public class TMDBmovie {
     private int id;
