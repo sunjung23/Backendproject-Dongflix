@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ include file="/common/header.jsp" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.dongyang.dongflix.dto.MemberDTO" %>
 <%@ page import="com.dongyang.dongflix.dto.ReviewDTO" %>
@@ -28,47 +29,6 @@
         color:#fff;
         margin:0;
         padding:0;
-    }
-
-    /* ================= 상단바 ================= */
-    header {
-        width:100%;
-        height:60px;
-        background:#000;
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        padding:0 50px;
-        position:fixed;
-        top:0;
-        left:0;
-        z-index:100;
-        border-bottom:1px solid #111;
-        box-sizing:border-box;
-    }
-
-    .logo img { height:32px; }
-
-    nav ul {
-        display:flex;
-        list-style:none;
-        gap:25px;
-        margin:0;
-        padding:0;
-    }
-
-    nav a {
-        color:#fff;
-        text-decoration:none;
-        font-size:15px;
-    }
-
-    .mypage-link {
-        color:#fff;
-        font-weight:600;
-        font-size:15px;
-        text-decoration:none;
-        white-space:nowrap;
     }
 
     /* ================= 메인 컨테이너 ================= */
@@ -187,20 +147,6 @@
 </head>
 <body>
 
-<!-- =============== 상단바 =============== -->
-<header>
-    <div class="logo"><img src="img/logo.png"></div>
-
-    <nav>
-        <ul>
-            <li><a href="index.jsp">홈</a></li>
-            <li><a href="#">영화</a></li>
-            <li><a href="#">시리즈</a></li>
-        </ul>
-    </nav>
-
-    <a href="mypage.do" class="mypage-link">마이페이지</a>
-</header>
 
 
 <!-- =============== 본문 =============== -->
@@ -247,20 +193,37 @@
         <tr><th>등급</th><td><%= user.getGrade() %></td></tr>
     </table>
 
-    <!-- 내가 찜한 영화 -->
-    <h3 class="section-title">내가 찜한 영화</h3>
-    <% if (likedMovies == null || likedMovies.isEmpty()) { %>
-        <p>찜한 영화가 없습니다.</p>
-    <% } else { %>
-        <div class="liked-movies">
-            <% for (LikeMovieDTO lm : likedMovies) { %>
-                <div class="movie-card">
-                    <img src="<%= lm.getMovieImg() != null ? lm.getMovieImg() : "img/default_movie.png" %>">
-                    <div style="margin-top:8px;"><%= lm.getMovieTitle() %></div>
-                </div>
-            <% } %>
-        </div>
-    <% } %>
+<!-- 내가 찜한 영화 -->
+<h3 class="section-title">내가 찜한 영화</h3>
+
+<% if (likedMovies == null || likedMovies.isEmpty()) { %>
+    <p>찜한 영화가 없습니다.</p>
+<% } else { %>
+
+    <div class="liked-movies">
+        <% for (LikeMovieDTO lm : likedMovies) { %>
+
+            <% 
+                // TMDB poster_path라면 full URL 생성
+                String img = lm.getMovieImg();
+                if (img != null && img.startsWith("/")) {
+                    img = "https://image.tmdb.org/t/p/w500" + img;
+                }
+            %>
+
+            <div class="movie-card" 
+                 onclick="location.href='movieDetail?movieId=<%= lm.getMovieId() %>'"
+                 style="cursor:pointer;">
+
+                <img src="<%= img != null ? img : "../img/default_movie.png" %>">
+                <div style="margin-top:8px; font-size:14px;"><%= lm.getMovieTitle() %></div>
+
+            </div>
+
+        <% } %>
+    </div>
+
+<% } %>
 
     <!-- 내가 쓴 리뷰 -->
     <h3 class="section-title">내가 쓴 리뷰</h3>

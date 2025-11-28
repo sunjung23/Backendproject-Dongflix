@@ -4,13 +4,19 @@ public class TMDBmovie {
     private int id;
     private String title;
     private String overview;
-    private String posterPath;  // /abcde.jpg 같은 거
+    private String posterPath; 
+    private String backdropPath;
+	private double rating;
+	private String releaseDate;
 
-    public TMDBmovie(int id, String title, String overview, String posterPath) {
+    public TMDBmovie(int id, String title, String overview, String posterPath, String backdropPath, double rating, String releaseDate) {
         this.id = id;
         this.title = title;
         this.overview = overview;
         this.posterPath = posterPath;
+        this.backdropPath = backdropPath;
+        this.rating = rating;
+        this.releaseDate = releaseDate;
     }
 
     public int getId() {
@@ -28,12 +34,27 @@ public class TMDBmovie {
     public String getPosterPath() {
         return posterPath;
     }
+    
+    public String getBackdropPath() {
+    	return backdropPath;
+    }
+    
+    public double getRating() {
+    	return rating;
+    }
+    
+    public String getReleaseDate() { 
+    	return releaseDate;
+    }
 
-    // 전체 URL (https://image.tmdb.org/t/p/w500 + posterPath)
     public String getPosterUrl() {
         if (posterPath == null || posterPath.equals("null")) {
-            return ""; // 없으면 빈 문자열
+            return ""; 
         }
         return "https://image.tmdb.org/t/p/w500" + posterPath;
+    }
+    public String getBackdropUrl() {
+        if (backdropPath == null || "null".equals(backdropPath)) return "";
+        return "https://image.tmdb.org/t/p/w1280" + backdropPath;
     }
 }
