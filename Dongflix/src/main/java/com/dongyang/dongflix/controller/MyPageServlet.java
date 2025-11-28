@@ -26,26 +26,24 @@ public class MyPageServlet extends HttpServlet {
         HttpSession session = request.getSession();
         MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
 
-        // 로그인 안 되어 있으면 로그인 페이지로
         if (user == null) {
             response.sendRedirect("login.jsp");
             return;
         }
 
-        // 내가 쓴 리뷰 목록 가져오기
+        // 리뷰 목록
         ReviewDAO rdao = new ReviewDAO();
         List<ReviewDTO> reviews = rdao.getReviewsByUser(user.getUserid());
-
-        request.setAttribute("user", user);
         request.setAttribute("reviews", reviews);
 
-        request.getRequestDispatcher("mypage.jsp").forward(request, response);
-        
-        //좋아요 목록
+        // 좋아요 목록
         LikeMovieDAO likeDao = new LikeMovieDAO();
         List<LikeMovieDTO> likedMovies = likeDao.getLikedMovies(user.getUserid());
-
         request.setAttribute("likedMovies", likedMovies);
 
+        // 유저 정보
+        request.setAttribute("user", user);
+        
+        request.getRequestDispatcher("/user/mypage.jsp").forward(request, response);
     }
 }

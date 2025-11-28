@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ page import="java.util.List" %>
+<%@ include file="/common/header.jsp" %>
+<%@ page import="java.util.*" %>
 <%@ page import="com.dongyang.dongflix.model.TMDBmovie" %>
 
 <%
@@ -7,6 +8,12 @@
         response.sendRedirect("indexMovie");
         return;
     }
+
+    // 서블릿에서 넘어온 데이터
+    Map<String, List<TMDBmovie>> movieLists =
+            (Map<String, List<TMDBmovie>>) request.getAttribute("movieLists");
+
+    TMDBmovie banner = (TMDBmovie) request.getAttribute("bannerMovie");
 %>
 
 <!DOCTYPE html>
@@ -14,80 +21,80 @@
 <head>
     <meta charset="UTF-8">
     <title>DONGFLIX</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <!-- CSS 적용 -->
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
 </head>
+
 <body>
 
-<header>
-    <div class="logo"><img src="img/logo.png"></div>
-    <nav>
-        <ul>
-            <li><a href="indexMovie">홈</a></li>
-            <li><a href="#">영화</a></li>
-            <li><a href="#">시리즈</a></li>
-        </ul>
-    </nav>
-    <div class="mypage"><a href="mypage.jsp">마이페이지 / </a><a href="logout.do"> 로그아웃</a></div>
-</header>
+<!-- ================== 메인 배너 ================== -->
 
-<div class="main-banner">
-    <h1>오늘의 추천 영화</h1>
-    <p><a href="#">추천글 보러 가기</a></p>
+<%
+    // 배너 null 체크 → 예외 방지
+    String bannerBg = "";
+    String bannerTitle = "영화 정보를 불러올 수 없습니다.";
+    String bannerOverview = "";
+
+    if (banner != null) {
+        bannerBg = (banner.getBackdropUrl() != null && !banner.getBackdropUrl().isEmpty())
+                    ? banner.getBackdropUrl()
+                    : banner.getPosterUrl();
+
+        bannerTitle = banner.getTitle();
+        bannerOverview = banner.getOverview();
+    }
+%>
+
+<div class="main-banner" style="background-image: url('<%= bannerBg %>');">
+    <div class="banner-content">
+        <h1><%= bannerTitle %></h1>
+        <p><%= bannerOverview %></p>
+    </div>
 </div>
 
-<!-- 애니메이션 -->
-<div class="category">애니메이션</div>
+
+<!-- ================== 카테고리 ================== -->
+
+<%
+    for (Map.Entry<String, List<TMDBmovie>> entry : movieLists.entrySet()) {
+
+        String genreKey = entry.getKey();
+        List<TMDBmovie> movies = entry.getValue();
+
+        // 한글 장르명 매핑
+        String displayName = genreKey;
+        if ("animation".equals(genreKey)) displayName = "애니메이션";
+        else if ("romance".equals(genreKey)) displayName = "로맨스";
+        else if ("action".equals(genreKey)) displayName = "액션 / 스릴러";
+        else if ("crime".equals(genreKey)) displayName = "범죄";
+        else if ("fantasy".equals(genreKey)) displayName = "판타지";
+%>
+
+<!-- 카테고리 타이틀 -->
+<div class="category"><%= displayName %></div>
+
+<!-- 카테고리 영화 목록 -->
 <div class="movie-grid">
 <%
-    List<TMDBmovie> animation = (List<TMDBmovie>) request.getAttribute("animationList");
-    if (animation != null) {
-        for (TMDBmovie m : animation) {
+        if (movies != null) {
+            for (TMDBmovie m : movies) {
 %>
     <div class="movie">
-        <img src="<%= m.getPosterUrl() %>" alt="<%= m.getTitle() %>">
+        <a href="movieDetail?movieId=<%= m.getId() %>">
+            <img src="<%= m.getPosterUrl() %>" alt="<%= m.getTitle() %>">
+        </a>
         <div class="hover-info"><%= m.getOverview() %></div>
     </div>
 <%
+            }
         }
-    }
 %>
 </div>
 
-<!-- 로맨스 -->
-<div class="category">로맨스</div>
-<div class="movie-grid">
 <%
-    List<TMDBmovie> romance = (List<TMDBmovie>) request.getAttribute("romanceList");
-    if (romance != null) {
-        for (TMDBmovie m : romance) {
+    } // end for
 %>
-    <div class="movie">
-        <img src="<%= m.getPosterUrl() %>" alt="<%= m.getTitle() %>">
-        <div class="hover-info"><%= m.getOverview() %></div>
-    </div>
-<%
-        }
-    }
-%>
-</div>
-
-<!-- 액션 -->
-<div class="category">액션 / 스릴러</div>
-<div class="movie-grid">
-<%
-    List<TMDBmovie> action = (List<TMDBmovie>) request.getAttribute("actionList");
-    if (action != null) {
-        for (TMDBmovie m : action) {
-%>
-    <div class="movie">
-        <img src="<%= m.getPosterUrl() %>" alt="<%= m.getTitle() %>">
-        <div class="hover-info"><%= m.getOverview() %></div>
-    </div>
-<%
-        }
-    }
-%>
-</div>
 
 </body>
 </html>
