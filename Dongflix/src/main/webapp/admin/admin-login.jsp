@@ -98,12 +98,12 @@
 <body>
 
 <div class="logo-header">
-    <img src="img/logo.png" alt="DONGFLIX">
+    <img src="${pageContext.request.contextPath}/img/logo.png" alt="DONGFLIX">
 </div>
 
 <div class="login-container">
     <h2>관리자 로그인</h2>
-    
+
     <%
         String error = request.getParameter("error");
         if ("1".equals(error)) {
@@ -112,23 +112,23 @@
             ⚠ 관리자 권한이 없거나 로그인 정보가 올바르지 않습니다.
         </div>
     <% } %>
-    
+
     <form action="admin-login.do" method="post">
         <div class="form-group">
             <label>아이디</label>
             <input type="text" name="userid" required>
         </div>
-        
+
         <div class="form-group">
             <label>비밀번호</label>
             <input type="password" name="password" required>
         </div>
-        
+
         <button type="submit" class="btn-login">로그인</button>
     </form>
-    
+
     <div class="back-link">
-        <a href="index.jsp">← 메인으로 돌아가기</a>
+        <a href="${pageContext.request.contextPath}/indexMovie">← 메인으로 돌아가기</a>
     </div>
 </div>
 
