@@ -16,259 +16,279 @@
     <title>영화 취향 테스트 - DONGFLIX</title>
     <style>
         * {
-		    margin: 0;
-		    padding: 0;
-		    box-sizing: border-box;
-		}
-		
-		body {
-		    background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
-		    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-		    color: white;
-		    min-height: 100vh;
-		    display: flex;
-		    align-items: center;
-		    justify-content: center;
-		    padding: 20px;
-		}
-		
-		.test-container {
-		    max-width: 700px;
-		    width: 100%;
-		    background: rgba(255, 255, 255, 0.95);
-		    border-radius: 20px;
-		    padding: 50px 40px;
-		    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-		    color: #333;
-		}
-		
-		.test-header {
-		    text-align: center;
-		    margin-bottom: 40px;
-		}
-		
-		.test-header h1 {
-		    font-size: 36px;
-		    margin-bottom: 10px;
-		    color: #2036CA;
-		    font-weight: 700;
-		}
-		
-		.test-header p {
-		    font-size: 16px;
-		    color: #666;
-		}
-		
-		.progress-bar {
-		    width: 100%;
-		    height: 10px;
-		    background: #e0e0e0;
-		    border-radius: 10px;
-		    margin-bottom: 40px;
-		    overflow: hidden;
-		}
-		
-		.progress-fill {
-		    height: 100%;
-		    background: linear-gradient(90deg, #2036CA 0%, #4a69ff 100%);
-		    width: 10%;
-		    transition: width 0.3s ease;
-		    border-radius: 10px;
-		}
-		
-		.question-box {
-		    display: none;
-		}
-		
-		.question-box.active {
-		    display: block;
-		    animation: fadeIn 0.5s ease;
-		}
-		
-		@keyframes fadeIn {
-		    from {
-		        opacity: 0;
-		        transform: translateY(20px);
-		    }
-		    to {
-		        opacity: 1;
-		        transform: translateY(0);
-		    }
-		}
-		
-		.question-number {
-		    font-size: 14px;
-		    color: #2036CA;
-		    font-weight: 600;
-		    margin-bottom: 10px;
-		}
-		
-		.question-text {
-		    font-size: 24px;
-		    font-weight: 600;
-		    margin-bottom: 30px;
-		    line-height: 1.5;
-		    color: #222;
-		}
-		
-		.answer-options {
-		    display: grid;
-		    gap: 12px;
-		    margin-bottom: 30px;
-		}
-		
-		.answer-option {
-		    padding: 18px 20px;
-		    background: #f5f5f5;
-		    border: 2px solid #e0e0e0;
-		    border-radius: 12px;
-		    color: #333;
-		    font-size: 16px;
-		    cursor: pointer;
-		    transition: all 0.3s ease;
-		    text-align: left;
-		}
-		
-		.answer-option:hover {
-		    background: #e8f0ff;
-		    border-color: #2036CA;
-		    transform: translateX(5px);
-		}
-		
-		.answer-option.selected {
-		    background: #2036CA;
-		    border-color: #2036CA;
-		    color: white;
-		    font-weight: 600;
-		}
-		
-		.nav-buttons {
-		    display: flex;
-		    gap: 15px;
-		    justify-content: space-between;
-		    margin-top: 30px;
-		}
-		
-		.nav-btn {
-		    padding: 15px 30px;
-		    background: white;
-		    border: 2px solid #2036CA;
-		    border-radius: 10px;
-		    color: #2036CA;
-		    font-size: 16px;
-		    cursor: pointer;
-		    transition: all 0.3s ease;
-		    font-weight: 600;
-		}
-		
-		.nav-btn:hover:not(:disabled) {
-		    background: #2036CA;
-		    color: white;
-		}
-		
-		.nav-btn:disabled {
-		    opacity: 0.3;
-		    cursor: not-allowed;
-		    border-color: #ccc;
-		    color: #ccc;
-		}
-		
-		.nav-btn.next {
-		    background: #2036CA;
-		    color: white;
-		}
-		
-		.nav-btn.next:hover:not(:disabled) {
-		    background: #1a2ba3;
-		    transform: translateY(-2px);
-		    box-shadow: 0 5px 15px rgba(32, 54, 202, 0.3);
-		}
-		
-		.result-container {
-		    display: none;
-		    text-align: center;
-		}
-		
-		.result-container.show {
-		    display: block;
-		    animation: fadeIn 0.5s ease;
-		}
-		
-		.result-type {
-		    font-size: 64px;
-		    margin-bottom: 20px;
-		}
-		
-		.result-title {
-		    font-size: 32px;
-		    font-weight: 700;
-		    margin-bottom: 15px;
-		    color: #2036CA;
-		}
-		
-		.result-description {
-		    font-size: 18px;
-		    line-height: 1.7;
-		    margin-bottom: 40px;
-		    color: #555;
-		}
-		
-		.recommended-movies {
-		    background: #f8f9ff;
-		    border-radius: 15px;
-		    padding: 30px;
-		    margin-top: 30px;
-		}
-		
-		.recommended-movies h3 {
-		    font-size: 24px;
-		    margin-bottom: 20px;
-		    font-weight: 600;
-		    color: #2036CA;
-		}
-		
-		.movie-list {
-		    display: grid;
-		    gap: 15px;
-		    text-align: left;
-		}
-		
-		.movie-item {
-		    background: white;
-		    padding: 18px;
-		    border-radius: 10px;
-		    font-size: 16px;
-		    transition: all 0.3s ease;
-		    border-left: 4px solid #2036CA;
-		    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-		}
-		
-		.movie-item:hover {
-		    background: #fff;
-		    transform: translateX(8px);
-		    box-shadow: 0 4px 15px rgba(32, 54, 202, 0.15);
-		}
-		
-		.back-btn {
-		    display: inline-block;
-		    margin-top: 30px;
-		    padding: 15px 40px;
-		    background: #2036CA;
-		    border: none;
-		    border-radius: 30px;
-		    color: white;
-		    text-decoration: none;
-		    font-size: 16px;
-		    font-weight: 600;
-		    transition: all 0.3s ease;
-		    box-shadow: 0 4px 15px rgba(32, 54, 202, 0.3);
-		}
-		
-		.back-btn:hover {
-		    background: #1a2ba3;
-		    transform: translateY(-2px);
-		    box-shadow: 0 6px 20px rgba(32, 54, 202, 0.4);
-		}
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #141414;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.test-container {
+    max-width: 700px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 20px;
+    padding: 50px 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    color: white;
+    position: relative;
+}
+
+/* 메인으로 돌아가기 */
+.back-to-main {
+    position: absolute;
+    top: 50px;
+    left: 40px;
+    color: #b3b3b3;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s ease;
+}
+
+.back-to-main:hover {
+    color: #2036CA;
+}
+
+.test-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.test-header h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    color: #2036CA;
+    font-weight: 700;
+}
+
+.test-header p {
+    font-size: 16px;
+    color: #b3b3b3;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #333;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2036CA 0%, #4a69ff 100%);
+    width: 10%;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.question-box {
+    display: none;
+}
+
+.question-box.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.question-number {
+    font-size: 14px;
+    color: #b3b3b3;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.question-text {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    line-height: 1.5;
+    color: white;
+}
+
+.answer-options {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.answer-option {
+    padding: 18px 20px;
+    background: #2a2a2a;
+    border: 2px solid #444;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.answer-option:hover {
+    background: #333;
+    border-color: #2036CA;
+    transform: translateX(5px);
+}
+
+.answer-option.selected {
+    background: #2036CA;
+    border-color: #2036CA;
+    color: white;
+    font-weight: 600;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.nav-btn {
+    padding: 15px 30px;
+    background: transparent;
+    border: 2px solid #2036CA;
+    border-radius: 10px;
+    color: #2036CA;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: #2036CA;
+    color: white;
+}
+
+.nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: #666;
+    color: #666;
+}
+
+.nav-btn.next {
+    background: #2036CA;
+    color: white;
+}
+
+.nav-btn.next:hover:not(:disabled) {
+    background: #1a2ba3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(32, 54, 202, 0.5);
+}
+
+.result-container {
+    display: none;
+    text-align: center;
+}
+
+.result-container.show {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+.result-type {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.result-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #2036CA;
+}
+
+.result-description {
+    font-size: 18px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+    color: #b3b3b3;
+}
+
+.recommended-movies {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 30px;
+}
+
+.recommended-movies h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #2036CA;
+}
+
+.movie-list {
+    display: grid;
+    gap: 15px;
+    text-align: left;
+}
+
+.movie-item {
+    background: #2a2a2a;
+    padding: 18px;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    border-left: 4px solid #2036CA;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.movie-item:hover {
+    background: #333;
+    transform: translateX(8px);
+    box-shadow: 0 4px 15px rgba(32, 54, 202, 0.3);
+}
+
+.back-btn {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 15px 40px;
+    background: #2036CA;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(32, 54, 202, 0.3);
+}
+
+.back-btn:hover {
+    background: #1a2ba3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(32, 54, 202, 0.5);
+}
     </style>
 </head>
 <body>
@@ -585,15 +605,14 @@ function showResult() {
     document.getElementById('resultTitle').textContent = result.title;
     document.getElementById('resultDesc').textContent = result.description;
     
-    // 영화 목록 (번호 제거)
     var movieHTML = '';
-    for (var i = 0; i < result.movies.length; i++) {
-        var movie = result.movies[i];
-        movieHTML += '<div class="movie-item" onclick="location.href=\'movieDetail?movieId=' + movie.id + '\'" style="cursor: pointer;">';
-        movieHTML += '<div style="font-weight: 600; margin-bottom: 8px; color: #222; font-size: 16px;">' + movie.title + '</div>';
-        movieHTML += '<div style="font-size: 14px; color: #666; line-height: 1.5;">' + movie.desc + '</div>';
-        movieHTML += '</div>';
-    }
+	for (var i = 0; i < result.movies.length; i++) {
+	    var movie = result.movies[i];
+	    movieHTML += '<div class="movie-item" onclick="location.href=\'movieDetail?movieId=' + movie.id + '\'" style="cursor: pointer;">';
+	    movieHTML += '<div style="font-weight: 600; margin-bottom: 8px; color: #ffffff; font-size: 16px;">' + movie.title + '</div>';
+	    movieHTML += '<div style="font-size: 14px; color: #b3b3b3; line-height: 1.5;">' + movie.desc + '</div>';
+	    movieHTML += '</div>';
+	}
     document.getElementById('movieList').innerHTML = movieHTML;
     
     document.getElementById('resultContainer').classList.add('show');
