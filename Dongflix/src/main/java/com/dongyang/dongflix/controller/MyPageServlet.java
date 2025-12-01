@@ -31,19 +31,19 @@ public class MyPageServlet extends HttpServlet {
             return;
         }
 
-        // 리뷰 목록
+        // 리뷰 목록 가져오기
         ReviewDAO rdao = new ReviewDAO();
         List<ReviewDTO> reviews = rdao.getReviewsByUser(user.getUserid());
         request.setAttribute("reviews", reviews);
 
-        // 좋아요 목록
+        // 좋아요 목록 가져오기
         LikeMovieDAO likeDao = new LikeMovieDAO();
         List<LikeMovieDTO> likedMovies = likeDao.getLikedMovies(user.getUserid());
         request.setAttribute("likedMovies", likedMovies);
 
         // 유저 정보
         request.setAttribute("user", user);
-        
+
         request.getRequestDispatcher("/user/mypage.jsp").forward(request, response);
     }
 }

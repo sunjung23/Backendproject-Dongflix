@@ -42,8 +42,11 @@
 
 <div class="main-banner" style="background-image: url('<%= bannerBg %>');">
     <div class="banner-content">
-        <h1><%= bannerTitle %></h1>
-        <p><%= bannerOverview %></p>
+        <h1>오늘의 추천 영화:  <%= bannerTitle %></h1>
+        
+		<a href="movieDetail?movieId=<%= banner.getId() %>" class="banner-detail-btn">
+		    자세히 보러 가기 &raquo;
+		</a>
     </div>
 </div>
 
@@ -84,7 +87,7 @@
     }
 %>
 
-<!-- 🎬 영화 취향 테스트 플로팅 버튼 -->
+<!-- 영화 취향 테스트 플로팅 버튼 -->
 <%
     Object loginUserForTest = session.getAttribute("loginUser");
 %>
