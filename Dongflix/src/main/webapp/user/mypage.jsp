@@ -4,6 +4,8 @@
 <%@ page import="com.dongyang.dongflix.dto.MemberDTO" %>
 <%@ page import="com.dongyang.dongflix.dto.ReviewDTO" %>
 <%@ page import="com.dongyang.dongflix.dto.LikeMovieDTO" %>
+<%@ page import="com.dongyang.dongflix.dto.BoardDTO" %>
+
 
 <%
     MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
@@ -31,7 +33,6 @@ body {
     padding:0;
 }
 
-/* ================= 메인 컨테이너 ================= */
 .mypage-container {
     max-width:1100px;
     margin:100px auto 80px;
@@ -41,7 +42,7 @@ body {
     box-shadow:0 10px 40px rgba(0,0,0,0.6);
 }
 
-/* ================= 프로필 ================= */
+/* 프로필 */
 .profile-section {
     display:flex;
     align-items:center;
@@ -94,14 +95,14 @@ body {
 
 .mp-btn:hover { background:rgba(255,255,255,0.15); }
 
-/* ================= 섹션 제목 ================= */
+/* 섹션 제목 */
 .section-title {
     font-size:20px;
     font-weight:600;
     margin:30px 0 10px;
 }
 
-/* ================= 내 정보 ================= */
+/* 내 정보 */
 .user-info-table {
     width:100%;
     background:#141414;
@@ -122,7 +123,7 @@ body {
     text-align:left;
 }
 
-/* ================= 찜한 영화 ================= */
+/* 찜한 영화 */
 .liked-movies {
     display:grid;
     grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
@@ -145,74 +146,105 @@ body {
     border-radius:8px;
 }
 
-/* ======================== 내가 쓴 리뷰 ======================== */
-.my-review-list {
+/* 리뷰 카드 */
+.review-card {
+    background:#1a1a1a;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:16px;
     display:flex;
-    flex-direction:column;
-    gap:14px;
-    margin-top:10px;
+    gap:15px;
+    border:1px solid #333;
 }
 
-.my-review-card {
-    background:#151515;
-    border:1px solid #2a2a2a;
-    padding:14px 16px;
-    border-radius:10px;
-    cursor:pointer;
-    transition:all 0.2s ease;
+.review-card img {
+    width:90px;
+    height:130px;
+    object-fit:cover;
+    border-radius:8px;
 }
 
-.my-review-card:hover {
-    background:#1d1d1d;
-    transform:translateY(-3px);
-}
+.review-info { flex:1; }
 
-.my-review-header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.my-review-title {
-    font-size:16px;
+.review-info .movie-title {
+    font-size:18px;
     font-weight:600;
-    color:#fff;
 }
 
-.my-review-rating {
-    font-size:14px;
-    color:#ffdf6b;
+.review-info .rating-date {
+    color:#ccc;
+    margin:5px 0 10px;
 }
 
-.my-review-date {
-    font-size:12px;
-    color:#888;
-    margin-top:4px;
-}
-
-.my-review-content {
-    margin-top:8px;
+.review-info .content-preview {
     color:#ddd;
     font-size:14px;
-    line-height:1.5;
+    max-height:40px;
+    overflow:hidden;
 }
+
+.review-info a {
+    color:#e50914;
+    text-decoration:none;
+    font-size:14px;
+}
+
+.review-info a:hover {
+    text-decoration:underline;
+}
+
+/* 내 게시글 목록 */
+.board-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.board-card {
+    background: #1a1a1a;
+    padding: 18px;
+    border-radius: 12px;
+    border: 1px solid #333;
+}
+
+.board-title a {
+    font-size: 18px;
+    font-weight: 600;
+    color: #e50914;
+    text-decoration: none;
+}
+
+.board-title a:hover {
+    text-decoration: underline;
+}
+
+.board-meta {
+    color: #bbb;
+    font-size: 13px;
+    margin: 4px 0 10px;
+}
+
+.board-preview {
+    color: #ddd;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
 </style>
 </head>
 <body>
 
-
-
-<!-- =============== 본문 =============== -->
+<!-- 본문 시작 -->
 <div class="mypage-container">
 
-    <!-- 프로필 영역 -->
+    <!-- 프로필 -->
     <div class="profile-section">
         <div class="profile-img"
              style="background-image:url('<%= (user.getProfileImg() != null && !user.getProfileImg().isEmpty())
                      ? user.getProfileImg()
                      : "img/default_profile.png" %>'); 
-                    background-size:cover; background-position:center;">
-        </div>
+                    background-size:cover; background-position:center;"></div>
 
         <div class="user-flex-area">
             <div class="user-name"><%= user.getUsername() %> 님</div>
@@ -246,70 +278,102 @@ body {
         <tr><th>등급</th><td><%= user.getGrade() %></td></tr>
     </table>
 
-<!-- 내가 찜한 영화 -->
-<h3 class="section-title">내가 찜한 영화</h3>
+    <!-- 찜한 영화 -->
+    <h3 class="section-title">내가 찜한 영화</h3>
 
-<% if (likedMovies == null || likedMovies.isEmpty()) { %>
-    <p>찜한 영화가 없습니다.</p>
-<% } else { %>
+    <% if (likedMovies == null || likedMovies.isEmpty()) { %>
+        <p>찜한 영화가 없습니다.</p>
+    <% } else { %>
 
-    <div class="liked-movies">
-        <% for (LikeMovieDTO lm : likedMovies) { %>
+        <div class="liked-movies">
+            <% for (LikeMovieDTO lm : likedMovies) { %>
 
-            <% 
-                // TMDB poster_path라면 full URL 생성
-                String img = lm.getMovieImg();
-                if (img != null && img.startsWith("/")) {
-                    img = "https://image.tmdb.org/t/p/w500" + img;
-                }
-            %>
+                <% 
+                    String img = lm.getMovieImg();
+                    if (img != null && img.startsWith("/")) {
+                        img = "https://image.tmdb.org/t/p/w500" + img;
+                    }
+                %>
 
-            <div class="movie-card" 
-                 onclick="location.href='movieDetail?movieId=<%= lm.getMovieId() %>'"
-                 style="cursor:pointer;">
+                <div class="movie-card" onclick="location.href='movieDetail?movieId=<%= lm.getMovieId() %>'">
+                   <img src="<%= img != null ? img : "img/default_movie.png" %>">
+                    <div style="margin-top:8px; font-size:14px;"><%= lm.getMovieTitle() %></div>
+                </div>
 
-                <img src="<%= img != null ? img : "../img/default_movie.png" %>">
-                <div style="margin-top:8px; font-size:14px;"><%= lm.getMovieTitle() %></div>
+            <% } %>
+        </div>
 
-            </div>
+    <% } %>
 
-        <% } %>
-    </div>
+    <!-- 내가 쓴 리뷰 -->
+    <h3 class="section-title">내가 작성한 리뷰</h3>
 
-<% } %>
+    <% if (reviews == null || reviews.isEmpty()) { %>
 
-<!-- 내가 쓴 리뷰 -->
-<h3 class="section-title">내가 쓴 리뷰</h3>
+        <p>아직 리뷰가 없습니다.</p>
 
-<% if (reviews == null || reviews.isEmpty()) { %>
+    <% } else { %>
 
-    <p>아직 작성한 리뷰가 없습니다.</p>
-
-<% } else { %>
-
-    <div class="my-review-list">
         <% for (ReviewDTO r : reviews) { %>
 
-            <div class="my-review-card"
-                 onclick="location.href='movieDetail?movieId=<%= r.getMovieId() %>'">
+            <div class="review-card">
+                <img src="<%= r.getMovieImg() != null ? r.getMovieImg() : "img/default_movie.png" %>">
 
-                <div class="my-review-header">
-                    <span class="my-review-title"><%= r.getTitle() %></span>
-                    <span class="my-review-rating">⭐ <%= r.getRating() %>/10</span>
+                <div class="review-info">
+                    <div class="movie-title"><%= r.getMovieTitle() %></div>
+                    <div class="rating-date">⭐ <%= r.getRating() %>점 | <%= r.getCreatedAt() %></div>
+                    <div class="content-preview"><%= r.getContent() %></div>
+
+                    <a href="movieDetail?movieId=<%= r.getMovieId() %>">자세히 보기 →</a>
+                </div>
+            </div>
+
+        <% } %>
+
+        <h3 class="section-title">내 평균 평점</h3>
+        <div style="font-size:22px; color:#ffdf00; margin-bottom:20px;">
+            ⭐ <%= String.format("%.2f", request.getAttribute("avgRating")) %> / 5.0
+        </div>
+
+    <% } %>
+
+	<!-- 내가 작성한 게시글 -->
+<h3 class="section-title">내가 작성한 게시글</h3>
+
+<%
+    List<BoardDTO> myBoards = (List<BoardDTO>) request.getAttribute("myBoards");
+%>
+
+<% if (myBoards == null || myBoards.isEmpty()) { %>
+
+    <p>아직 작성한 게시글이 없습니다.</p>
+
+<% } else { %>
+
+    <div class="board-list">
+        <% for (BoardDTO b : myBoards) { %>
+
+            <div class="board-card">
+                <div class="board-title">
+                    <a href="board/detail?id=<%= b.getBoardId() %>"><%= b.getTitle() %></a>
                 </div>
 
-                <div class="my-review-date"><%= r.getCreatedAt() %></div>
-
-                <div class="my-review-content">
-                    <%= r.getContent() %>
+                <div class="board-meta">
+                    <span>📅 <%= b.getCreatedAt() %></span>
                 </div>
 
+                <div class="board-preview">
+                    <%= b.getContent().length() > 80 
+                        ? b.getContent().substring(0, 80) + "..." 
+                        : b.getContent() %>
+                </div>
             </div>
 
         <% } %>
     </div>
 
 <% } %>
+	
 
 </div>
 

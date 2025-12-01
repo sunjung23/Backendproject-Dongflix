@@ -22,6 +22,8 @@
             <li><a href="${pageContext.request.contextPath}/indexMovie">홈</a></li>
             <li><a href="#">영화</a></li>
             <li><a href="#">시리즈</a></li>
+            <li><a href="<%=request.getContextPath()%>/board/list">게시판</a></li>
+            
         </ul>
     </nav>
 
