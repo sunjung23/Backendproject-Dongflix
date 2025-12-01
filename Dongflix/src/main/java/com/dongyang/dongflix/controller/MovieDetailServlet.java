@@ -5,7 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
+import org.json.JSONObject;
+
+import com.dongyang.dongflix.dao.ReviewDAO;
+import com.dongyang.dongflix.dto.ReviewDTO;
 import com.dongyang.dongflix.model.TMDBmovie;
 
 import jakarta.servlet.ServletException;
@@ -13,8 +18,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.json.JSONObject;
 
 @WebServlet("/movieDetail")
 public class MovieDetailServlet extends HttpServlet {
@@ -37,6 +40,11 @@ public class MovieDetailServlet extends HttpServlet {
             TMDBmovie movie = fetchMovieDetail(movieId);
 
             request.setAttribute("movie", movie);
+            
+            ReviewDAO reviewDAO = new ReviewDAO();
+            List<ReviewDTO> reviewList = reviewDAO.getReviewsByMovie(movie.getId());
+            request.setAttribute("reviewList", reviewList);
+            
             request.getRequestDispatcher("/movie/movieDetail.jsp").forward(request, response);
 
         } catch (Exception e) {

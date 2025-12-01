@@ -29,10 +29,16 @@ public class LoginServlet extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("loginUser", user);
+            
+            session.setAttribute("userid", user.getUserid());
 
             response.sendRedirect("indexMovie");
         } else {
-            response.sendRedirect("login.jsp");
+            response.setContentType("text/html; charset=UTF-8");
+            response.getWriter().println("<script>");
+            response.getWriter().println("alert('아이디 또는 비밀번호가 올바르지 않습니다.');");
+            response.getWriter().println("history.back();");
+            response.getWriter().println("</script>");
         }
     }
 }

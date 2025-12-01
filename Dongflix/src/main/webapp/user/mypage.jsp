@@ -23,126 +23,179 @@
 <title>마이페이지 - DONGFLIX</title>
 
 <style>
-    body {
-        background:#000;
-        font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        color:#fff;
-        margin:0;
-        padding:0;
-    }
+body {
+    background:#000;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color:#fff;
+    margin:0;
+    padding:0;
+}
 
-    /* ================= 메인 컨테이너 ================= */
-    .mypage-container {
-        max-width:1100px;
-        margin:100px auto 80px;
-        background:#111;
-        padding:30px;
-        border-radius:16px;
-        box-shadow:0 10px 40px rgba(0,0,0,0.6);
-    }
+/* ================= 메인 컨테이너 ================= */
+.mypage-container {
+    max-width:1100px;
+    margin:100px auto 80px;
+    background:#111;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.6);
+}
 
-    /* ================= 프로필 ================= */
-    .profile-section {
-        display:flex;
-        align-items:center;
-        gap:24px;
-        margin-bottom:30px;
-    }
+/* ================= 프로필 ================= */
+.profile-section {
+    display:flex;
+    align-items:center;
+    gap:24px;
+    margin-bottom:30px;
+}
 
-    .profile-img {
-        width:110px;
-        height:110px;
-        border-radius:50%;
-        background:#222;
-        border:2px solid #444;
-    }
+.profile-img {
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    background:#222;
+    border:2px solid #444;
+}
 
-    .user-flex-area { flex:1; }
+.user-flex-area { flex:1; }
 
-    .user-name {
-        font-size:28px;
-        font-weight:700;
-    }
+.user-name {
+    font-size:28px;
+    font-weight:700;
+}
 
-    .grade-badge {
-        padding:6px 14px;
-        border-radius:30px;
-        font-size:13px;
-        margin-top:6px;
-        display:inline-block;
-    }
+.grade-badge {
+    padding:6px 14px;
+    border-radius:30px;
+    font-size:13px;
+    margin-top:6px;
+    display:inline-block;
+}
 
-    .grade-bronze { background:rgba(205,127,50,0.25); color:#e0a96d; }
-    .grade-silver { background:rgba(192,192,192,0.3); color:#d8d8d8; }
-    .grade-gold { background:rgba(255,215,0,0.3); color:#ffd43b; }
+.grade-bronze { background:rgba(205,127,50,0.25); color:#e0a96d; }
+.grade-silver { background:rgba(192,192,192,0.3); color:#d8d8d8; }
+.grade-gold { background:rgba(255,215,0,0.3); color:#ffd43b; }
 
-    .mypage-actions {
-        margin-top:14px;
-        display:flex;
-        gap:10px;
-    }
+.mypage-actions {
+    margin-top:14px;
+    display:flex;
+    gap:10px;
+}
 
-    .mp-btn {
-        padding:8px 14px;
-        border-radius:8px;
-        border:1px solid rgba(255,255,255,0.3);
-        background:rgba(255,255,255,0.04);
-        color:#fff;
-        font-size:13px;
-        text-decoration:none;
-    }
+.mp-btn {
+    padding:8px 14px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.3);
+    background:rgba(255,255,255,0.04);
+    color:#fff;
+    font-size:13px;
+    text-decoration:none;
+}
 
-    .mp-btn:hover { background:rgba(255,255,255,0.15); }
+.mp-btn:hover { background:rgba(255,255,255,0.15); }
 
-    /* ================= 섹션 제목 ================= */
-    .section-title {
-        font-size:20px;
-        font-weight:600;
-        margin:30px 0 10px;
-    }
+/* ================= 섹션 제목 ================= */
+.section-title {
+    font-size:20px;
+    font-weight:600;
+    margin:30px 0 10px;
+}
 
-    /* ================= 내 정보 ================= */
-    .user-info-table {
-        width:100%;
-        background:#141414;
-        border-radius:12px;
-        overflow:hidden;
-        margin-bottom:20px;
-    }
+/* ================= 내 정보 ================= */
+.user-info-table {
+    width:100%;
+    background:#141414;
+    border-radius:12px;
+    overflow:hidden;
+    margin-bottom:20px;
+}
 
-    .user-info-table th,
-    .user-info-table td {
-        padding:12px 16px;
-    }
+.user-info-table th,
+.user-info-table td {
+    padding:12px 16px;
+}
 
-    .user-info-table th {
-        width:120px;
-        background:#1b1b1b;
-        color:#bbb;
-        text-align:left;
-    }
+.user-info-table th {
+    width:120px;
+    background:#1b1b1b;
+    color:#bbb;
+    text-align:left;
+}
 
-    /* ================= 찜한 영화 ================= */
-    .liked-movies {
-        display:grid;
-        grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
-        gap:18px;
-        margin-top:15px;
-    }
+/* ================= 찜한 영화 ================= */
+.liked-movies {
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+    gap:18px;
+    margin-top:15px;
+}
 
-    .movie-card {
-        background:#1a1a1a;
-        border-radius:10px;
-        padding:10px;
-        text-align:center;
-    }
+.movie-card {
+    background:#1a1a1a;
+    border-radius:10px;
+    padding:10px;
+    text-align:center;
+    cursor:pointer;
+}
 
-    .movie-card img {
-        width:100%;
-        height:220px;
-        object-fit:cover;
-        border-radius:8px;
-    }
+.movie-card img {
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    border-radius:8px;
+}
+
+/* ======================== 내가 쓴 리뷰 ======================== */
+.my-review-list {
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin-top:10px;
+}
+
+.my-review-card {
+    background:#151515;
+    border:1px solid #2a2a2a;
+    padding:14px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:all 0.2s ease;
+}
+
+.my-review-card:hover {
+    background:#1d1d1d;
+    transform:translateY(-3px);
+}
+
+.my-review-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.my-review-title {
+    font-size:16px;
+    font-weight:600;
+    color:#fff;
+}
+
+.my-review-rating {
+    font-size:14px;
+    color:#ffdf6b;
+}
+
+.my-review-date {
+    font-size:12px;
+    color:#888;
+    margin-top:4px;
+}
+
+.my-review-content {
+    margin-top:8px;
+    color:#ddd;
+    font-size:14px;
+    line-height:1.5;
+}
 </style>
 </head>
 <body>
@@ -225,19 +278,38 @@
 
 <% } %>
 
-    <!-- 내가 쓴 리뷰 -->
-    <h3 class="section-title">내가 쓴 리뷰</h3>
-    <% if (reviews == null || reviews.isEmpty()) { %>
-        <p>아직 작성한 리뷰가 없습니다.</p>
-    <% } else { %>
+<!-- 내가 쓴 리뷰 -->
+<h3 class="section-title">내가 쓴 리뷰</h3>
+
+<% if (reviews == null || reviews.isEmpty()) { %>
+
+    <p>아직 작성한 리뷰가 없습니다.</p>
+
+<% } else { %>
+
+    <div class="my-review-list">
         <% for (ReviewDTO r : reviews) { %>
-            <div style="border-bottom:1px solid #222; padding:12px 0;">
-                <strong><%= r.getTitle() %></strong> (평점: <%= r.getRating() %>/10)<br>
-                <small><%= r.getCreatedAt() %></small><br>
-                <div style="margin-top:5px; color:#ddd;"><%= r.getContent() %></div>
+
+            <div class="my-review-card"
+                 onclick="location.href='movieDetail?movieId=<%= r.getMovieId() %>'">
+
+                <div class="my-review-header">
+                    <span class="my-review-title"><%= r.getTitle() %></span>
+                    <span class="my-review-rating">⭐ <%= r.getRating() %>/10</span>
+                </div>
+
+                <div class="my-review-date"><%= r.getCreatedAt() %></div>
+
+                <div class="my-review-content">
+                    <%= r.getContent() %>
+                </div>
+
             </div>
+
         <% } %>
-    <% } %>
+    </div>
+
+<% } %>
 
 </div>
 
