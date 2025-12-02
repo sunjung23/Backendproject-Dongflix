@@ -55,6 +55,7 @@ public class BoardDAO {
         return list;
     }
 
+   
     // 상세 조회
     public BoardDTO getById(int id) {
         String sql = "SELECT * FROM board WHERE board_id=?";
@@ -156,6 +157,37 @@ public class BoardDAO {
 
             ps.setString(1, category);
             ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(new BoardDTO(
+                    rs.getInt("board_id"),
+                    rs.getString("userid"),
+                    rs.getString("title"),
+                    rs.getString("content"),
+                    rs.getString("created_at"),
+                    rs.getString("category")
+                ));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    //날짜 순으로 조회
+    public List<BoardDTO> getSortedList(String orderType) {
+        List<BoardDTO> list = new ArrayList<>();
+
+        String order = "DESC";  // 기본 최신순
+        if ("old".equals(orderType)) order = "ASC";
+
+        String sql = "SELECT * FROM board ORDER BY board_id " + order;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 list.add(new BoardDTO(

@@ -19,19 +19,23 @@ public class BoardListServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String category = request.getParameter("category");
+        String sort = request.getParameter("sort");
+        
         BoardDAO dao = new BoardDAO();
-
         List<BoardDTO> list;
-
-        if (category == null || category.isEmpty()) {
-            list = dao.getAll();                // 전체 조회
+        
+        if (category == null || category.equals("all")) {
+            list = (sort == null) ? dao.getAll() : dao.getSortedList(sort);
         } else {
-            list = dao.getByCategory(category); // 카테고리별 조회
+            list = dao.getByCategory(category);
         }
 
         request.setAttribute("list", list);
         request.setAttribute("category", category);
+        request.setAttribute("sort", sort);
 
         request.getRequestDispatcher("/board/boardList.jsp").forward(request, response);
+
+        
     }
 }
