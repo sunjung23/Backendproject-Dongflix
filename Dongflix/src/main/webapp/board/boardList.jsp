@@ -6,155 +6,211 @@
 <%
     List<BoardDTO> list = (List<BoardDTO>) request.getAttribute("list");
     String category = (String) request.getAttribute("category");
+    String sort = (String) request.getAttribute("sort");
 
     if (category == null) category = "all";
+    if (sort == null) sort = "new";
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>게시판 목록</title>
+<title>게시판 목록 - DONGFLIX</title>
 
 <style>
+/* ============================================================
+   GLOBAL Premium Style
+   ============================================================ */
 body {
-    background: #000;
-    color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* 전체 컨테이너 */
+/* ============================================================
+   전체 배경 + Glow
+   ============================================================ */
+.board-wrapper {
+    min-height:100vh;
+    padding:100px 16px;
+    background:
+        radial-gradient(circle at 18% 20%, rgba(229,9,20,0.4) 0%, transparent 65%),
+        radial-gradient(circle at 82% 80%, rgba(255,80,80,0.25) 0%, transparent 65%),
+        #000;
+}
+
+/* ============================================================
+   메인 컨테이너
+   ============================================================ */
 .board-container {
-    max-width: 900px;
-    margin: 120px auto;
-    background: #111;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    max-width:900px;
+    margin:0 auto;
+    padding:34px 28px;
+    background:rgba(15,15,15,0.96);
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.08);
+    box-shadow:0 20px 60px rgba(0,0,0,0.7);
+    backdrop-filter:blur(5px);
 }
 
-/* 제목 */
 .board-container h2 {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 25px;
+    font-size:30px;
+    font-weight:800;
+    background:linear-gradient(90deg,#ff4040,#e50914);
+    -webkit-background-clip:text;
+    color:transparent;
+    margin-bottom:26px;
 }
 
-/* 카테고리 탭 */
+/* ============================================================
+   카테고리 탭
+   ============================================================ */
 .board-tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 18px;
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:22px;
 }
 
 .board-tabs a {
-    padding: 10px 18px;
-    border-radius: 8px;
-    background: #1e1e1e;
-    color: #fff;
-    text-decoration: none;
-    font-size: 14px;
-    border: 1px solid #333;
-    transition: 0.2s;
+    padding:10px 18px;
+    border-radius:10px;
+    background:#1a1a1a;
+    color:#ddd;
+    border:1px solid #2b2b2b;
+    text-decoration:none;
+    font-size:14px;
+    transition:.25s;
 }
 
 .board-tabs a:hover {
-    background: #2b2b2b;
+    background:#262626;
 }
 
 .board-tabs a.active {
-    background: #e50914;
-    border-color: #e50914;
+    background:#e50914;
+    color:#fff;
+    border-color:#e50914;
+    box-shadow:0 0 10px rgba(229,9,20,0.4);
 }
 
-/* 정렬 버튼 */
+/* ============================================================
+   정렬 버튼
+   ============================================================ */
 .sort-area {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 10px;
-    gap: 12px;
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-bottom:18px;
 }
 
 .sort-area a {
-    color: #ddd;
-    font-size: 13px;
-    text-decoration: none;
-    border: 1px solid #333;
-    padding: 6px 12px;
-    border-radius: 6px;
-    background: #1a1a1a;
+    padding:6px 12px;
+    border-radius:8px;
+    background:#1b1b1b;
+    color:#bbb;
+    font-size:13px;
+    border:1px solid #333;
+    text-decoration:none;
+    transition:.2s;
 }
 
 .sort-area a:hover {
-    background: #2a2a2a;
-    color: #fff;
+    background:#292929;
+    color:#fff;
 }
 
-/* 글쓰기 버튼 */
+.sort-area a.active-sort {
+    color:#e50914;
+    border-color:#e50914;
+}
+
+/* ============================================================
+   글쓰기 버튼
+   ============================================================ */
 .write-btn {
-    display: inline-block;
-    padding: 10px 18px;
-    background: #e50914;
-    color: #fff;
-    border-radius: 8px;
-    text-decoration: none;
-    margin: 15px 0 20px;
-    transition: 0.2s;
+    display:inline-block;
+    padding:12px 20px;
+    background:#e50914;
+    border-radius:10px;
+    color:#fff;
+    text-decoration:none;
+    margin-bottom:26px;
+    font-size:15px;
+    font-weight:700;
+    transition:.25s;
 }
 
 .write-btn:hover {
-    background: #b20710;
+    background:#b20710;
+    box-shadow:0 6px 18px rgba(229,9,20,0.4);
+    transform:translateY(-2px);
 }
 
-/* 게시글 카드 */
+/* ============================================================
+   게시글 카드
+   ============================================================ */
 .board-item {
-    background: rgba(255,255,255,0.03);
-    padding: 18px;
-    border-radius: 12px;
-    margin-bottom: 16px;
-    border: 1px solid #2b2b2b;
-    transition: 0.2s;
+    background:rgba(255,255,255,0.03);
+    padding:22px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.06);
+    margin-bottom:20px;
+    transition:.25s;
 }
 
 .board-item:hover {
-    background: rgba(255,255,255,0.06);
+    background:rgba(255,255,255,0.06);
+    transform:translateY(-3px);
 }
 
 /* 제목 */
 .board-title a {
-    font-size: 20px;
-    font-weight: 600;
-    color: #e50914;
-    text-decoration: none;
+    font-size:20px;
+    font-weight:700;
+    text-decoration:none;
+    color:#e50914;
+    transition:.2s;
 }
 
 .board-title a:hover {
-    text-decoration: underline;
+    text-decoration:underline;
 }
 
-/* 작성 정보 */
+/* 메타 정보 */
 .board-meta {
-    font-size: 13px;
-    color: #bbb;
-    margin: 6px 0 10px;
+    margin:10px 0 12px;
+    color:#bbb;
+    font-size:13px;
 }
 
-/* 미리보기 */
+/* 본문 미리보기 */
 .board-preview {
-    font-size: 15px;
-    color: #ddd;
-    line-height: 1.5;
+    color:#ddd;
+    font-size:15px;
+    line-height:1.65;
+}
+
+/* ============================================================
+   반응형
+   ============================================================ */
+@media (max-width:600px) {
+    .board-container { padding:26px 18px; }
+    .board-title a { font-size:18px; }
 }
 </style>
 </head>
 
 <body>
 
+<div class="board-wrapper">
 <div class="board-container">
 
     <h2>게시판</h2>
 
-    <!-- 📌 카테고리 탭 -->
+    <!-- 카테고리 탭 -->
     <div class="board-tabs">
         <a href="list" class="<%= category.equals("all") ? "active" : "" %>">전체</a>
         <a href="list?category=free" class="<%= category.equals("free") ? "active" : "" %>">📢 자유게시판</a>
@@ -162,24 +218,23 @@ body {
         <a href="list?category=secret" class="<%= category.equals("secret") ? "active" : "" %>">🔒 비밀게시판</a>
     </div>
 
-    <!-- 📌 정렬 -->
+    <!-- 정렬 -->
     <div class="sort-area">
-        <a href="list?category=<%= category %>&sort=new">⬆ 최신순</a>
-        <a href="list?category=<%= category %>&sort=old">⬇ 오래된순</a>
+        <a href="list?category=<%= category %>&sort=new" class="<%= sort.equals("new") ? "active-sort" : "" %>">⬆ 최신순</a>
+        <a href="list?category=<%= category %>&sort=old" class="<%= sort.equals("old") ? "active-sort" : "" %>">⬇ 오래된순</a>
     </div>
 
-    <!-- 글쓰기 버튼 -->
-    <a class="write-btn" href="writeForm.jsp">✏ 글쓰기</a>
+    <!-- 글쓰기 -->
+    <a href="writeForm.jsp" class="write-btn">✏ 글쓰기</a>
 
-    <hr style="border-color:#333; margin: 20px 0;">
-
+    <!-- 게시글 리스트 -->
     <% if (list == null || list.isEmpty()) { %>
 
-        <p>게시글이 없습니다.</p>
+        <p style="color:#bbb;">게시글이 없습니다.</p>
 
     <% } else { %>
 
-        <% for(BoardDTO b : list) { %>
+        <% for (BoardDTO b : list) { %>
 
             <div class="board-item">
                 <div class="board-title">
@@ -187,19 +242,24 @@ body {
                 </div>
 
                 <div class="board-meta">
-                    작성자: <%= b.getUserid() %> | 날짜: <%= b.getCreatedAt() %> | 분류: <%= b.getCategory() %>
+                    작성자: <%= b.getUserid() %> |
+                    날짜: <%= b.getCreatedAt() %> |
+                    분류: <%= b.getCategory() %>
                 </div>
 
                 <div class="board-preview">
-                    <%= b.getContent().length() > 80 
-                        ? b.getContent().substring(0, 80) + "..." 
+                    <%= (b.getContent().length() > 90)
+                        ? b.getContent().substring(0, 90) + "..."
                         : b.getContent() %>
                 </div>
             </div>
 
         <% } %>
+
     <% } %>
 
 </div>
+</div>
+
 </body>
 </html>

@@ -1,0 +1,121 @@
+/* =====================================================================================
+   DONGFLIX Premium — Deep Blue Nebula Theme (A Version)
+   Global Style System (공통 스타일)
+   ===================================================================================== */
+
+/* 기본 설정 */
+body {
+    margin: 0;
+    padding: 0;
+    background: #020617;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.6;
+}
+
+/* 공통 컨테이너 */
+.df-container {
+    width: 100%;
+    max-width: 950px;
+    margin: 120px auto;
+    padding: 40px;
+    background: rgba(10, 15, 42, 0.85);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+}
+
+/* 제목 공통 */
+.df-title {
+    font-size: 30px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #4c6fff, #1e40ff);
+    -webkit-background-clip: text;
+    color: transparent;
+    margin-bottom: 25px;
+}
+
+/* 버튼 공통 */
+.df-btn {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: .2s;
+}
+
+/* 버튼 - 파란색 메인 */
+.df-btn-blue {
+    background: #1e40ff;
+    color: white;
+}
+.df-btn-blue:hover {
+    background: #4c6fff;
+    box-shadow: 0 6px 20px rgba(76,111,255,0.4);
+}
+
+/* 버튼 - 보조 */
+.df-btn-gray {
+    background: #374151;
+    color: white;
+}
+.df-btn-gray:hover {
+    background: #4b5563;
+}
+
+/* 텍스트 입력 공통 */
+.df-input, .df-textarea, .df-select {
+    width: 100%;
+    background: #0a0f2a;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 15px;
+    margin-bottom: 20px;
+    transition: .2s;
+}
+
+.df-input:focus, .df-textarea:focus, .df-select:focus {
+    border-color: #4c6fff;
+    background: #101632;
+    box-shadow: 0 0 0 1px rgba(76,111,255,0.5);
+}
+
+/* 카드 공통 */
+.df-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 22px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+    transition: .25s;
+}
+.df-card:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+/* 링크 */
+.df-link {
+    color: #4c6fff;
+    text-decoration: none;
+}
+.df-link:hover {
+    text-decoration: underline;
+}
+
+/* 반응형 */
+@media (max-width: 640px) {
+    .df-container {
+        padding: 25px;
+        border-radius: 14px;
+        margin: 80px auto;
+    }
+    .df-title {
+        font-size: 24px;
+    }
+}
