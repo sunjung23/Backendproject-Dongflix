@@ -11,9 +11,10 @@ import com.dongyang.dongflix.dto.ReviewDTO;
 
 public class ReviewDAO {
 
-    //  리뷰 등록
+    // 리뷰 등록
     public int insertReview(ReviewDTO dto) {
-        String sql = "INSERT INTO review (userid, movie_id, title, content, rating) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO review (userid, movie_id, title, content, rating, movie_title, movie_img) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -23,6 +24,8 @@ public class ReviewDAO {
             ps.setString(3, dto.getTitle());
             ps.setString(4, dto.getContent());
             ps.setInt(5, dto.getRating());
+            ps.setString(6, dto.getMovieTitle());
+            ps.setString(7, dto.getMovieImg());
 
             return ps.executeUpdate();
 
@@ -33,9 +36,7 @@ public class ReviewDAO {
         return 0;
     }
 
-
-    //특정 영화의 리뷰 목록 조회
-
+    // 특정 영화 리뷰 조회
     public List<ReviewDTO> getReviewsByMovie(int movieId) {
         List<ReviewDTO> list = new ArrayList<>();
 
@@ -49,13 +50,15 @@ public class ReviewDAO {
 
             while (rs.next()) {
                 ReviewDTO dto = new ReviewDTO(
-                    rs.getInt("review_id"),
-                    rs.getString("userid"),
-                    rs.getInt("movie_id"),
-                    rs.getString("title"),
-                    rs.getString("content"),
-                    rs.getInt("rating"),
-                    rs.getString("created_at")
+                        rs.getInt("review_id"),
+                        rs.getString("userid"),
+                        rs.getInt("movie_id"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getInt("rating"),
+                        rs.getString("created_at"),
+                        rs.getString("movie_title"),
+                        rs.getString("movie_img")
                 );
                 list.add(dto);
             }
@@ -68,7 +71,7 @@ public class ReviewDAO {
     }
 
 
-    // 특정 유저의 리뷰 목록 조회
+    // 특정 유저 리뷰 조회
     public List<ReviewDTO> getReviewsByUser(String userid) {
         List<ReviewDTO> list = new ArrayList<>();
 
@@ -82,13 +85,15 @@ public class ReviewDAO {
 
             while (rs.next()) {
                 ReviewDTO dto = new ReviewDTO(
-                    rs.getInt("review_id"),
-                    rs.getString("userid"),
-                    rs.getInt("movie_id"),
-                    rs.getString("title"),
-                    rs.getString("content"),
-                    rs.getInt("rating"),
-                    rs.getString("created_at")
+                        rs.getInt("review_id"),
+                        rs.getString("userid"),
+                        rs.getInt("movie_id"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getInt("rating"),
+                        rs.getString("created_at"),
+                        rs.getString("movie_title"),
+                        rs.getString("movie_img")
                 );
                 list.add(dto);
             }
@@ -101,9 +106,7 @@ public class ReviewDAO {
     }
 
 
-    // 
-    // 리뷰 1개 조회 
-
+    // 리뷰 1개 조회
     public ReviewDTO getReviewById(int id) {
         String sql = "SELECT * FROM review WHERE review_id=?";
 
@@ -115,13 +118,15 @@ public class ReviewDAO {
 
             if (rs.next()) {
                 return new ReviewDTO(
-                    rs.getInt("review_id"),
-                    rs.getString("userid"),
-                    rs.getInt("movie_id"),
-                    rs.getString("title"),
-                    rs.getString("content"),
-                    rs.getInt("rating"),
-                    rs.getString("created_at")
+                        rs.getInt("review_id"),
+                        rs.getString("userid"),
+                        rs.getInt("movie_id"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getInt("rating"),
+                        rs.getString("created_at"),
+                        rs.getString("movie_title"),
+                        rs.getString("movie_img")
                 );
             }
 
@@ -133,8 +138,7 @@ public class ReviewDAO {
     }
 
 
-    // 리뷰 수정 
-
+    // 리뷰 수정
     public int updateReview(ReviewDTO dto) {
         String sql = "UPDATE review SET title=?, content=?, rating=? WHERE review_id=?";
 
@@ -155,8 +159,7 @@ public class ReviewDAO {
         return 0;
     }
 
-
-    // 리뷰 삭제 
+    // 리뷰 삭제
     public int deleteReview(int id) {
         String sql = "DELETE FROM review WHERE review_id=?";
 
@@ -168,6 +171,26 @@ public class ReviewDAO {
 
         } catch (Exception e) {
             System.out.println(">>> 리뷰 삭제 실패");
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // 평균 별점
+    public double getAverageRating(String userid) {
+        String sql = "SELECT AVG(rating) FROM review WHERE userid=?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, userid);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return 0;

@@ -218,5 +218,43 @@ public class MemberDAO {
         }
         return 0;
     }
+    
+    
+ // 닉네임이 null이면 자동 생성해서 저장하는 기능
+    public String getOrCreateNickname(String userid) {
+
+        String sql = "SELECT nickname FROM member WHERE userid=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, userid);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String nickname = rs.getString("nickname");
+
+                if (nickname != null && !nickname.trim().isEmpty()) {
+                    return nickname;
+                }
+            }
+
+            // 닉네임이 없는 경우 → 자동 생성
+            String newNick = "사용자" + (int)(Math.random() * 90000 + 10000);
+
+            String updateSql = "UPDATE member SET nickname=? WHERE userid=?";
+            PreparedStatement ps2 = conn.prepareStatement(updateSql);
+            ps2.setString(1, newNick);
+            ps2.setString(2, userid);
+            ps2.executeUpdate();
+
+            return newNick;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "사용자" + (int)(Math.random() * 90000 + 10000);
+    }
+
 
 }

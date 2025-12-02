@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.dongyang.dongflix.dao.ReviewDAO;
 import com.dongyang.dongflix.dto.MemberDTO;
 import com.dongyang.dongflix.dto.ReviewDTO;
+import com.dongyang.dongflix.model.TMDBmovie;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,17 +35,28 @@ public class ReviewWriteServlet extends HttpServlet {
         int rating = Integer.parseInt(request.getParameter("rating"));
         String content = request.getParameter("content");
 
+        // TMDB 정보 받아오기
+        TMDBmovie movie = (TMDBmovie) request.getAttribute("movieData");
+
+        String movieTitle = request.getParameter("movieTitle");
+        String movieImg = request.getParameter("movieImg");
+
         ReviewDTO dto = new ReviewDTO(
                 user.getUserid(),
                 movieId,
                 "리뷰",
                 content,
-                rating
+                rating,
+                movieTitle,
+                movieImg
         );
 
+
+        // DB 저장
         ReviewDAO dao = new ReviewDAO();
         dao.insertReview(dto);
 
+        // 상세 페이지로 이동
         response.sendRedirect("movieDetail?movieId=" + movieId);
     }
 }

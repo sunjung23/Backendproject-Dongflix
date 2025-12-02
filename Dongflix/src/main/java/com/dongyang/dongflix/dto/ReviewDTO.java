@@ -10,11 +10,16 @@ public class ReviewDTO {
     private int rating;
     private String createdAt;
 
+    // 새로 추가된 필드
+    private String movieTitle;
+    private String movieImg;
+
     public ReviewDTO() {}
 
     // 조회용 전체 생성자
     public ReviewDTO(int id, String userid, int movieId, String title,
-                     String content, int rating, String createdAt) {
+                     String content, int rating, String createdAt,
+                     String movieTitle, String movieImg) {
         this.id = id;
         this.userid = userid;
         this.movieId = movieId;
@@ -22,9 +27,11 @@ public class ReviewDTO {
         this.content = content;
         this.rating = rating;
         this.createdAt = createdAt;
+        this.movieTitle = movieTitle;
+        this.movieImg = movieImg;
     }
 
-    // 작성용 생성자
+    // 기존 작성용 생성자
     public ReviewDTO(String userid, int movieId, String title, String content, int rating) {
         this.userid = userid;
         this.movieId = movieId;
@@ -33,6 +40,19 @@ public class ReviewDTO {
         this.rating = rating;
     }
 
+    // 🔥 새롭게 필요한 생성자 (오류 해결)
+    public ReviewDTO(String userid, int movieId, String title, String content,
+                     int rating, String movieTitle, String movieImg) {
+        this.userid = userid;
+        this.movieId = movieId;
+        this.title = title;
+        this.content = content;
+        this.rating = rating;
+        this.movieTitle = movieTitle;
+        this.movieImg = movieImg;
+    }
+
+    // getter / setter 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -53,4 +73,10 @@ public class ReviewDTO {
 
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+
+    public String getMovieTitle() { return movieTitle; }
+    public void setMovieTitle(String movieTitle) { this.movieTitle = movieTitle; }
+
+    public String getMovieImg() { return movieImg; }
+    public void setMovieImg(String movieImg) { this.movieImg = movieImg; }
 }
