@@ -71,7 +71,7 @@ public class IndexMovieServlet extends HttpServlet {
     private List<TMDBmovie> fetchByGenre(String genreId) throws Exception {
 
         Random rnd = new Random();
-        int randomPage = rnd.nextInt(5) + 1;
+        int randomPage = rnd.nextInt(8) + 1;
 
         String apiUrl = BASE_URL +
                 "/discover/movie?api_key=" + API_KEY +
@@ -114,6 +114,6 @@ public class IndexMovieServlet extends HttpServlet {
 
         Collections.shuffle(list);
 
-        return list.subList(0, Math.min(list.size(), 6));
+        return list.subList(0, Math.min(list.size(), 18));
     }
 }
