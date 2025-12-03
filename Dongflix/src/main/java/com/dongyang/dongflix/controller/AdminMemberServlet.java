@@ -32,7 +32,7 @@ public class AdminMemberServlet extends HttpServlet {
         List<MemberDTO> members = dao.getAllMembers();
         
         request.setAttribute("members", members);
-        request.getRequestDispatcher("admin-members.jsp").forward(request, response);
+        request.getRequestDispatcher("/admin/admin-members.jsp").forward(request, response);
     }
     
     // 회원 등급 변경

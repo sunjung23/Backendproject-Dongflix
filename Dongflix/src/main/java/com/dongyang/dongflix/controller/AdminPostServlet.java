@@ -30,7 +30,7 @@ public class AdminPostServlet extends HttpServlet {
         // List<PostDTO> posts = postDAO.getAllPosts();
         // request.setAttribute("posts", posts);
         
-        request.getRequestDispatcher("admin-posts.jsp").forward(request, response);
+        request.getRequestDispatcher("/admin/admin-posts.jsp").forward(request, response);
     }
     
     // 게시글/댓글 숨김 처리 (틀만)

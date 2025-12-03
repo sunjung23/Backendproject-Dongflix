@@ -4,7 +4,7 @@
 <%
     MemberDTO adminUser = (MemberDTO) session.getAttribute("adminUser");
     if (adminUser == null || !"admin".equals(adminUser.getGrade())) {
-        response.sendRedirect("admin-login.jsp");
+    	response.sendRedirect(request.getContextPath() + "/admin/admin-login.jsp");
         return;
     }
 %>
@@ -111,11 +111,11 @@
 
 <div class="header">
     <div class="logo">
-        <img src="img/logo.png" alt="DONGFLIX">
+        <img src="<%= request.getContextPath() %>/img/logo.png">
     </div>
     <div class="user-info">
         <span><%= adminUser.getUsername() %> 님</span>
-        <a href="admin-logout.do" class="logout-btn">로그아웃</a>
+        <a href="<%= request.getContextPath() %>/admin-logout.do" class="logout-btn">로그아웃</a>
     </div>
 </div>
 
@@ -126,13 +126,13 @@
     </div>
     
     <div class="menu-grid">
-        <a href="admin-member.do" class="menu-card">
+        <a href="<%= request.getContextPath() %>/admin-member.do" class="menu-card">
             <div class="icon">👥</div>
             <h3>회원 관리</h3>
             <p>회원 목록 조회 및 등급 관리<br>(Bronze / Silver / Gold)</p>
         </a>
         
-        <a href="admin-post.do" class="menu-card">
+        <a href="<%= request.getContextPath() %>/admin-post.do" class="menu-card">
             <div class="icon">📝</div>
             <h3>게시글 관리</h3>
             <p>게시글 및 댓글 관리</p>

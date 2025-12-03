@@ -28,7 +28,7 @@ public class AdminLoginServlet extends HttpServlet {
         if (user != null && "admin".equals(user.getGrade())) {
             HttpSession session = request.getSession();
             session.setAttribute("adminUser", user);
-            response.sendRedirect("admin-dashboard.jsp");
+            response.sendRedirect(request.getContextPath() + "/admin/admin-dashboard.jsp");
         } else {
             response.sendRedirect("admin-login.jsp?error=1");
         }

@@ -98,8 +98,7 @@
 <body>
 
 <div class="logo-header">
-    <img src="${pageContext.request.contextPath}/img/logo.png" alt="DONGFLIX">
-</div>
+   <img src="<%= request.getContextPath() %>/img/logo.png">
 
 <div class="login-container">
     <h2>관리자 로그인</h2>
@@ -113,7 +112,7 @@
         </div>
     <% } %>
 
-    <form action="admin-login.do" method="post">
+    <form action="${pageContext.request.contextPath}/admin-login.do" method="post">
         <div class="form-group">
             <label>아이디</label>
             <input type="text" name="userid" required>
