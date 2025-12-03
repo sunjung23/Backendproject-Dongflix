@@ -1,11 +1,15 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="com.dongyang.dongflix.dto.MemberDTO" %>
+<%@ page import="com.dongyang.dongflix.dao.MemberDAO" %>
 
 <%
     MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
-    if (user == null) {
-        response.sendRedirect("login.jsp");
-        return;
+    String userName = "게스트";
+    
+    if (user != null) {
+        // 로그인한 사용자의 닉네임 가져오기
+        MemberDAO mdao = new MemberDAO();
+        userName = mdao.getOrCreateNickname(user.getUserid());
     }
 %>
 
@@ -289,6 +293,41 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(32, 54, 202, 0.5);
 }
+
+/* 영화 아이템 레이아웃 */
+.movie-item {
+    background: #2a2a2a;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    border-left: 4px solid #2036CA;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.movie-poster {
+    width: 80px;
+    height: 120px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #1a1a1a;
+}
+
+.movie-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.movie-genres {
+    font-size: 13px;
+    color: #888;
+}
     </style>
 </head>
 <body>
@@ -296,7 +335,7 @@ body {
 <div class="test-container">
     <div class="test-header">
         <h1>🎥 영화 취향 테스트</h1>
-        <p>10개의 질문으로 알아보는 <%= user.getUsername() %>님의 영화 취향!</p>
+        <p>10개의 질문으로 알아보는 <%= userName %>님의 영화 취향!</p>
     </div>
 
     <div class="progress-bar">
@@ -440,7 +479,7 @@ body {
         <div class="result-description" id="resultDesc"></div>
 
         <div class="recommended-movies">
-            <h3>🎞️ <%= user.getUsername() %>님을 위한 추천 영화</h3>
+            <h3>🎞️ <%= userName %>님을 위한 추천 영화</h3>
             <div class="movie-list" id="movieList"></div>
         </div>
 
@@ -605,17 +644,74 @@ function showResult() {
     document.getElementById('resultTitle').textContent = result.title;
     document.getElementById('resultDesc').textContent = result.description;
     
-    var movieHTML = '';
-	for (var i = 0; i < result.movies.length; i++) {
-	    var movie = result.movies[i];
-	    movieHTML += '<div class="movie-item" onclick="location.href=\'movieDetail?movieId=' + movie.id + '\'" style="cursor: pointer;">';
-	    movieHTML += '<div style="font-weight: 600; margin-bottom: 8px; color: #ffffff; font-size: 16px;">' + movie.title + '</div>';
-	    movieHTML += '<div style="font-size: 14px; color: #b3b3b3; line-height: 1.5;">' + movie.desc + '</div>';
-	    movieHTML += '</div>';
-	}
-    document.getElementById('movieList').innerHTML = movieHTML;
+    // 영화 목록 로딩 중 표시
+    document.getElementById('movieList').innerHTML = '<p style="text-align: center; color: #b3b3b3;">🎬 영화 추천 목록을 불러오는 중...</p>';
     
     document.getElementById('resultContainer').classList.add('show');
+    
+    // 서버에서 랜덤 영화 가져오기
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'getRecommendedMovies?type=' + result.type, true);
+    
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            try {
+                var movies = JSON.parse(xhr.responseText);
+                var movieHTML = '';
+                
+                if (movies && movies.length > 0 && !movies[0].error) {
+                    for (var i = 0; i < movies.length; i++) {
+                        var movie = movies[i];
+                        movieHTML += '<div class="movie-item" onclick="location.href=\'movieDetail?movieId=' + movie.id + '\'" style="cursor: pointer;">';
+                        
+                        // 포스터 이미지
+                        if (movie.poster) {
+                            movieHTML += '<img src="' + movie.poster + '" alt="' + movie.title + '" class="movie-poster">';
+                        } else {
+                            movieHTML += '<div class="movie-poster" style="display: flex; align-items: center; justify-content: center; color: #666;">NO IMAGE</div>';
+                        }
+                        
+                        // 영화 정보
+                        movieHTML += '<div class="movie-info">';
+                        movieHTML += '<div style="font-weight: 600; color: #ffffff; font-size: 18px;">';
+                        movieHTML += movie.title + ' (' + movie.year + ')';
+                        movieHTML += '</div>';
+                        
+                        // 장르
+                        if (movie.genres) {
+                            movieHTML += '<div class="movie-genres">' + movie.genres + '</div>';
+                        }
+                        
+                        // 평점
+                        movieHTML += '<div style="font-size: 14px; color: #b3b3b3;">';
+                        movieHTML += '⭐ ' + movie.rating.toFixed(1);
+                        movieHTML += '</div>';
+                        
+                        movieHTML += '</div>'; // movie-info 닫기
+                        movieHTML += '</div>'; // movie-item 닫기
+                    }
+                } else {
+                    movieHTML = '<p style="text-align: center; color: #b3b3b3;">추천 영화를 불러올 수 없습니다. 😢</p>';
+                }
+                
+                document.getElementById('movieList').innerHTML = movieHTML;
+                
+            } catch (e) {
+                console.error('JSON 파싱 실패:', e);
+                document.getElementById('movieList').innerHTML = '<p style="text-align: center; color: #b3b3b3;">영화 추천 목록을 불러오지 못했습니다.</p>';
+            }
+        } else {
+            console.error('서버 오류:', xhr.status);
+            document.getElementById('movieList').innerHTML = '<p style="text-align: center; color: #b3b3b3;">영화 추천 목록을 불러오지 못했습니다.</p>';
+        }
+    };
+    
+    xhr.onerror = function() {
+        console.error('네트워크 오류');
+        document.getElementById('movieList').innerHTML = '<p style="text-align: center; color: #b3b3b3;">네트워크 오류가 발생했습니다.</p>';
+    };
+    
+    xhr.send();
 }
 
 function analyzeAnswers(answers) {
@@ -647,52 +743,28 @@ function analyzeAnswers(answers) {
 
     var results = {
         A: {
+            type: 'A',
             emoji: '😂',
             title: '코미디·가벼운 재미 추구형',
-            description: '당신은 부담 없이 웃고 즐길 수 있는 영화를 선호하는 타입입니다! 복잡한 스토리보다는 빠른 전개와 유쾌한 분위기를 좋아하며, 영화를 통해 스트레스를 날리고 기분 전환을 하는 것을 즐깁니다.',
-            movies: [
-                { title: '극한직업 (2019)', desc: '치킨집을 운영하는 마약반 형사들의 좌충우돌 코미디', id: 575264 },
-                { title: '써니 (2011)', desc: '80년대 여고생들의 우정과 현재를 오가는 감동 코미디', id: 83666 },
-                { title: '7번방의 선물 (2013)', desc: '억울하게 수감된 아버지와 딸의 따뜻한 이야기', id: 177572 },
-                { title: '엑시트 (2019)', desc: '건물에 갇힌 두 사람의 스릴 넘치는 탈출극', id: 597230 },
-                { title: '백 투 더 퓨처 (1985)', desc: '타임머신을 타고 과거로 간 10대 소년의 모험', id: 105 }
-            ]
+            description: '당신은 부담 없이 웃고 즐길 수 있는 영화를 선호하는 타입입니다! 복잡한 스토리보다는 빠른 전개와 유쾌한 분위기를 좋아하며, 영화를 통해 스트레스를 날리고 기분 전환을 하는 것을 즐깁니다.'
         },
         B: {
+            type: 'B',
             emoji: '💕',
             title: '감성·힐링 드라마 추구형',
-            description: '당신은 깊은 감정선과 여운이 있는 영화를 선호하는 타입입니다! 인간관계의 미묘한 감정과 따뜻한 이야기를 좋아하며, 영화를 보며 감동받고 위로받는 것을 소중하게 여깁니다.',
-            movies: [
-                { title: '어바웃 타임 (2013)', desc: '시간여행을 통해 깨닫는 일상의 소중함', id: 122906 },
-                { title: '클래식 (2003)', desc: '두 세대에 걸친 애틋한 사랑 이야기', id: 35883 },
-                { title: '건축학개론 (2012)', desc: '첫사랑의 기억과 현재를 오가는 로맨스', id: 126095 },
-                { title: '러브 액츄얼리 (2003)', desc: '크리스마스를 배경으로 한 다양한 사랑 이야기', id: 508 },
-                { title: '비긴 어게인 (2013)', desc: '음악으로 상처를 치유하는 사람들의 이야기', id: 222935 }
-            ]
+            description: '당신은 깊은 감정선과 여운이 있는 영화를 선호하는 타입입니다! 인간관계의 미묘한 감정과 따뜻한 이야기를 좋아하며, 영화를 보며 감동받고 위로받는 것을 소중하게 여깁니다.'
         },
         C: {
+            type: 'C',
             emoji: '🔍',
             title: '스릴러·미스터리 몰입형',
-            description: '당신은 긴장감과 반전, 몰입감을 중요하게 생각하는 타입입니다! 복잡한 플롯과 예상치 못한 전개를 좋아하며, 영화를 보며 추리하고 분석하는 과정을 즐깁니다.',
-            movies: [
-                { title: '기생충 (2019)', desc: '계층 간 갈등을 다룬 블랙 코미디 스릴러', id: 496243 },
-                { title: '올드보이 (2003)', desc: '15년간 감금된 남자의 복수극', id: 670 },
-                { title: '살인의 추억 (2003)', desc: '실제 사건을 바탕으로 한 범죄 스릴러', id: 11299 },
-                { title: '샤터 아일랜드 (2010)', desc: '정신병원에서 벌어지는 미스터리', id: 11324 },
-                { title: '인셉션 (2010)', desc: '꿈속의 꿈을 오가는 심리 스릴러', id: 27205 }
-            ]
+            description: '당신은 긴장감과 반전, 몰입감을 중요하게 생각하는 타입입니다! 복잡한 플롯과 예상치 못한 전개를 좋아하며, 영화를 보며 추리하고 분석하는 과정을 즐깁니다.'
         },
         D: {
+            type: 'D',
             emoji: '🚀',
             title: '판타지·SF·히어로 세계관형',
-            description: '당신은 현실을 넘어서는 상상력과 화려한 세계관을 사랑하는 타입입니다! 독특한 캐릭터와 압도적인 영상미, 스케일 큰 이야기를 좋아하며, 영화를 통해 새로운 세계를 경험하는 것을 즐깁니다.',
-            movies: [
-                { title: '인터스텔라 (2014)', desc: '우주를 무대로 한 장대한 SF 서사', id: 157336 },
-                { title: '반지의 제왕: 왕의 귀환 (2003)', desc: '중간계를 구하는 장대한 판타지 서사', id: 122 },
-                { title: '어벤져스: 엔드게임 (2019)', desc: '마블 히어로들의 최후의 전투', id: 299534 },
-                { title: '해리포터와 마법사의 돌 (2001)', desc: '마법 세계의 모험과 성장 이야기', id: 671 },
-                { title: '매트릭스 (1999)', desc: '가상현실과 진실을 오가는 SF 액션', id: 603 }
-            ]
+            description: '당신은 현실을 넘어서는 상상력과 화려한 세계관을 사랑하는 타입입니다! 독특한 캐릭터와 압도적인 영상미, 스케일 큰 이야기를 좋아하며, 영화를 통해 새로운 세계를 경험하는 것을 즐깁니다.'
         }
     };
 
