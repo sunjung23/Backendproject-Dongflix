@@ -4,7 +4,7 @@
 <%
     MemberDTO adminUser = (MemberDTO) session.getAttribute("adminUser");
     if (adminUser == null || !"admin".equals(adminUser.getGrade())) {
-        response.sendRedirect("admin-login.jsp");
+        response.sendRedirect("/admin/admin-login.jsp");
         return;
     }
 %>
@@ -139,11 +139,11 @@
 
 <div class="header">
     <div class="logo">
-        <img src="img/logo.png" alt="DONGFLIX">
+        <img src="<%= request.getContextPath() %>/img/logo.png" alt="DONGFLIX">
     </div>
     <div class="header-right">
         <span>📝 게시글 관리</span>
-        <a href="admin-dashboard.jsp" class="back-btn">← 대시보드로</a>
+        <a href="<%= request.getContextPath() %>/admin/admin-dashboard.jsp" class="back-btn">← 대시보드로</a>
     </div>
 </div>
 

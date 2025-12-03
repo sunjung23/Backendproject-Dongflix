@@ -35,6 +35,38 @@ public class ReviewDAO {
         }
         return 0;
     }
+    
+	 // 전체 리뷰 조회 (관리자용)
+    public List<ReviewDTO> getAllReviews() {
+        List<ReviewDTO> list = new ArrayList<>();
+        
+        String sql = "SELECT * FROM review ORDER BY created_at DESC";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
+            while (rs.next()) {
+                ReviewDTO dto = new ReviewDTO(
+                        rs.getInt("review_id"),
+                        rs.getString("userid"),
+                        rs.getInt("movie_id"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getInt("rating"),
+                        rs.getString("created_at"),
+                        rs.getString("movie_title"),
+                        rs.getString("movie_img")
+                );
+                list.add(dto);
+            }
+            
+        } catch (Exception e) {
+            System.out.println(">>> 전체 리뷰 조회 실패");
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     // 특정 영화 리뷰 조회
     public List<ReviewDTO> getReviewsByMovie(int movieId) {

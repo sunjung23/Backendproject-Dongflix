@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>DONGFLIX 관리자 로그인</title>
+    <title>관리자 로그인 - DONGFLIX</title>
     <style>
         * {
             margin: 0;
@@ -15,26 +15,31 @@
             color: white;
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            flex-direction: column;
         }
-        .logo-header {
-            margin-bottom: 30px;
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
         }
-        .logo-header img {
+        .logo img {
             height: 60px;
         }
         .login-container {
-            background-color: rgba(0, 0, 0, 0.75);
-            padding: 60px;
+            background-color: #000;
+            padding: 60px 68px 40px;
             border-radius: 4px;
             width: 450px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
         h2 {
             margin-bottom: 28px;
             font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            color: #fff;
         }
         .form-group {
             margin-bottom: 16px;
@@ -43,13 +48,14 @@
             display: block;
             margin-bottom: 8px;
             font-size: 14px;
+            color: #b3b3b3;
         }
         input[type="text"],
         input[type="password"] {
             width: 100%;
             padding: 16px;
             background-color: #333;
-            border: none;
+            border: 1px solid #555;
             border-radius: 4px;
             color: white;
             font-size: 16px;
@@ -57,7 +63,17 @@
         input[type="text"]:focus,
         input[type="password"]:focus {
             outline: none;
+            border-color: #2036CA;
             background-color: #454545;
+        }
+        .error-message {
+            background-color: #e87c03;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            text-align: center;
         }
         .btn-login {
             width: 100%;
@@ -67,19 +83,13 @@
             border-radius: 4px;
             color: white;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
             margin-top: 24px;
+            transition: background-color 0.3s;
         }
         .btn-login:hover {
             background-color: #1a2ba3;
-        }
-        .error-message {
-            background-color: #e87c03;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 16px;
-            font-size: 14px;
         }
         .back-link {
             text-align: center;
@@ -92,42 +102,44 @@
         }
         .back-link a:hover {
             text-decoration: underline;
+            color: #fff;
         }
     </style>
 </head>
 <body>
 
-<div class="logo-header">
-   <img src="<%= request.getContextPath() %>/img/logo.png">
+<div class="logo">
+    <img src="<%= request.getContextPath() %>/img/logo.png" alt="DONGFLIX">
+</div>
 
 <div class="login-container">
     <h2>관리자 로그인</h2>
-
-    <%
+    
+    <% 
         String error = request.getParameter("error");
         if ("1".equals(error)) {
     %>
         <div class="error-message">
-            ⚠ 관리자 권한이 없거나 로그인 정보가 올바르지 않습니다.
+            ⚠️ 아이디 또는 비밀번호가 틀렸거나 관리자 권한이 없습니다.
         </div>
     <% } %>
-
-    <form action="${pageContext.request.contextPath}/admin-login.do" method="post">
+    
+    <form action="<%= request.getContextPath() %>/admin/admin-login.do" method="post">
         <div class="form-group">
-            <label>아이디</label>
-            <input type="text" name="userid" required>
+            <label for="userid">아이디</label>
+            <input type="text" id="userid" name="userid" required autofocus>
         </div>
-
+        
         <div class="form-group">
-            <label>비밀번호</label>
-            <input type="password" name="password" required>
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" required>
         </div>
-
+        
         <button type="submit" class="btn-login">로그인</button>
     </form>
-
+    
     <div class="back-link">
-        <a href="${pageContext.request.contextPath}/indexMovie">← 메인으로 돌아가기</a>
+        <a href="<%= request.getContextPath() %>/index.jsp">← 메인 페이지로 돌아가기</a>
     </div>
 </div>
 

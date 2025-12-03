@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/admin-member.do")
+@WebServlet("/admin/admin-member.do")
 public class AdminMemberServlet extends HttpServlet {
     
     // 회원 목록 조회
@@ -24,7 +24,7 @@ public class AdminMemberServlet extends HttpServlet {
         HttpSession session = request.getSession();
         MemberDTO adminUser = (MemberDTO) session.getAttribute("adminUser");
         if (adminUser == null || !"admin".equals(adminUser.getGrade())) {
-            response.sendRedirect("admin-login.jsp");
+            response.sendRedirect("/admin/admin-login.jsp");
             return;
         }
         
@@ -44,7 +44,7 @@ public class AdminMemberServlet extends HttpServlet {
         HttpSession session = request.getSession();
         MemberDTO adminUser = (MemberDTO) session.getAttribute("adminUser");
         if (adminUser == null || !"admin".equals(adminUser.getGrade())) {
-            response.sendRedirect("admin-login.jsp");
+            response.sendRedirect("/admin/admin-login.jsp");
             return;
         }
         

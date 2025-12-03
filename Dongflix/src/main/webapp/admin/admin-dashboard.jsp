@@ -31,10 +31,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #333;
+            border-bottom: 2px solid #2036CA;
         }
         .header .logo img {
             height: 40px;
+            cursor: pointer;
         }
         .user-info {
             display: flex;
@@ -111,11 +112,11 @@
 
 <div class="header">
     <div class="logo">
-        <img src="<%= request.getContextPath() %>/img/logo.png">
+        <img src="<%= request.getContextPath() %>/img/logo.png" alt="DONGFLIX">
     </div>
     <div class="user-info">
         <span><%= adminUser.getUsername() %> 님</span>
-        <a href="<%= request.getContextPath() %>/admin-logout.do" class="logout-btn">로그아웃</a>
+        <a href="<%= request.getContextPath() %>/admin/admin-logout.do" class="logout-btn">로그아웃</a>
     </div>
 </div>
 
@@ -124,18 +125,24 @@
         <h2>관리자 대시보드</h2>
         <p>DONGFLIX 시스템을 관리할 수 있습니다.</p>
     </div>
-    
+
     <div class="menu-grid">
-        <a href="<%= request.getContextPath() %>/admin-member.do" class="menu-card">
+        <a href="<%= request.getContextPath() %>/admin/admin-member.do" class="menu-card">
             <div class="icon">👥</div>
             <h3>회원 관리</h3>
             <p>회원 목록 조회 및 등급 관리<br>(Bronze / Silver / Gold)</p>
         </a>
-        
-        <a href="<%= request.getContextPath() %>/admin-post.do" class="menu-card">
-            <div class="icon">📝</div>
-            <h3>게시글 관리</h3>
-            <p>게시글 및 댓글 관리</p>
+
+        <a href="<%= request.getContextPath() %>/admin/admin-board.do" class="menu-card">
+            <div class="icon">📋</div>
+            <h3>게시판 관리</h3>
+            <p>자유/등업/비밀 게시판 관리</p>
+        </a>
+
+        <a href="<%= request.getContextPath() %>/admin/admin-review.do" class="menu-card">
+            <div class="icon">⭐</div>
+            <h3>리뷰 관리</h3>
+            <p>영화 리뷰 관리 및 삭제</p>
         </a>
     </div>
 </div>

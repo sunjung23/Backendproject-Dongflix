@@ -1,7 +1,10 @@
 package com.dongyang.dongflix.controller;
 
 import java.io.IOException;
+import java.util.List;
 
+import com.dongyang.dongflix.dao.BoardDAO;
+import com.dongyang.dongflix.dto.BoardDTO;
 import com.dongyang.dongflix.dto.MemberDTO;
 
 import jakarta.servlet.ServletException;
@@ -11,13 +14,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/admin/admin-post.do")
-public class AdminPostServlet extends HttpServlet {
-    
-    // 게시글/댓글 목록 조회 (틀만)
+@WebServlet("/admin/admin-board.do")
+public class AdminBoardServlet extends HttpServlet {
+
+    // 게시판 목록 조회
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // 관리자 권한 체크
         HttpSession session = request.getSession();
         MemberDTO adminUser = (MemberDTO) session.getAttribute("adminUser");
@@ -25,19 +28,29 @@ public class AdminPostServlet extends HttpServlet {
             response.sendRedirect("/admin/admin-login.jsp");
             return;
         }
+
+        BoardDAO dao = new BoardDAO();
         
-        // TODO: 나중에 PostDAO에서 게시글/댓글 목록 가져오기
-        // List<PostDTO> posts = postDAO.getAllPosts();
-        // request.setAttribute("posts", posts);
+        // 카테고리별 게시글 조회
+        String category = request.getParameter("category");
+        List<BoardDTO> boards;
         
-        request.getRequestDispatcher("/admin/admin-posts.jsp").forward(request, response);
+        if (category != null && !category.isEmpty()) {
+            boards = dao.getByCategory(category);
+        } else {
+            boards = dao.getAll();
+        }
+
+        request.setAttribute("boards", boards);
+        request.setAttribute("currentCategory", category);
+        request.getRequestDispatcher("/admin/admin-board.jsp").forward(request, response);
     }
-    
-    // 게시글/댓글 숨김 처리 (틀만)
+
+    // 게시글 삭제
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        
+
         // 관리자 권한 체크
         HttpSession session = request.getSession();
         MemberDTO adminUser = (MemberDTO) session.getAttribute("adminUser");
@@ -45,13 +58,21 @@ public class AdminPostServlet extends HttpServlet {
             response.sendRedirect("/admin/admin-login.jsp");
             return;
         }
+
+        String action = request.getParameter("action");
         
-        String postId = request.getParameter("postId");
-        String action = request.getParameter("action"); // hide, show 등
-        
-        // TODO: 나중에 PostDAO에서 게시글 숨김 처리
-        // postDAO.updateStatus(postId, action);
-        
-        response.sendRedirect("admin-post.do");
+        if ("delete".equals(action)) {
+            int boardId = Integer.parseInt(request.getParameter("boardId"));
+            BoardDAO dao = new BoardDAO();
+            dao.delete(boardId);
+        }
+
+        // 삭제 후 목록으로 리다이렉트
+        String category = request.getParameter("category");
+        if (category != null && !category.isEmpty()) {
+            response.sendRedirect("admin-board.do?category=" + category);
+        } else {
+            response.sendRedirect("admin-board.do");
+        }
     }
 }

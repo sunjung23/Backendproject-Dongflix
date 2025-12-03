@@ -102,6 +102,10 @@
             outline: none;
             border-color: #2036CA;
         }
+        select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
         .btn-update {
             background-color: #2036CA;
             color: white;
@@ -137,6 +141,28 @@
             background-color: #cd7f32;
             color: white;
         }
+        /* 상세보기 버튼 스타일 추가 */
+        .btn-detail {
+            padding: 6px 14px;
+            background: #e50914;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            text-decoration: none;
+            display: inline-block;
+            transition: .2s;
+        }
+        
+        .btn-detail:hover {
+            background: #f40612;
+            box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
+        }
+        
+        .no-change {
+            color: #999;
+            font-size: 16px;
+        }
     </style>
     <script>
         function updateGrade(userid, selectElement) {
@@ -144,7 +170,7 @@
             if (confirm(userid + ' 회원의 등급을 ' + newGrade.toUpperCase() + '(으)로 변경하시겠습니까?')) {
                 var form = document.createElement('form');
                 form.method = 'POST';
-                form.action = 'admin-member.do';
+                form.action = '<%= request.getContextPath() %>/admin/admin-member.do';
                 
                 var useridInput = document.createElement('input');
                 useridInput.type = 'hidden';
@@ -168,7 +194,7 @@
 
 <div class="header">
     <div class="logo">
-        <img src="img/logo.png" alt="DONGFLIX">
+        <img src="<%= request.getContextPath() %>/img/logo.png" alt="DONGFLIX">
     </div>
     <div class="header-right">
         <span>👥 회원 관리</span>
@@ -187,66 +213,43 @@
                     <th>이름</th>
                     <th>현재 등급</th>
                     <th>등급 변경</th>
+                    <th>관리</th>
                 </tr>
             </thead>
             <tbody>
-                <%
-                    if (members != null && !members.isEmpty()) {
-                        for (MemberDTO member : members) {
-                            String gradeClass = "";
-                            String currentGrade = member.getGrade();
-                            if (currentGrade == null) currentGrade = "bronze";
-                            
-                            // 등급별 CSS 클래스 설정
-                            switch(currentGrade) {
-                                case "admin":
-                                    gradeClass = "grade-admin";
-                                    break;
-                                case "gold":
-                                    gradeClass = "grade-gold";
-                                    break;
-                                case "silver":
-                                    gradeClass = "grade-silver";
-                                    break;
-                                case "bronze":
-                                default:
-                                    gradeClass = "grade-bronze";
-                                    break;
-                            }
+                <% for (MemberDTO m : members) { 
+                    // 관리자 본인인지 체크
+                    boolean isCurrentAdmin = m.getUserid().equals(adminUser.getUserid());
+                    // admin 등급인지 체크
+                    boolean isAdminGrade = "admin".equals(m.getGrade());
                 %>
                 <tr>
-                    <td><%= member.getUserid() %></td>
-                    <td><%= member.getUsername() %></td>
+                    <td><%= m.getUserid() %></td>
+                    <td><%= m.getUsername() %></td>
                     <td>
-                        <span class="grade-badge <%= gradeClass %>">
-                            <%= currentGrade.toUpperCase() %>
+                        <span class="grade-badge grade-<%= m.getGrade().toLowerCase() %>">
+                            <%= m.getGrade().toUpperCase() %>
                         </span>
                     </td>
                     <td>
-                        <% if (!"admin".equals(member.getUserid())) { %>
-                            <select onchange="updateGrade('<%= member.getUserid() %>', this)">
-                                <option value="">등급 선택</option>
-                                <option value="bronze" <%= "bronze".equals(currentGrade) ? "selected" : "" %>>Bronze</option>
-                                <option value="silver" <%= "silver".equals(currentGrade) ? "selected" : "" %>>Silver</option>
-                                <option value="gold" <%= "gold".equals(currentGrade) ? "selected" : "" %>>Gold</option>
-                            </select>
+                        <% if (isCurrentAdmin || isAdminGrade) { %>
+                            <!-- 관리자 본인이거나 admin 등급인 경우 변경 불가 -->
+                            <span class="no-change">변경 불가</span>
                         <% } else { %>
-                            <span style="color: #666;">변경 불가</span>
+                            <!-- 일반 회원인 경우만 등급 변경 가능 -->
+                            <select onchange="updateGrade('<%= m.getUserid() %>', this)">
+                                <option value="">등급 선택</option>
+                                <option value="bronze" <%= "bronze".equals(m.getGrade()) ? "selected" : "" %>>Bronze</option>
+                                <option value="silver" <%= "silver".equals(m.getGrade()) ? "selected" : "" %>>Silver</option>
+                                <option value="gold" <%= "gold".equals(m.getGrade()) ? "selected" : "" %>>Gold</option>
+                            </select>
                         <% } %>
                     </td>
-                </tr>
-                <%
-                        }
-                    } else {
-                %>
-                <tr>
-                    <td colspan="4" style="text-align: center; color: #666;">
-                        등록된 회원이 없습니다.
+                    <td>
+                        <a href="admin-member-detail.do?userid=<%= m.getUserid() %>" class="btn-detail">상세보기</a>
                     </td>
                 </tr>
-                <%
-                    }
-                %>
+                <% } %>
             </tbody>
         </table>
     </div>

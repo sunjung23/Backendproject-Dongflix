@@ -8,13 +8,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/admin-logout.do")
+@WebServlet("/admin/admin-logout.do")
 public class AdminLogoutServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         // adminUser 세션만 제거
         session.removeAttribute("adminUser");
-        response.sendRedirect("admin-login.jsp");
+        response.sendRedirect("/admin/admin-login.jsp");
     }
 }
