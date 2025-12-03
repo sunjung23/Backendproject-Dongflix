@@ -29,14 +29,12 @@
 <%
     String bannerBg = "";
     String bannerTitle = "영화 정보를 불러올 수 없습니다.";
-    String bannerOverview = "";
 
     if (banner != null) {
         bannerBg = (banner.getBackdropUrl() != null && !banner.getBackdropUrl().isEmpty())
                     ? banner.getBackdropUrl()
                     : banner.getPosterUrl();
         bannerTitle = banner.getTitle();
-        bannerOverview = banner.getOverview();
     }
 %>
 
@@ -56,6 +54,7 @@
         String genreKey = entry.getKey();
         List<TMDBmovie> movies = entry.getValue();
         
+        // 카테고리명 매핑
         String displayName = genreKey;
         if ("animation".equals(genreKey)) displayName = "애니메이션";
         else if ("romance".equals(genreKey)) displayName = "로맨스";
@@ -69,7 +68,12 @@
 <div class="movie-grid">
 <%
         if (movies != null) {
+            int limit = 4; // ★ 4개만 출력하도록 제한
+            int count = 0;
+
             for (TMDBmovie m : movies) {
+                if (count >= limit) break;
+                count++;
 %>
     <div class="movie">
         <a href="movieDetail?movieId=<%= m.getId() %>">

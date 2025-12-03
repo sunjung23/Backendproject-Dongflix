@@ -60,59 +60,82 @@ body {
 
 /* ======================= 영화 그리드 ======================= */
 .movie-grid {
-    width: 90%;
-    margin: 0 auto 60px auto;
+    width: 92%;
+    height: 100%;
+    margin: 0 auto 70px auto;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+    grid-template-columns: repeat(4, 1fr);  
+    gap: 22px;                                
 }
 
+/* ======================= 영화 카드 ======================= */
 .movie {
     position: relative;
+    overflow: hidden;                        
+    border-radius: 10px;
+    cursor: pointer;
 }
 
+/* 포스터 이미지 */
 .movie img {
     width: 100%;
+    aspect-ratio: 2 / 3;    
+    object-fit: cover;        
     border-radius: 8px;
-    transition: transform 0.25s ease-out;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    transition: transform 0.22s ease-out, box-shadow 0.22s ease;
 }
 
 .movie img:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);                   
+    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.4);
 }
 
-/* ======================= hover 설명 ======================= */
+/* ======================= hover 인포박스 ======================= */
 .hover-info {
-    display: none;
     position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    background: rgba(0, 0, 0, 0.90);
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    background: rgba(0,0,0,0.78);
     padding: 12px;
-    border-radius: 8px;
-    font-size: 13px;
+    border-radius: 0 0 10px 10px;
+
+    font-size: 12.5px;
     line-height: 1.4;
-    z-index: 10;
+
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transform: translateY(10px);
+    transition: all 0.25s ease;
+    max-height: 90px;                         /* ★ 깔끔한 높이 */
+    overflow: hidden;
 }
 
 .movie:hover .hover-info {
-    display: block;
     opacity: 1;
+    transform: translateY(0);
 }
 
 /* ======================= 반응형 ======================= */
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
     .movie-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .movie img {
+        height: 220px;
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
+    .movie-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .movie img {
+        height: 200px;
+    }
+}
+
+@media (max-width: 500px) {
     .movie-grid {
         grid-template-columns: 1fr;
     }
