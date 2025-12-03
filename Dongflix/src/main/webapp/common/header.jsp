@@ -28,7 +28,7 @@
     </nav>
 
     <%
-        Object loginUser = session.getAttribute("loginUser");
+        Object loginUser = session.getAttribute("login_User");
     %>
 
     <div class="mypage">
