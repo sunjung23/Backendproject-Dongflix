@@ -1,14 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
-
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>DONGFLIX</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/header.css">
-</head>
-
-<body>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
 
 <header>
     <div class="logo">
@@ -20,15 +11,13 @@
     <nav>
         <ul>
             <li><a href="${pageContext.request.contextPath}/indexMovie">홈</a></li>
-            <li><a href="#">영화</a></li>
-            <li><a href="#">시리즈</a></li>
-            <li><a href="<%=request.getContextPath()%>/board/list">게시판</a></li>
-            
+            <li><a href="${pageContext.request.contextPath}/searchMovie">탐색</a></li>
+            <li><a href="${pageContext.request.contextPath}/board/list">게시판</a></li>
         </ul>
     </nav>
 
     <%
-        Object loginUser = session.getAttribute("login_User");
+        Object loginUser = session.getAttribute("loginUser");
     %>
 
     <div class="mypage">
@@ -40,6 +29,3 @@
         <% } %>
     </div>
 </header>
-
-</body>
-</html>

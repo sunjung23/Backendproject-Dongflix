@@ -3,7 +3,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.dongyang.dongflix.dto.ReviewDTO" %>
 <%@ page import="com.dongyang.dongflix.dao.MemberDAO" %>
-<img src="${pageContext.request.contextPath}/img/logo.png">
 
 <%
     TMDBmovie movie = (TMDBmovie) request.getAttribute("movie");

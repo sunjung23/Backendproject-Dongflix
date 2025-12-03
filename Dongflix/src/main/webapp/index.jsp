@@ -4,10 +4,10 @@
 <%@ page import="com.dongyang.dongflix.model.TMDBmovie" %>
 
 <%
-	if (request.getAttribute("fromServlet") == null) {
-	    response.sendRedirect(request.getContextPath() + "/indexMovie");
-	    return;
-	}
+    if (request.getAttribute("fromServlet") == null) {
+        response.sendRedirect(request.getContextPath() + "/indexMovie");
+        return;
+    }
 
     Map<String, List<TMDBmovie>> movieLists =
             (Map<String, List<TMDBmovie>>) request.getAttribute("movieLists");
@@ -25,7 +25,7 @@
 
 <body>
 
-<!-- 배너 -->
+<!-- ======================== 배너 ======================== -->
 <%
     String bannerBg = "";
     String bannerTitle = "영화 정보를 불러올 수 없습니다.";
@@ -40,21 +40,20 @@
 
 <div class="main-banner" style="background-image: url('<%= bannerBg %>');">
     <div class="banner-content">
-        <h1>오늘의 추천 영화:  <%= bannerTitle %></h1>
-        
-		<a href="movieDetail?movieId=<%= banner.getId() %>" class="banner-detail-btn">
-		    자세히 보러 가기 &raquo;
-		</a>
+        <h1>오늘의 추천 영화: <%= bannerTitle %></h1>
+
+        <a href="movieDetail?movieId=<%= banner.getId() %>" class="banner-detail-btn">
+            자세히 보러 가기 &raquo;
+        </a>
     </div>
 </div>
 
-<!-- 카테고리 영화들 -->
+<!-- ======================== 카테고리별 영화 ======================== -->
 <%
     for (Map.Entry<String, List<TMDBmovie>> entry : movieLists.entrySet()) {
         String genreKey = entry.getKey();
         List<TMDBmovie> movies = entry.getValue();
-        
-        // 카테고리명 매핑
+
         String displayName = genreKey;
         if ("animation".equals(genreKey)) displayName = "애니메이션";
         else if ("romance".equals(genreKey)) displayName = "로맨스";
@@ -65,45 +64,55 @@
 
 <div class="category"><%= displayName %></div>
 
-<div class="movie-grid">
-<%
-        if (movies != null) {
-            int limit = 4; 
-            int count = 0;
+<div class="movie-slider-wrapper">
 
-            for (TMDBmovie m : movies) {
-                if (count >= limit) break;
-                count++;
-%>
-    <div class="movie">
-        <a href="movieDetail?movieId=<%= m.getId() %>">
-            <img src="<%= m.getPosterUrl() %>" alt="<%= m.getTitle() %>">
-        </a>
-        <div class="hover-info"><%= m.getOverview() %></div>
-    </div>
-<%
+    <!-- ← 왼쪽 화살표 -->
+    <button class="slide-btn left" onclick="slideLeft('<%= genreKey %>')">❮</button>
+
+    <!-- 영화 목록 -->
+    <div class="movie-row" id="row-<%= genreKey %>">
+        <%
+            if (movies != null) {
+                for (TMDBmovie m : movies) {
+        %>
+        <div class="movie">
+            <a href="movieDetail?movieId=<%= m.getId() %>">
+                <img src="<%= m.getPosterUrl() %>" alt="<%= m.getTitle() %>">
+            </a>
+			<div class="hover-info">
+			    <div class="hover-text"><%= m.getOverview() %></div>
+			</div>
+        </div>
+        <%
+                }
             }
-        }
-%>
+        %>
+    </div>
+
+    <!-- → 오른쪽 화살표 -->
+    <button class="slide-btn right" onclick="slideRight('<%= genreKey %>')">❯</button>
 </div>
 
 <%
     }
 %>
 
-<!-- 🎬 영화 취향 테스트 플로팅 버튼 -->
-<a href="${pageContext.request.contextPath}/movieTest.jsp" 
-   style="position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; 
-          background: linear-gradient(135deg, #2036CA 0%, #4a69ff 100%); 
-          border-radius: 50%; z-index: 9999; font-size: 32px; 
-          display: flex; align-items: center; justify-content: center; 
-          cursor: pointer; text-decoration: none; 
-          box-shadow: 0 8px 25px rgba(32, 54, 202, 0.5);
-          border: none;
-          transition: all 0.3s ease;"
-   onmouseover="this.style.transform='translateY(-5px) scale(1.05)'; this.style.boxShadow='0 12px 35px rgba(32, 54, 202, 0.7)';"
-   onmouseout="this.style.transform=''; this.style.boxShadow='0 8px 25px rgba(32, 54, 202, 0.5)';"
-   title="영화 취향 테스트">
+<!-- ======================== 슬라이더 JS ======================== -->
+<script>
+function slideLeft(key) {
+    const row = document.getElementById("row-" + key);
+    row.scrollBy({ left: -600, behavior: "smooth" });
+}
+
+function slideRight(key) {
+    const row = document.getElementById("row-" + key);
+    row.scrollBy({ left: 600, behavior: "smooth" });
+}
+</script>
+
+<!-- 🎬 영화 취향 테스트 버튼 -->
+<a href="${pageContext.request.contextPath}/movieTest.jsp"
+   class="floating-test-btn">
     🎬
 </a>
 
