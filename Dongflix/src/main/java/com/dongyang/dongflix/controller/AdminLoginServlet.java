@@ -12,8 +12,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/admin-login.do")
+@WebServlet("/admin/admin-login.do")
 public class AdminLoginServlet extends HttpServlet {
+    
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -30,7 +31,8 @@ public class AdminLoginServlet extends HttpServlet {
             session.setAttribute("adminUser", user);
             response.sendRedirect(request.getContextPath() + "/admin/admin-dashboard.jsp");
         } else {
-            response.sendRedirect("admin-login.jsp?error=1");
+            // 로그인 실패 또는 관리자 권한 없음
+            response.sendRedirect(request.getContextPath() + "/admin/admin-login.jsp?error=1");
         }
     }
 }
