@@ -4,10 +4,10 @@
 <%@ page import="com.dongyang.dongflix.model.TMDBmovie" %>
 
 <%
-    if (request.getAttribute("fromServlet") == null) {
-        response.sendRedirect("indexMovie");
-        return;
-    }
+	if (request.getAttribute("fromServlet") == null) {
+	    response.sendRedirect(request.getContextPath() + "/indexMovie");
+	    return;
+	}
 
     Map<String, List<TMDBmovie>> movieLists =
             (Map<String, List<TMDBmovie>>) request.getAttribute("movieLists");
@@ -68,7 +68,7 @@
 <div class="movie-grid">
 <%
         if (movies != null) {
-            int limit = 4; // ★ 4개만 출력하도록 제한
+            int limit = 4; 
             int count = 0;
 
             for (TMDBmovie m : movies) {
