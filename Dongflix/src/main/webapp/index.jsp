@@ -91,42 +91,21 @@
     }
 %>
 
-<!-- 영화 취향 테스트 플로팅 버튼 -->
-<%
-    Object loginUserForTest = session.getAttribute("loginUser");
-%>
-
-<% if (loginUserForTest != null) { %>
-    <a href="${pageContext.request.contextPath}/movieTest.jsp" 
-       style="position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; 
-              background: linear-gradient(135deg, #2036CA 0%, #4a69ff 100%); 
-              border-radius: 50%; z-index: 9999; font-size: 32px; 
-              display: flex; align-items: center; justify-content: center; 
-              cursor: pointer; text-decoration: none; 
-              box-shadow: 0 8px 25px rgba(32, 54, 202, 0.5);
-              border: none;
-              transition: all 0.3s ease;"
-       onmouseover="this.style.transform='translateY(-5px) scale(1.05)'; this.style.boxShadow='0 12px 35px rgba(32, 54, 202, 0.7)';"
-       onmouseout="this.style.transform=''; this.style.boxShadow='0 8px 25px rgba(32, 54, 202, 0.5)';"
-       title="영화 취향 테스트">
-        🎬
-    </a>
-<% } else { %>
-    <div onclick="if(confirm('로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?')) location.href='${pageContext.request.contextPath}/login.jsp';" 
-         style="position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; 
-                background: linear-gradient(135deg, #2036CA 0%, #4a69ff 100%); 
-                border-radius: 50%; z-index: 9999; font-size: 32px; 
-                display: flex; align-items: center; justify-content: center; 
-                cursor: pointer; 
-                box-shadow: 0 8px 25px rgba(32, 54, 202, 0.5);
-                border: none;
-                transition: all 0.3s ease;"
-         onmouseover="this.style.transform='translateY(-5px) scale(1.05)'; this.style.boxShadow='0 12px 35px rgba(32, 54, 202, 0.7)';"
-         onmouseout="this.style.transform=''; this.style.boxShadow='0 8px 25px rgba(32, 54, 202, 0.5)';"
-         title="영화 취향 테스트">
-        🎬
-    </div>
-<% } %>
+<!-- 🎬 영화 취향 테스트 플로팅 버튼 -->
+<a href="${pageContext.request.contextPath}/movieTest.jsp" 
+   style="position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; 
+          background: linear-gradient(135deg, #2036CA 0%, #4a69ff 100%); 
+          border-radius: 50%; z-index: 9999; font-size: 32px; 
+          display: flex; align-items: center; justify-content: center; 
+          cursor: pointer; text-decoration: none; 
+          box-shadow: 0 8px 25px rgba(32, 54, 202, 0.5);
+          border: none;
+          transition: all 0.3s ease;"
+   onmouseover="this.style.transform='translateY(-5px) scale(1.05)'; this.style.boxShadow='0 12px 35px rgba(32, 54, 202, 0.7)';"
+   onmouseout="this.style.transform=''; this.style.boxShadow='0 8px 25px rgba(32, 54, 202, 0.5)';"
+   title="영화 취향 테스트">
+    🎬
+</a>
 
 </body>
 </html>
