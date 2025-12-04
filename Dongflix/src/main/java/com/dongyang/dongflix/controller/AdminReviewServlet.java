@@ -45,18 +45,44 @@ public class AdminReviewServlet extends HttpServlet {
         HttpSession session = request.getSession();
         MemberDTO adminUser = (MemberDTO) session.getAttribute("adminUser");
         if (adminUser == null || !"admin".equals(adminUser.getGrade())) {
-            response.sendRedirect("/admin/admin-login.jsp");
+            response.sendRedirect("admin-login.jsp");
             return;
         }
 
         String action = request.getParameter("action");
-        
-        if ("delete".equals(action)) {
-            int reviewId = Integer.parseInt(request.getParameter("reviewId"));
-            ReviewDAO dao = new ReviewDAO();
-            dao.deleteReview(reviewId);
-        }
 
-        response.sendRedirect("admin-review.do");
+        if ("delete".equals(action)) {
+            String reviewIdStr = request.getParameter("reviewId");
+            
+            // 프로필에서 온 경우 확인
+            String fromProfile = request.getParameter("fromProfile");
+            String profileUserid = request.getParameter("profileUserid");
+            String fromBoard = request.getParameter("fromBoard");
+            String boardId = request.getParameter("boardId");
+            String fromReview = request.getParameter("fromReview");
+            String originalReviewId = request.getParameter("originalReviewId");
+
+            if (reviewIdStr != null) {
+                int reviewId = Integer.parseInt(reviewIdStr);
+                ReviewDAO reviewDao = new ReviewDAO();
+                reviewDao.deleteReview(reviewId);
+            }
+
+            // 리다이렉트 URL 결정
+            String redirectUrl = "admin-review.do";
+            
+            if ("true".equals(fromProfile) && profileUserid != null) {
+                // 프로필에서 온 경우 프로필로 복귀
+                redirectUrl = "admin-member-detail.do?userid=" + profileUserid;
+                
+                if ("true".equals(fromBoard) && boardId != null) {
+                    redirectUrl += "&fromBoard=true&boardId=" + boardId;
+                } else if ("true".equals(fromReview) && originalReviewId != null) {
+                    redirectUrl += "&fromReview=true&reviewId=" + originalReviewId;
+                }
+            }
+            
+            response.sendRedirect(redirectUrl);
+        }
     }
 }

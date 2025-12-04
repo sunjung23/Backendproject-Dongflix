@@ -10,15 +10,22 @@
     }
     
     ReviewDTO review = (ReviewDTO) request.getAttribute("review");
+    MemberDTO author = (MemberDTO) request.getAttribute("author");
+    
+    // 프로필에서 넘어왔는지 확인
+    String fromProfile = request.getParameter("fromProfile");
+    String profileUserid = request.getParameter("userid");
+    boolean isFromProfile = "true".equals(fromProfile) && profileUserid != null;
+    
+    // 프로필이 어디서 왔는지 확인 (게시글 or 리뷰)
+    String fromBoard = request.getParameter("fromBoard");
+    String boardId = request.getParameter("boardId");
+    String fromReview = request.getParameter("fromReview");
+    String originalReviewId = request.getParameter("originalReviewId");
     
     if (review == null) {
         response.sendRedirect("admin-review.do");
         return;
-    }
-    
-    String movieImg = review.getMovieImg();
-    if (movieImg != null && movieImg.startsWith("/")) {
-        movieImg = "https://image.tmdb.org/t/p/w500" + movieImg;
     }
 %>
 
@@ -86,6 +93,79 @@
             color: #2036CA;
         }
         
+        /* 작성자 프로필 박스 */
+        .author-box {
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+        }
+        
+        .author-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .author-icon {
+            font-size: 24px;
+        }
+        
+        .author-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .author-name {
+            font-size: 13px;
+            font-weight: normal;
+            color: #999;
+        }
+        
+        .author-id {
+            font-size: 17px;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .current-grade {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        
+        .grade-bronze { background-color: rgba(205,127,50,0.3); color: #e2b77c; }
+        .grade-silver { background-color: rgba(192,192,192,0.3); color: #e8e8e8; }
+        .grade-gold { background-color: rgba(255,215,0,0.3); color: #ffe680; }
+        .grade-admin { background-color: rgba(32,54,202,0.3); color: #6b8aff; }
+        
+        .btn-profile {
+            padding: 8px 16px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+            transition: .2s;
+        }
+        
+        .btn-profile:hover {
+            background-color: #666;
+        }
+        
         .review-container {
             background-color: #1f1f1f;
             border-radius: 8px;
@@ -101,7 +181,7 @@
             margin-bottom: 20px;
         }
         
-        .movie-poster {
+        .movie-poster img {
             width: 150px;
             height: 225px;
             border-radius: 8px;
@@ -110,32 +190,38 @@
         
         .movie-info {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 10px;
         }
         
         .movie-title {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
-            color: #fff;
+            margin-bottom: 10px;
+        }
+        
+        .rating {
+            font-size: 20px;
+            color: #ffd700;
+            margin-bottom: 15px;
         }
         
         .review-meta {
-            display: flex;
-            gap: 20px;
             font-size: 14px;
             color: #999;
+            margin-bottom: 10px;
         }
         
-        .rating-display {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 20px;
-            color: #ffdf00;
-            font-weight: bold;
+        .review-info-box {
+            background-color: #141414;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        
+        .info-row {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #bbb;
         }
         
         .review-title {
@@ -154,33 +240,6 @@
             padding: 20px;
             background-color: #141414;
             border-radius: 8px;
-        }
-        
-        .review-info-box {
-            background-color: #2a2a2a;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        
-        .info-row:last-child {
-            margin-bottom: 0;
-        }
-        
-        .info-label {
-            color: #999;
-        }
-        
-        .info-value {
-            color: #fff;
-            font-weight: bold;
         }
         
         .action-buttons {
@@ -219,29 +278,73 @@
         }
     </style>
     <script>
-        function deleteReview() {
-            if (confirm('정말 이 리뷰를 삭제하시겠습니까?\n삭제된 리뷰는 복구할 수 없습니다.')) {
-                var form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '<%= request.getContextPath() %>/admin/admin-review.do';
-                
-                var actionInput = document.createElement('input');
-                actionInput.type = 'hidden';
-                actionInput.name = 'action';
-                actionInput.value = 'delete';
-                
-                var reviewIdInput = document.createElement('input');
-                reviewIdInput.type = 'hidden';
-                reviewIdInput.name = 'reviewId';
-                reviewIdInput.value = '<%= review.getId() %>';
-                
-                form.appendChild(actionInput);
-                form.appendChild(reviewIdInput);
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-    </script>
+	    function deleteReview() {
+	        if (confirm('정말 이 리뷰를 삭제하시겠습니까?\n삭제된 리뷰는 복구할 수 없습니다.')) {
+	            var form = document.createElement('form');
+	            form.method = 'POST';
+	            form.action = '<%= request.getContextPath() %>/admin/admin-review.do';
+	            
+	            var actionInput = document.createElement('input');
+	            actionInput.type = 'hidden';
+	            actionInput.name = 'action';
+	            actionInput.value = 'delete';
+	            
+	            var reviewIdInput = document.createElement('input');
+	            reviewIdInput.type = 'hidden';
+	            reviewIdInput.name = 'reviewId';
+	            reviewIdInput.value = '<%= review.getId() %>';
+	            
+	            <% if (isFromProfile) { %>
+	                // 프로필에서 온 경우 프로필로 돌아가기
+	                var fromProfileInput = document.createElement('input');
+	                fromProfileInput.type = 'hidden';
+	                fromProfileInput.name = 'fromProfile';
+	                fromProfileInput.value = 'true';
+	                
+	                var profileUseridInput = document.createElement('input');
+	                profileUseridInput.type = 'hidden';
+	                profileUseridInput.name = 'profileUserid';
+	                profileUseridInput.value = '<%= profileUserid %>';
+	                
+	                form.appendChild(fromProfileInput);
+	                form.appendChild(profileUseridInput);
+	                
+	                <% if ("true".equals(fromBoard) && boardId != null) { %>
+	                    var fromBoardInput = document.createElement('input');
+	                    fromBoardInput.type = 'hidden';
+	                    fromBoardInput.name = 'fromBoard';
+	                    fromBoardInput.value = 'true';
+	                    
+	                    var boardIdInput = document.createElement('input');
+	                    boardIdInput.type = 'hidden';
+	                    boardIdInput.name = 'boardId';
+	                    boardIdInput.value = '<%= boardId %>';
+	                    
+	                    form.appendChild(fromBoardInput);
+	                    form.appendChild(boardIdInput);
+	                <% } else if ("true".equals(fromReview) && originalReviewId != null) { %>
+	                    var fromReviewInput = document.createElement('input');
+	                    fromReviewInput.type = 'hidden';
+	                    fromReviewInput.name = 'fromReview';
+	                    fromReviewInput.value = 'true';
+	                    
+	                    var originalReviewIdInput = document.createElement('input');
+	                    originalReviewIdInput.type = 'hidden';
+	                    originalReviewIdInput.name = 'originalReviewId';
+	                    originalReviewIdInput.value = '<%= originalReviewId %>';
+	                    
+	                    form.appendChild(fromReviewInput);
+	                    form.appendChild(originalReviewIdInput);
+	                <% } %>
+	            <% } %>
+	            
+	            form.appendChild(actionInput);
+	            form.appendChild(reviewIdInput);
+	            document.body.appendChild(form);
+	            form.submit();
+	        }
+	    }
+	</script>
 </head>
 <body>
 
@@ -262,52 +365,86 @@
         <h2>리뷰 상세보기</h2>
     </div>
     
+    <!-- 작성자 프로필 박스 (프로필에서 온 경우 숨김) -->
+	<% if (!isFromProfile) { 
+	    // 프로필 링크 생성
+	    String profileLink = "admin-member-detail.do?userid=" + review.getUserid() + "&fromReview=true&reviewId=" + review.getId();
+	%>
+	<div class="author-box">
+	    <div class="author-header">
+	        <div class="author-info">
+	            <div class="author-icon">👤</div>
+	            <div class="author-details">
+	                <div class="author-name">작성자</div>
+	                <div class="author-id"><%= review.getUserid() %></div>
+	                <% if (author != null) { %>
+	                    <span class="current-grade grade-<%= author.getGrade().toLowerCase() %>">
+	                        <%= author.getGrade().toUpperCase() %>
+	                    </span>
+	                <% } %>
+	            </div>
+	        </div>
+	        <a href="<%= profileLink %>" class="btn-profile">
+	            프로필 보기 →
+	        </a>
+	    </div>
+	</div>
+	<% } %>
+    
     <div class="review-container">
-        <!-- 영화 정보 섹션 -->
         <div class="movie-section">
-            <% if (movieImg != null) { %>
-                <img src="<%= movieImg %>" class="movie-poster" alt="영화 포스터">
-            <% } %>
+            <div class="movie-poster">
+                <img src="<%= review.getMovieImg() != null ? review.getMovieImg() : "../img/default_movie.png" %>" alt="영화 포스터">
+            </div>
             <div class="movie-info">
                 <div class="movie-title"><%= review.getMovieTitle() %></div>
-                <div class="rating-display">
-                    <span>⭐</span>
-                    <span><%= review.getRating() %> / 5</span>
-                </div>
-                <div class="review-meta">
-                    <span>작성자: <%= review.getUserid() %></span>
-                    <span>작성일: <%= review.getCreatedAt() %></span>
+                <div class="rating">⭐ <%= review.getRating() %> / 5</div>
+                <div class="review-meta">작성일: <%= review.getCreatedAt() %></div>
+                
+                <div class="review-info-box">
+                    <div class="info-row">
+                        <span>리뷰 번호: <%= review.getId() %></span>
+                        <span>영화 ID: <%= review.getMovieId() %></span>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <!-- 리뷰 정보 -->
-        <div class="review-info-box">
-            <div class="info-row">
-                <span class="info-label">리뷰 번호:</span>
-                <span class="info-value"><%= review.getId() %></span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">영화 ID:</span>
-                <span class="info-value"><%= review.getMovieId() %></span>
-            </div>
-        </div>
-        
-        <!-- 리뷰 제목 -->
         <div class="review-title">
             <%= review.getTitle() %>
         </div>
         
-        <!-- 리뷰 내용 -->
         <div class="review-content">
 <%= review.getContent() %>
         </div>
     </div>
     
     <div class="action-buttons">
-        <a href="admin-review.do" class="btn btn-back">← 목록으로</a>
-        <button class="btn btn-delete" onclick="deleteReview()">🗑️ 삭제</button>
-    </div>
+	    <% 
+	        String backUrl;
+	        if (isFromProfile) {
+	            // 프로필로 복귀 링크 생성
+	            backUrl = "admin-member-detail.do?userid=" + profileUserid;
+	            
+	            // 프로필이 게시글에서 왔다면 게시글 정보 전달
+	            if ("true".equals(fromBoard) && boardId != null) {
+	                backUrl += "&fromBoard=true&boardId=" + boardId;
+	            }
+	            // 프로필이 다른 리뷰에서 왔다면 원래 리뷰 정보 전달
+	            else if ("true".equals(fromReview) && originalReviewId != null) {
+	                backUrl += "&fromReview=true&reviewId=" + originalReviewId;
+	            }
+	    %>
+	        <a href="<%= backUrl %>" class="btn btn-back">← 프로필로 돌아가기</a>
+	        <button class="btn btn-delete" onclick="deleteReview()">🗑️ 삭제</button>
+	    <% } else {
+	            // 리뷰 관리에서 온 경우 목록으로
+	            backUrl = "admin-review.do";
+	    %>
+	        <a href="<%= backUrl %>" class="btn btn-back">← 목록으로</a>
+	        <button class="btn btn-delete" onclick="deleteReview()">🗑️ 삭제</button>
+	    <% } %>
+	</div>
 </div>
 
 </body>

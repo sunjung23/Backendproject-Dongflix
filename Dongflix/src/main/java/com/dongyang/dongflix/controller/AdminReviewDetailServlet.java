@@ -2,6 +2,7 @@ package com.dongyang.dongflix.controller;
 
 import java.io.IOException;
 
+import com.dongyang.dongflix.dao.MemberDAO;
 import com.dongyang.dongflix.dao.ReviewDAO;
 import com.dongyang.dongflix.dto.MemberDTO;
 import com.dongyang.dongflix.dto.ReviewDTO;
@@ -23,7 +24,7 @@ public class AdminReviewDetailServlet extends HttpServlet {
         HttpSession session = request.getSession();
         MemberDTO adminUser = (MemberDTO) session.getAttribute("adminUser");
         if (adminUser == null || !"admin".equals(adminUser.getGrade())) {
-            response.sendRedirect("/admin/admin-login.jsp");
+            response.sendRedirect("admin-login.jsp");
             return;
         }
 
@@ -37,15 +38,20 @@ public class AdminReviewDetailServlet extends HttpServlet {
         int reviewId = Integer.parseInt(reviewIdStr);
 
         // 리뷰 조회
-        ReviewDAO dao = new ReviewDAO();
-        ReviewDTO review = dao.getReviewById(reviewId);
+        ReviewDAO reviewDao = new ReviewDAO();
+        ReviewDTO review = reviewDao.getReviewById(reviewId);  // 메서드 이름 수정
 
         if (review == null) {
             response.sendRedirect("admin-review.do");
             return;
         }
 
+        // 작성자 정보 조회
+        MemberDAO memberDao = new MemberDAO();
+        MemberDTO author = memberDao.getMember(review.getUserid());
+
         request.setAttribute("review", review);
+        request.setAttribute("author", author);
         request.getRequestDispatcher("/admin/admin-review-detail.jsp").forward(request, response);
     }
 }

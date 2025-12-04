@@ -27,6 +27,12 @@
     int likeCount = likedMovies != null ? likedMovies.size() : 0;
     int reviewCount = reviews != null ? reviews.size() : 0;
     int boardCount = myBoards != null ? myBoards.size() : 0;
+    
+ 	// 어디서 왔는지 확인
+    String fromBoard = request.getParameter("fromBoard");
+    String fromReview = request.getParameter("fromReview");
+    String boardId = request.getParameter("boardId");
+    String reviewId = request.getParameter("reviewId");
 %>
 
 <!DOCTYPE html>
@@ -451,10 +457,25 @@ body {
 <div class="detail-container">
 
     <!-- 상단 헤더 -->
-    <div class="detail-header">
-        <h2>회원 상세 정보</h2>
-        <a href="<%=request.getContextPath()%>/admin/admin-member.do" class="back-btn">← 목록으로</a>
-    </div>
+	<div class="detail-header">
+	    <h2>회원 상세 정보</h2>
+	    <% 
+	        String backUrl = request.getContextPath() + "/admin/admin-member.do";
+	        String backText = "← 목록으로";
+	        
+	        // 게시글에서 온 경우
+	        if ("true".equals(fromBoard) && boardId != null) {
+	            backUrl = request.getContextPath() + "/admin/admin-board-detail.do?boardId=" + boardId;
+	            backText = "← 게시글로 돌아가기";
+	        } 
+	        // 리뷰에서 온 경우
+	        else if ("true".equals(fromReview) && reviewId != null) {
+	            backUrl = request.getContextPath() + "/admin/admin-review-detail.do?reviewId=" + reviewId;
+	            backText = "← 리뷰로 돌아가기";
+	        }
+	    %>
+	    <a href="<%= backUrl %>" class="back-btn"><%= backText %></a>
+	</div>
 
     <!-- 프로필 -->
     <div class="profile-section">
@@ -581,40 +602,52 @@ body {
     <% } %>
 
     <!-- 작성한 리뷰 -->
-    <div class="section-header">
-        <div class="section-title">작성한 리뷰</div>
-        <div class="section-badge">총 <%= reviewCount %>개</div>
-    </div>
-
-    <% if (reviews == null || reviews.isEmpty()) { %>
-
-        <p style="color:#999;">아직 리뷰가 없습니다.</p>
-
-    <% } else { %>
-
-        <% for (ReviewDTO r : reviews) { %>
-            <a href="<%=request.getContextPath()%>/admin/admin-review-detail.do?reviewId=<%= r.getId() %>" style="text-decoration:none;">
-                <div class="review-card">
-                    <img src="<%= r.getMovieImg() != null ? r.getMovieImg() : "../img/default_movie.png" %>">
-                    <div class="review-info">
-                        <div class="movie-title"><%= r.getMovieTitle() %></div>
-                        <div class="rating-date">
-                            ⭐ <%= r.getRating() %>점 | <%= r.getCreatedAt() %>
-                        </div>
-                        <div class="content-preview"><%= r.getContent() %></div>
-                    </div>
-                </div>
-            </a>
-        <% } %>
-
-        <div class="avg-card">
-            <span>⭐ 평균 평점</span>
-            <strong><%= String.format("%.2f", avgRating) %> / 5.0</strong>
-        </div>
-
-    <% } %>
-
-    <!-- 작성한 게시글 -->
+	<div class="section-header">
+	    <div class="section-title">작성한 리뷰</div>
+	    <div class="section-badge">총 <%= reviewCount %>개</div>
+	</div>
+	
+	<% if (reviews == null || reviews.isEmpty()) { %>
+	
+	    <p style="color:#999;">아직 리뷰가 없습니다.</p>
+	
+	<% } else { %>
+	
+	    <% for (ReviewDTO r : reviews) { 
+	        // 리뷰 링크 생성 - 프로필이 어디서 왔는지 정보 유지
+	        String reviewLink = request.getContextPath() + "/admin/admin-review-detail.do?reviewId=" + r.getId() + "&fromProfile=true&userid=" + user.getUserid();
+	        
+	        // 게시글에서 프로필로 온 경우, 리뷰에도 게시글 정보 전달
+	        if ("true".equals(fromBoard) && boardId != null) {
+	            reviewLink += "&fromBoard=true&boardId=" + boardId;
+	        }
+	        // 리뷰에서 프로필로 온 경우, 다른 리뷰에도 원래 리뷰 정보 전달
+	        else if ("true".equals(fromReview) && reviewId != null) {
+	            reviewLink += "&fromReview=true&originalReviewId=" + reviewId;
+	        }
+	    %>
+	        <a href="<%= reviewLink %>" style="text-decoration:none;">
+	            <div class="review-card">
+	                <img src="<%= r.getMovieImg() != null ? r.getMovieImg() : "../img/default_movie.png" %>">
+	                <div class="review-info">
+	                    <div class="movie-title"><%= r.getMovieTitle() %></div>
+	                    <div class="rating-date">
+	                        ⭐ <%= r.getRating() %>점 | <%= r.getCreatedAt() %>
+	                    </div>
+	                    <div class="content-preview"><%= r.getContent() %></div>
+	                </div>
+	            </div>
+	        </a>
+	    <% } %>
+	
+	    <div class="avg-card">
+	        <span>⭐ 평균 평점</span>
+	        <strong><%= String.format("%.2f", avgRating) %> / 5.0</strong>
+	    </div>
+	
+	<% } %>
+	
+	<!-- 작성한 게시글 -->
 	<div class="section-header">
 	    <div class="section-title">작성한 게시글</div>
 	    <div class="section-badge">총 <%= boardCount %>개</div>
@@ -627,8 +660,20 @@ body {
 	<% } else { %>
 	
 	    <div class="board-list">
-	        <% for (BoardDTO b : myBoards) { %>
-	            <a href="<%=request.getContextPath()%>/admin/admin-board-detail.do?boardId=<%= b.getBoardId() %>&fromProfile=true&userid=<%= user.getUserid() %>" style="text-decoration:none;">
+	        <% for (BoardDTO b : myBoards) { 
+	            // 게시글 링크 생성 - 프로필이 어디서 왔는지 정보 유지
+	            String boardLink = request.getContextPath() + "/admin/admin-board-detail.do?boardId=" + b.getBoardId() + "&fromProfile=true&userid=" + user.getUserid();
+	            
+	            // 리뷰에서 프로필로 온 경우, 게시글에도 리뷰 정보 전달
+	            if ("true".equals(fromReview) && reviewId != null) {
+	                boardLink += "&fromReview=true&reviewId=" + reviewId;
+	            }
+	            // 게시글에서 프로필로 온 경우, 다른 게시글에도 원래 게시글 정보 전달
+	            else if ("true".equals(fromBoard) && boardId != null) {
+	                boardLink += "&fromBoard=true&originalBoardId=" + boardId;
+	            }
+	        %>
+	            <a href="<%= boardLink %>" style="text-decoration:none;">
 	                <div class="board-card">
 	                    <div class="board-title"><%= b.getTitle() %></div>
 	                    <div class="board-meta">
@@ -643,8 +688,8 @@ body {
 	            </a>
 	        <% } %>
 	    </div>
-	
-	<% } %>
+
+<% } %>
 
 </div>
 </div>

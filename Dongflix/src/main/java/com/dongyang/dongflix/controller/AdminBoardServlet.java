@@ -55,24 +55,50 @@ public class AdminBoardServlet extends HttpServlet {
         HttpSession session = request.getSession();
         MemberDTO adminUser = (MemberDTO) session.getAttribute("adminUser");
         if (adminUser == null || !"admin".equals(adminUser.getGrade())) {
-            response.sendRedirect("/admin/admin-login.jsp");
+            response.sendRedirect("admin-login.jsp");
             return;
         }
 
         String action = request.getParameter("action");
-        
-        if ("delete".equals(action)) {
-            int boardId = Integer.parseInt(request.getParameter("boardId"));
-            BoardDAO dao = new BoardDAO();
-            dao.delete(boardId);
-        }
 
-        // 삭제 후 목록으로 리다이렉트
-        String category = request.getParameter("category");
-        if (category != null && !category.isEmpty()) {
-            response.sendRedirect("admin-board.do?category=" + category);
-        } else {
-            response.sendRedirect("admin-board.do");
+        if ("delete".equals(action)) {
+            String boardIdStr = request.getParameter("boardId");
+            String category = request.getParameter("category");
+            
+            // 프로필에서 온 경우 확인
+            String fromProfile = request.getParameter("fromProfile");
+            String profileUserid = request.getParameter("profileUserid");
+            String fromBoard = request.getParameter("fromBoard");
+            String originalBoardId = request.getParameter("originalBoardId");
+            String fromReview = request.getParameter("fromReview");
+            String reviewId = request.getParameter("reviewId");
+
+            if (boardIdStr != null) {
+                int boardId = Integer.parseInt(boardIdStr);
+                BoardDAO boardDao = new BoardDAO();
+                boardDao.delete(boardId);
+            }
+
+            // 리다이렉트 URL 결정
+            String redirectUrl = "admin-board.do";
+            
+            if ("true".equals(fromProfile) && profileUserid != null) {
+                // 프로필에서 온 경우 프로필로 복귀
+                redirectUrl = "admin-member-detail.do?userid=" + profileUserid;
+                
+                if ("true".equals(fromBoard) && originalBoardId != null) {
+                    redirectUrl += "&fromBoard=true&boardId=" + originalBoardId;
+                } else if ("true".equals(fromReview) && reviewId != null) {
+                    redirectUrl += "&fromReview=true&reviewId=" + reviewId;
+                }
+            } else {
+                // 게시판 목록으로
+                if (category != null && !category.isEmpty() && !"all".equals(category)) {
+                    redirectUrl += "?category=" + category;
+                }
+            }
+            
+            response.sendRedirect(redirectUrl);
         }
     }
 }
