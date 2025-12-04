@@ -3,8 +3,10 @@ package com.dongyang.dongflix.controller;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import com.dongyang.dongflix.DBConnection;
+import com.dongyang.dongflix.dao.LikeMovieDAO;
 import com.dongyang.dongflix.dto.MemberDTO;
 
 import jakarta.servlet.ServletException;
@@ -29,8 +31,7 @@ public class WishAddServlet extends HttpServlet {
             return;
         }
 
-        // MemberDTO → user_id 가져오기
-        String userid = user.getUserid();
+        String userId = user.getUserid();
 
         int movieId = Integer.parseInt(request.getParameter("movie_id"));
         String movieTitle = request.getParameter("movie_title");
@@ -38,21 +39,46 @@ public class WishAddServlet extends HttpServlet {
 
         try (Connection conn = DBConnection.getConnection()) {
 
-            String sql = "INSERT INTO wish (user_id, movie_id, movie_title, poster_path) VALUES (?, ?, ?, ?)";
+            // 1️⃣ 이미 찜한 영화인지 확인
+            String checkSql = "SELECT COUNT(*) FROM wish WHERE user_id = ? AND movie_id = ?";
+            PreparedStatement checkPs = conn.prepareStatement(checkSql);
+            checkPs.setString(1, userId);
+            checkPs.setInt(2, movieId);
 
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, userid);
-            ps.setInt(2, movieId);
-            ps.setString(3, movieTitle);
-            ps.setString(4, poster);
+            ResultSet rs = checkPs.executeQuery();
+            rs.next();
+            int count = rs.getInt(1);
 
-            ps.executeUpdate();
-            System.out.println(">>> Wish Insert Success!!");
+            if (count > 0) {
+                // 2️⃣ 이미 존재 → DELETE(찜 취소)
+                String deleteSql = "DELETE FROM wish WHERE user_id = ? AND movie_id = ?";
+                PreparedStatement del = conn.prepareStatement(deleteSql);
+                del.setString(1, userId);
+                del.setInt(2, movieId);
+                del.executeUpdate();
+
+                System.out.println(">>> Wish Removed!");
+
+            } else {
+                // 3️⃣ 존재하지 않음 → INSERT(찜 추가)
+                String insertSql =
+                    "INSERT INTO wish (user_id, movie_id, movie_title, poster_path) VALUES (?, ?, ?, ?)";
+
+                PreparedStatement ins = conn.prepareStatement(insertSql);
+                ins.setString(1, userId);
+                ins.setInt(2, movieId);
+                ins.setString(3, movieTitle);
+                ins.setString(4, poster);
+                ins.executeUpdate();
+
+                System.out.println(">>> Wish Added!");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        // 원래 페이지로 리다이렉트
         response.sendRedirect("movieDetail?movieId=" + movieId);
     }
 }

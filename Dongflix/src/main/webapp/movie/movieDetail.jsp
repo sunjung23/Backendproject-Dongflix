@@ -1,3 +1,4 @@
+<%@ include file="/common/header.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="com.dongyang.dongflix.model.TMDBmovie" %>
 <%@ page import="java.util.List" %>
@@ -12,7 +13,7 @@
     }
 
     List<ReviewDTO> reviewList = (List<ReviewDTO>) request.getAttribute("reviewList");
-    String loginUser = (String) session.getAttribute("userid");
+    String detailLoginUser = (String) session.getAttribute("userid");
 %>
 
 <!DOCTYPE html>
@@ -54,7 +55,13 @@
 <div class="detail-banner" style="background-image: url('<%= movie.getBackdropUrl() %>')">
     <div class="detail-banner-content">
         <h1><%= movie.getTitle() %></h1>
-        <p>⭐ 평점: <%= movie.getRating() %></p>
+        <p>⭐ TMDB 평균 평점: <%= movie.getRating() %></p>
+        <p>⭐ DONGFLIX 평균 평점: 
+	    <%= request.getAttribute("avgRating") != null 
+	        ? String.format("%.1f", request.getAttribute("avgRating")) 
+	        : "0.0" %>
+	    (<%= request.getAttribute("reviewCount") %>명 참여)
+		</p>
         <p>📅 개봉일: <%= movie.getReleaseDate() %></p>
     </div>
 </div>
@@ -73,7 +80,13 @@
             <input type="hidden" name="movie_title" value="<%= movie.getTitle() %>" />
             <input type="hidden" name="poster_path" value="<%= movie.getPosterPath() %>" />
 
-            <button type="submit" class="wish-btn">❤️ 찜하기</button>
+			<button type="submit" 
+			        class="wish-btn <%= (Boolean.TRUE.equals(request.getAttribute("isWished"))) ? "active" : "" %>">
+			
+			    <%= (Boolean.TRUE.equals(request.getAttribute("isWished"))) 
+			            ? "찜 취소" 
+			            : "❤️ 찜하기" %>
+			</button>
         </form>
 
         <a href="indexMovie" class="back-btn">← 메인으로 돌아가기</a>
@@ -105,7 +118,8 @@
 
                 <hr>
 
-                <% if (loginUser != null && r.getUserid().equals(loginUser)) { %>
+                <% if (detailLoginUser != null && r.getUserid().equals(detailLoginUser
+                		)) { %>
                     <button onclick="openEditForm('<%= r.getId() %>', '<%= r.getRating() %>', '<%= r.getContent() %>')">
                         ✏ 수정
                     </button>
@@ -127,7 +141,7 @@
     </div>
 
     <!-- 리뷰 작성 버튼 -->
-    <% if (loginUser != null) { %>
+    <% if (detailLoginUser != null) { %>
         <button class="review-write-btn" onclick="toggleReviewForm()">
             ✏ 리뷰 작성하기
         </button>

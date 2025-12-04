@@ -22,6 +22,7 @@ public class LoginServlet extends HttpServlet {
 
         String userid = request.getParameter("userid");
         String password = request.getParameter("password");
+        String redirect = request.getParameter("redirect");
 
         MemberDAO dao = new MemberDAO();
         MemberDTO user = dao.login(userid, password);
@@ -29,10 +30,14 @@ public class LoginServlet extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("loginUser", user);
-            
             session.setAttribute("userid", user.getUserid());
 
-            response.sendRedirect("indexMovie");
+            if (redirect != null && !redirect.isEmpty()) {
+                response.sendRedirect(redirect);
+            } else {
+                response.sendRedirect("indexMovie");
+            }
+
         } else {
             response.setContentType("text/html; charset=UTF-8");
             response.getWriter().println("<script>");
