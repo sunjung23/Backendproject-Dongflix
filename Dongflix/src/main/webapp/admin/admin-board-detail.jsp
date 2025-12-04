@@ -18,6 +18,12 @@
     String profileUserid = request.getParameter("userid");
     boolean isFromProfile = "true".equals(fromProfile) && profileUserid != null;
     
+    // 프로필이 어디서 왔는지 확인 (다른 게시글 or 리뷰)
+    String fromBoard = request.getParameter("fromBoard");
+    String originalBoardId = request.getParameter("originalBoardId");
+    String fromReview = request.getParameter("fromReview");
+    String reviewId = request.getParameter("reviewId");
+    
     if (board == null) {
         response.sendRedirect("admin-board.do");
         return;
@@ -332,49 +338,93 @@
         }
     </style>
     <script>
-        function deleteBoard() {
-            if (confirm('정말 이 게시글을 삭제하시겠습니까?\n삭제된 게시글은 복구할 수 없습니다.')) {
-                var form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '<%= request.getContextPath() %>/admin/admin-board.do';
-                
-                var actionInput = document.createElement('input');
-                actionInput.type = 'hidden';
-                actionInput.name = 'action';
-                actionInput.value = 'delete';
-                
-                var boardIdInput = document.createElement('input');
-                boardIdInput.type = 'hidden';
-                boardIdInput.name = 'boardId';
-                boardIdInput.value = '<%= board.getBoardId() %>';
-                
-                var categoryInput = document.createElement('input');
-                categoryInput.type = 'hidden';
-                categoryInput.name = 'category';
-                categoryInput.value = '<%= category != null ? category : "all" %>';
-                
-                form.appendChild(actionInput);
-                form.appendChild(boardIdInput);
-                form.appendChild(categoryInput);
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-        
-        function changeGrade() {
-            var select = document.getElementById('gradeSelect');
-            var newGrade = select.value;
-            
-            if (!newGrade) {
-                alert('등급을 선택해주세요.');
-                return;
-            }
-            
-            if (confirm('<%= board.getUserid() %> 회원의 등급을 ' + newGrade.toUpperCase() + '(으)로 변경하시겠습니까?')) {
-                document.getElementById('gradeForm').submit();
-            }
-        }
-    </script>
+	    function deleteBoard() {
+	        if (confirm('정말 이 게시글을 삭제하시겠습니까?\n삭제된 게시글은 복구할 수 없습니다.')) {
+	            var form = document.createElement('form');
+	            form.method = 'POST';
+	            form.action = '<%= request.getContextPath() %>/admin/admin-board.do';
+	            
+	            var actionInput = document.createElement('input');
+	            actionInput.type = 'hidden';
+	            actionInput.name = 'action';
+	            actionInput.value = 'delete';
+	            
+	            var boardIdInput = document.createElement('input');
+	            boardIdInput.type = 'hidden';
+	            boardIdInput.name = 'boardId';
+	            boardIdInput.value = '<%= board.getBoardId() %>';
+	            
+	            var categoryInput = document.createElement('input');
+	            categoryInput.type = 'hidden';
+	            categoryInput.name = 'category';
+	            categoryInput.value = '<%= category != null ? category : "all" %>';
+	            
+	            <% if (isFromProfile) { %>
+	                // 프로필에서 온 경우 프로필로 돌아가기
+	                var fromProfileInput = document.createElement('input');
+	                fromProfileInput.type = 'hidden';
+	                fromProfileInput.name = 'fromProfile';
+	                fromProfileInput.value = 'true';
+	                
+	                var profileUseridInput = document.createElement('input');
+	                profileUseridInput.type = 'hidden';
+	                profileUseridInput.name = 'profileUserid';
+	                profileUseridInput.value = '<%= profileUserid %>';
+	                
+	                form.appendChild(fromProfileInput);
+	                form.appendChild(profileUseridInput);
+	                
+	                <% if ("true".equals(fromBoard) && originalBoardId != null) { %>
+	                    var fromBoardInput = document.createElement('input');
+	                    fromBoardInput.type = 'hidden';
+	                    fromBoardInput.name = 'fromBoard';
+	                    fromBoardInput.value = 'true';
+	                    
+	                    var originalBoardIdInput = document.createElement('input');
+	                    originalBoardIdInput.type = 'hidden';
+	                    originalBoardIdInput.name = 'originalBoardId';
+	                    originalBoardIdInput.value = '<%= originalBoardId %>';
+	                    
+	                    form.appendChild(fromBoardInput);
+	                    form.appendChild(originalBoardIdInput);
+	                <% } else if ("true".equals(fromReview) && reviewId != null) { %>
+	                    var fromReviewInput = document.createElement('input');
+	                    fromReviewInput.type = 'hidden';
+	                    fromReviewInput.name = 'fromReview';
+	                    fromReviewInput.value = 'true';
+	                    
+	                    var reviewIdInput = document.createElement('input');
+	                    reviewIdInput.type = 'hidden';
+	                    reviewIdInput.name = 'reviewId';
+	                    reviewIdInput.value = '<%= reviewId %>';
+	                    
+	                    form.appendChild(fromReviewInput);
+	                    form.appendChild(reviewIdInput);
+	                <% } %>
+	            <% } %>
+	            
+	            form.appendChild(actionInput);
+	            form.appendChild(boardIdInput);
+	            form.appendChild(categoryInput);
+	            document.body.appendChild(form);
+	            form.submit();
+	        }
+	    }
+	    
+	    function changeGrade() {
+	        var select = document.getElementById('gradeSelect');
+	        var newGrade = select.value;
+	        
+	        if (!newGrade) {
+	            alert('등급을 선택해주세요.');
+	            return;
+	        }
+	        
+	        if (confirm('<%= board.getUserid() %> 회원의 등급을 ' + newGrade.toUpperCase() + '(으)로 변경하시겠습니까?')) {
+	            document.getElementById('gradeForm').submit();
+	        }
+	    }
+</script>
 </head>
 <body>
 
@@ -418,7 +468,7 @@
 	                <% } %>
 	            </div>
 	        </div>
-	        <a href="admin-member-detail.do?userid=<%= board.getUserid() %>" class="btn-profile">
+	        <a href="admin-member-detail.do?userid=<%= board.getUserid() %>&fromBoard=true&boardId=<%= board.getBoardId() %>" class="btn-profile">
 	            프로필 보기 →
 	        </a>
 	    </div>
@@ -472,24 +522,34 @@
     </div>
     
     <div class="action-buttons">
-        <% 
-            String backUrl;
-            if (isFromProfile) {
-                // 프로필에서 온 경우 프로필로 복귀
-                backUrl = "admin-member-detail.do?userid=" + profileUserid;
-        %>
-            <a href="<%= backUrl %>" class="btn btn-back">← 프로필로 돌아가기</a>
-        <% } else {
-                // 게시판 관리에서 온 경우 목록으로
-                backUrl = "admin-board.do";
-                if (category != null && !category.isEmpty() && !"all".equals(category)) {
-                    backUrl += "?category=" + category;
-                }
-        %>
-            <a href="<%= backUrl %>" class="btn btn-back">← 목록으로</a>
-            <button class="btn btn-delete" onclick="deleteBoard()">🗑️ 삭제</button>
-        <% } %>
-    </div>
+	    <% 
+	        String backUrl;
+	        if (isFromProfile) {
+	            // 프로필로 복귀 링크 생성
+	            backUrl = "admin-member-detail.do?userid=" + profileUserid;
+	            
+	            // 프로필이 다른 게시글에서 왔다면 원래 게시글 정보 전달
+	            if ("true".equals(fromBoard) && originalBoardId != null) {
+	                backUrl += "&fromBoard=true&boardId=" + originalBoardId;
+	            }
+	            // 프로필이 리뷰에서 왔다면 리뷰 정보 전달
+	            else if ("true".equals(fromReview) && reviewId != null) {
+	                backUrl += "&fromReview=true&reviewId=" + reviewId;
+	            }
+	    %>
+	        <a href="<%= backUrl %>" class="btn btn-back">← 프로필로 돌아가기</a>
+	        <button class="btn btn-delete" onclick="deleteBoard()">🗑️ 삭제</button>
+	    <% } else {
+	            // 게시판 관리에서 온 경우 목록으로
+	            backUrl = "admin-board.do";
+	            if (category != null && !category.isEmpty() && !"all".equals(category)) {
+	                backUrl += "?category=" + category;
+	            }
+	    %>
+	        <a href="<%= backUrl %>" class="btn btn-back">← 목록으로</a>
+	        <button class="btn btn-delete" onclick="deleteBoard()">🗑️ 삭제</button>
+	    <% } %>
+	</div>
 </div>
 
 </body>
