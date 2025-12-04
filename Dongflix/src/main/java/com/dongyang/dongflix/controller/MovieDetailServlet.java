@@ -9,7 +9,9 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.dongyang.dongflix.dao.LikeMovieDAO;
 import com.dongyang.dongflix.dao.ReviewDAO;
+import com.dongyang.dongflix.dto.MemberDTO;
 import com.dongyang.dongflix.dto.ReviewDTO;
 import com.dongyang.dongflix.model.TMDBmovie;
 
@@ -18,6 +20,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/movieDetail")
 public class MovieDetailServlet extends HttpServlet {
@@ -45,8 +48,31 @@ public class MovieDetailServlet extends HttpServlet {
             List<ReviewDTO> reviewList = reviewDAO.getReviewsByMovie(movie.getId());
             request.setAttribute("reviewList", reviewList);
             
-            request.getRequestDispatcher("/movie/movieDetail.jsp").forward(request, response);
+            double avgRating = 0;
+            if (reviewList != null && !reviewList.isEmpty()) {
+                double sum = 0;
+                for (ReviewDTO r : reviewList) {
+                    sum += r.getRating();
+                }
+                avgRating = sum / reviewList.size();
+            }
 
+            request.setAttribute("avgRating", avgRating);
+            request.setAttribute("reviewCount", reviewList.size());
+            
+            HttpSession session = request.getSession();
+            MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
+
+            boolean isWished = false;
+
+            if (loginUser != null) {
+                LikeMovieDAO dao = new LikeMovieDAO();
+                isWished = dao.isWished(loginUser.getUserid(), movie.getId());
+            }
+
+            request.setAttribute("isWished", isWished);
+
+            request.getRequestDispatcher("/movie/movieDetail.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("indexMovie");

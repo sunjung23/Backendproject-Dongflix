@@ -40,4 +40,24 @@ public class LikeMovieDAO {
 
         return list;
     }
+    
+    public boolean isWished(String userId, int movieId) {
+        String sql = "SELECT COUNT(*) FROM wish WHERE user_id = ? AND movie_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, userId);
+            ps.setInt(2, movieId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
