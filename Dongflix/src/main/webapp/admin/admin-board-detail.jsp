@@ -10,7 +10,13 @@
     }
     
     BoardDTO board = (BoardDTO) request.getAttribute("board");
+    MemberDTO author = (MemberDTO) request.getAttribute("author");
     String category = (String) request.getAttribute("category");
+    
+    // 프로필에서 넘어왔는지 확인
+    String fromProfile = request.getParameter("fromProfile");
+    String profileUserid = request.getParameter("userid");
+    boolean isFromProfile = "true".equals(fromProfile) && profileUserid != null;
     
     if (board == null) {
         response.sendRedirect("admin-board.do");
@@ -25,6 +31,9 @@
     } else if ("secret".equals(board.getCategory())) {
         categoryName = "비밀게시판";
     }
+    
+    // 등급 변경 성공 메시지
+    String success = request.getParameter("success");
 %>
 
 <!DOCTYPE html>
@@ -33,6 +42,7 @@
     <meta charset="UTF-8">
     <title>게시글 상세보기 - DONGFLIX</title>
     <style>
+        /* 기존 스타일 그대로 유지 */
         * {
             margin: 0;
             padding: 0;
@@ -89,6 +99,135 @@
         .detail-header h2 {
             font-size: 28px;
             color: #2036CA;
+        }
+        
+        /* 성공 메시지 */
+        .success-message {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        /* 작성자 프로필 박스 */
+        .author-box {
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+        }
+        
+        .author-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .author-icon {
+            font-size: 24px;
+        }
+        
+        .author-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .author-name {
+		    font-size: 13px;
+		    font-weight: normal;
+		    color: #999;
+		}
+		
+		.author-id {
+		    font-size: 17px;
+		    font-weight: bold;
+		    color: #fff;
+		}
+        
+        .current-grade {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        
+        .grade-bronze { background-color: rgba(205,127,50,0.3); color: #e2b77c; }
+        .grade-silver { background-color: rgba(192,192,192,0.3); color: #e8e8e8; }
+        .grade-gold { background-color: rgba(255,215,0,0.3); color: #ffe680; }
+        .grade-admin { background-color: rgba(32,54,202,0.3); color: #6b8aff; }
+        
+        .btn-profile {
+            padding: 8px 16px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+            transition: .2s;
+        }
+        
+        .btn-profile:hover {
+            background-color: #666;
+        }
+        
+        /* 등급 변경 폼 */
+        .grade-change-section {
+            border-top: 1px solid #333;
+            padding-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .grade-label {
+            font-size: 14px;
+            color: #b3b3b3;
+        }
+        
+        .grade-select {
+            padding: 8px 12px;
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .grade-select:focus {
+            outline: none;
+            border-color: #2036CA;
+        }
+        
+        .btn-change-grade {
+            padding: 8px 16px;
+            background-color: #2036CA;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: .2s;
+        }
+        
+        .btn-change-grade:hover {
+            background-color: #1a2ba3;
         }
         
         .board-container {
@@ -221,6 +360,20 @@
                 form.submit();
             }
         }
+        
+        function changeGrade() {
+            var select = document.getElementById('gradeSelect');
+            var newGrade = select.value;
+            
+            if (!newGrade) {
+                alert('등급을 선택해주세요.');
+                return;
+            }
+            
+            if (confirm('<%= board.getUserid() %> 회원의 등급을 ' + newGrade.toUpperCase() + '(으)로 변경하시겠습니까?')) {
+                document.getElementById('gradeForm').submit();
+            }
+        }
     </script>
 </head>
 <body>
@@ -242,13 +395,66 @@
         <h2>게시글 상세보기</h2>
     </div>
     
+    <!-- 등급 변경 성공 메시지 -->
+    <% if ("1".equals(success)) { %>
+        <div class="success-message">
+            ✅ 등급이 성공적으로 변경되었습니다!
+        </div>
+    <% } %>
+    
+    <!-- 작성자 프로필 박스 (프로필에서 온 경우 숨김) -->
+	<% if (!isFromProfile) { %>
+	<div class="author-box">
+	    <div class="author-header">
+	        <div class="author-info">
+	            <div class="author-icon">👤</div>
+	            <div class="author-details">
+	                <div class="author-name">작성자</div>
+	                <div class="author-id"><%= board.getUserid() %></div>
+	                <% if (author != null) { %>
+	                    <span class="current-grade grade-<%= author.getGrade().toLowerCase() %>">
+	                        <%= author.getGrade().toUpperCase() %>
+	                    </span>
+	                <% } %>
+	            </div>
+	        </div>
+	        <a href="admin-member-detail.do?userid=<%= board.getUserid() %>" class="btn-profile">
+	            프로필 보기 →
+	        </a>
+	    </div>
+	    
+	    <!-- 등급 변경 폼 (등업 게시판일 때만 표시) -->
+	    <% if ("level".equals(board.getCategory()) && author != null && !"admin".equals(author.getGrade())) { %>
+	        <div class="grade-change-section">
+	            <span class="grade-label">등급 변경:</span>
+	            <form id="gradeForm" method="post" action="admin-board-detail.do" style="display:flex; align-items:center; gap:10px; flex:1;">
+	                <input type="hidden" name="action" value="changeGrade">
+	                <input type="hidden" name="userid" value="<%= board.getUserid() %>">
+	                <input type="hidden" name="boardId" value="<%= board.getBoardId() %>">
+	                <input type="hidden" name="category" value="<%= category != null ? category : "" %>">
+	                
+	                <select id="gradeSelect" name="grade" class="grade-select">
+	                    <option value="">등급 선택</option>
+	                    <option value="bronze" <%= "bronze".equals(author.getGrade()) ? "selected" : "" %>>Bronze</option>
+	                    <option value="silver" <%= "silver".equals(author.getGrade()) ? "selected" : "" %>>Silver</option>
+	                    <option value="gold" <%= "gold".equals(author.getGrade()) ? "selected" : "" %>>Gold</option>
+	                </select>
+	                
+	                <button type="button" class="btn-change-grade" onclick="changeGrade()">
+	                    변경
+	                </button>
+	            </form>
+	        </div>
+	    <% } %>
+	</div>
+	<% } %>
+    
     <div class="board-container">
         <div class="board-meta">
             <div class="meta-left">
                 <span class="category-badge category-<%= board.getCategory() %>">
                     <%= categoryName %>
                 </span>
-                <span class="board-info">작성자: <%= board.getUserid() %></span>
                 <span class="board-info">작성일: <%= board.getCreatedAt() %></span>
             </div>
             <div class="board-info">
@@ -267,13 +473,22 @@
     
     <div class="action-buttons">
         <% 
-            String backUrl = "admin-board.do";
-            if (category != null && !category.isEmpty() && !"all".equals(category)) {
-                backUrl += "?category=" + category;
-            }
+            String backUrl;
+            if (isFromProfile) {
+                // 프로필에서 온 경우 프로필로 복귀
+                backUrl = "admin-member-detail.do?userid=" + profileUserid;
         %>
-        <a href="<%= backUrl %>" class="btn btn-back">← 목록으로</a>
-        <button class="btn btn-delete" onclick="deleteBoard()">🗑️ 삭제</button>
+            <a href="<%= backUrl %>" class="btn btn-back">← 프로필로 돌아가기</a>
+        <% } else {
+                // 게시판 관리에서 온 경우 목록으로
+                backUrl = "admin-board.do";
+                if (category != null && !category.isEmpty() && !"all".equals(category)) {
+                    backUrl += "?category=" + category;
+                }
+        %>
+            <a href="<%= backUrl %>" class="btn btn-back">← 목록으로</a>
+            <button class="btn btn-delete" onclick="deleteBoard()">🗑️ 삭제</button>
+        <% } %>
     </div>
 </div>
 
