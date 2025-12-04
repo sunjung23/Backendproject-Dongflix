@@ -321,6 +321,7 @@ body {
     gap:14px;
     margin-bottom:14px;
     transition:.22s;
+    cursor:pointer;
 }
 
 .review-card:hover {
@@ -339,6 +340,12 @@ body {
 .review-info .movie-title {
     font-size:17px;
     font-weight:600;
+    color:#fff;
+    text-decoration:none;
+}
+
+.review-info .movie-title:hover {
+    color:#2036CA;
 }
 
 .review-info .rating-date {
@@ -382,6 +389,7 @@ body {
     padding:16px;
     border:1px solid #2a2a2a;
     transition:.22s;
+    cursor:pointer;
 }
 
 .board-card:hover {
@@ -391,7 +399,13 @@ body {
 .board-title {
     font-size:17px;
     font-weight:600;
-    color:#e8e8e8;
+    color:#fff;
+    text-decoration:none;
+    display:block;
+}
+
+.board-title:hover {
+    color:#2036CA;
 }
 
 .board-meta {
@@ -427,7 +441,8 @@ body {
     <div class="nav-links">
         <a href="<%=request.getContextPath()%>/admin/admin-dashboard.jsp">대시보드</a>
         <a href="<%=request.getContextPath()%>/admin/admin-member.do">회원관리</a>
-        <a href="<%=request.getContextPath()%>/admin/admin-post.do">게시글관리</a>
+        <a href="<%=request.getContextPath()%>/admin/admin-board.do">게시판관리</a>
+        <a href="<%=request.getContextPath()%>/admin/admin-review.do">리뷰관리</a>
         <a href="<%=request.getContextPath()%>/admin/admin-logout.do">로그아웃</a>
     </div>
 </div>
@@ -578,16 +593,18 @@ body {
     <% } else { %>
 
         <% for (ReviewDTO r : reviews) { %>
-            <div class="review-card">
-                <img src="<%= r.getMovieImg() != null ? r.getMovieImg() : "../img/default_movie.png" %>">
-                <div class="review-info">
-                    <div class="movie-title"><%= r.getMovieTitle() %></div>
-                    <div class="rating-date">
-                        ⭐ <%= r.getRating() %>점 | <%= r.getCreatedAt() %>
+            <a href="<%=request.getContextPath()%>/admin/admin-review-detail.do?reviewId=<%= r.getId() %>" style="text-decoration:none;">
+                <div class="review-card">
+                    <img src="<%= r.getMovieImg() != null ? r.getMovieImg() : "../img/default_movie.png" %>">
+                    <div class="review-info">
+                        <div class="movie-title"><%= r.getMovieTitle() %></div>
+                        <div class="rating-date">
+                            ⭐ <%= r.getRating() %>점 | <%= r.getCreatedAt() %>
+                        </div>
+                        <div class="content-preview"><%= r.getContent() %></div>
                     </div>
-                    <div class="content-preview"><%= r.getContent() %></div>
                 </div>
-            </div>
+            </a>
         <% } %>
 
         <div class="avg-card">
@@ -598,34 +615,36 @@ body {
     <% } %>
 
     <!-- 작성한 게시글 -->
-    <div class="section-header">
-        <div class="section-title">작성한 게시글</div>
-        <div class="section-badge">총 <%= boardCount %>개</div>
-    </div>
-
-    <% if (myBoards == null || myBoards.isEmpty()) { %>
-
-        <p style="color:#999;">아직 작성한 게시글이 없습니다.</p>
-
-    <% } else { %>
-
-        <div class="board-list">
-            <% for (BoardDTO b : myBoards) { %>
-                <div class="board-card">
-                    <div class="board-title"><%= b.getTitle() %></div>
-                    <div class="board-meta">
-                        📁 <%= b.getCategory() %> | 📅 <%= b.getCreatedAt() %>
-                    </div>
-                    <div class="board-preview">
-                        <%= b.getContent().length() > 80
-                            ? b.getContent().substring(0, 80) + "..."
-                            : b.getContent() %>
-                    </div>
-                </div>
-            <% } %>
-        </div>
-
-    <% } %>
+	<div class="section-header">
+	    <div class="section-title">작성한 게시글</div>
+	    <div class="section-badge">총 <%= boardCount %>개</div>
+	</div>
+	
+	<% if (myBoards == null || myBoards.isEmpty()) { %>
+	
+	    <p style="color:#999;">아직 작성한 게시글이 없습니다.</p>
+	
+	<% } else { %>
+	
+	    <div class="board-list">
+	        <% for (BoardDTO b : myBoards) { %>
+	            <a href="<%=request.getContextPath()%>/admin/admin-board-detail.do?boardId=<%= b.getBoardId() %>&fromProfile=true&userid=<%= user.getUserid() %>" style="text-decoration:none;">
+	                <div class="board-card">
+	                    <div class="board-title"><%= b.getTitle() %></div>
+	                    <div class="board-meta">
+	                        📁 <%= b.getCategory() %> | 📅 <%= b.getCreatedAt() %>
+	                    </div>
+	                    <div class="board-preview">
+	                        <%= b.getContent().length() > 80
+	                            ? b.getContent().substring(0, 80) + "..."
+	                            : b.getContent() %>
+	                    </div>
+	                </div>
+	            </a>
+	        <% } %>
+	    </div>
+	
+	<% } %>
 
 </div>
 </div>

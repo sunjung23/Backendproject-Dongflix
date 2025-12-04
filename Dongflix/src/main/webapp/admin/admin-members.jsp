@@ -217,40 +217,45 @@
                 </tr>
             </thead>
             <tbody>
-                <% for (MemberDTO m : members) { 
-                    // 관리자 본인인지 체크
-                    boolean isCurrentAdmin = m.getUserid().equals(adminUser.getUserid());
-                    // admin 등급인지 체크
-                    boolean isAdminGrade = "admin".equals(m.getGrade());
-                %>
-                <tr>
-                    <td><%= m.getUserid() %></td>
-                    <td><%= m.getUsername() %></td>
-                    <td>
-                        <span class="grade-badge grade-<%= m.getGrade().toLowerCase() %>">
-                            <%= m.getGrade().toUpperCase() %>
-                        </span>
-                    </td>
-                    <td>
-                        <% if (isCurrentAdmin || isAdminGrade) { %>
-                            <!-- 관리자 본인이거나 admin 등급인 경우 변경 불가 -->
-                            <span class="no-change">변경 불가</span>
-                        <% } else { %>
-                            <!-- 일반 회원인 경우만 등급 변경 가능 -->
-                            <select onchange="updateGrade('<%= m.getUserid() %>', this)">
-                                <option value="">등급 선택</option>
-                                <option value="bronze" <%= "bronze".equals(m.getGrade()) ? "selected" : "" %>>Bronze</option>
-                                <option value="silver" <%= "silver".equals(m.getGrade()) ? "selected" : "" %>>Silver</option>
-                                <option value="gold" <%= "gold".equals(m.getGrade()) ? "selected" : "" %>>Gold</option>
-                            </select>
-                        <% } %>
-                    </td>
-                    <td>
-                        <a href="admin-member-detail.do?userid=<%= m.getUserid() %>" class="btn-detail">상세보기</a>
-                    </td>
-                </tr>
-                <% } %>
-            </tbody>
+			    <% for (MemberDTO m : members) { 
+			        // 관리자 본인인지 체크
+			        boolean isCurrentAdmin = m.getUserid().equals(adminUser.getUserid());
+			        // admin 등급인지 체크
+			        boolean isAdminGrade = "admin".equals(m.getGrade());
+			    %>
+			    <tr>
+			        <td><%= m.getUserid() %></td>
+			        <td><%= m.getUsername() %></td>
+			        <td>
+			            <span class="grade-badge grade-<%= m.getGrade().toLowerCase() %>">
+			                <%= m.getGrade().toUpperCase() %>
+			            </span>
+			        </td>
+			        <td>
+			            <% if (isCurrentAdmin || isAdminGrade) { %>
+			                <!-- 관리자 본인이거나 admin 등급인 경우 변경 불가 -->
+			                <span class="no-change">변경 불가</span>
+			            <% } else { %>
+			                <!-- 일반 회원인 경우만 등급 변경 가능 -->
+			                <select onchange="updateGrade('<%= m.getUserid() %>', this)">
+			                    <option value="">등급 선택</option>
+			                    <option value="bronze" <%= "bronze".equals(m.getGrade()) ? "selected" : "" %>>Bronze</option>
+			                    <option value="silver" <%= "silver".equals(m.getGrade()) ? "selected" : "" %>>Silver</option>
+			                    <option value="gold" <%= "gold".equals(m.getGrade()) ? "selected" : "" %>>Gold</option>
+			                </select>
+			            <% } %>
+			        </td>
+			        <td>
+			            <!-- admin 등급이 아닌 경우만 상세보기 표시 -->
+			            <% if (!isAdminGrade) { %>
+			                <a href="admin-member-detail.do?userid=<%= m.getUserid() %>" class="btn-detail">상세보기</a>
+			            <% } else { %>
+			                <span style="color:#666; font-size:13px;"></span>
+			            <% } %>
+			        </td>
+			    </tr>
+			    <% } %>
+			</tbody>
         </table>
     </div>
 </div>
