@@ -12,7 +12,8 @@
         return;
     }
 
-    List<ReviewDTO> reviewList = (List<ReviewDTO>) request.getAttribute("reviewList");
+    List<ReviewDTO> topReviews = (List<ReviewDTO>) request.getAttribute("topReviews");
+    List<ReviewDTO> otherReviews = (List<ReviewDTO>) request.getAttribute("otherReviews");
     String detailLoginUser = (String) session.getAttribute("userid");
 %>
 
@@ -27,26 +28,188 @@
 
     <!-- ⭐ 별점용 CSS -->
     <style>
-        .star-rating {
-            font-size: 32px;
-            cursor: pointer;
-            color: #555;
-            margin-bottom: 10px;
-        }
-        .star-rating .star.selected {
-            color: #ffdf00;
-        }
-
-        /* 수정 모드 별점 */
-        .edit-star-rating .star {
-            font-size: 28px;
-            cursor: pointer;
-            color: #555;
-        }
-        .edit-star-rating .star.selected {
-            color: #ffdf00;
-        }
-    </style>
+	    .star-rating {
+	        font-size: 32px;
+	        cursor: pointer;
+	        color: #555;
+	        margin-bottom: 10px;
+	    }
+	    .star-rating .star.selected {
+	        color: #ffdf00;
+	    }
+	
+	    /* 수정 모드 별점 */
+	    .edit-star-rating .star {
+	        font-size: 28px;
+	        cursor: pointer;
+	        color: #555;
+	    }
+	    .edit-star-rating .star.selected {
+	        color: #ffdf00;
+	    }
+	
+	    /* 🔥 리뷰 아이템 개선 */
+	    .review-item {
+	        background-color: #1a1a1a;
+	        border: 1px solid #333;
+	        border-radius: 12px;
+	        padding: 20px;
+	        margin-bottom: 20px;
+	        transition: all 0.2s;
+	    }
+	
+	    .review-item:hover {
+	        border-color: #555;
+	        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+	    }
+	
+	    /* 리뷰 헤더 (작성자 + 별점 + 추천) */
+	    .review-header {
+	        display: flex;
+	        justify-content: space-between;
+	        align-items: center;
+	        margin-bottom: 15px;
+	        padding-bottom: 12px;
+	        border-bottom: 1px solid #2a2a2a;
+	    }
+	
+	    .review-author-info {
+	        display: flex;
+	        align-items: center;
+	        gap: 10px;
+	    }
+	
+	    .review-author-name {
+	        font-size: 16px;
+	        font-weight: bold;
+	        color: #fff;
+	    }
+	
+	    .review-rating {
+	        color: #ffdf00;
+	        font-size: 14px;
+	    }
+	
+	    .review-like-section {
+	        display: flex;
+	        align-items: center;
+	        gap: 8px;
+	    }
+	
+	    /* 추천 버튼 스타일 개선 */
+	    .like-btn {
+	        background: none;
+	        border: 1px solid #555;
+	        color: #999;
+	        padding: 8px 14px;
+	        border-radius: 6px;
+	        cursor: pointer;
+	        font-size: 14px;
+	        transition: all 0.2s;
+	        display: flex;
+	        align-items: center;
+	        gap: 6px;
+	    }
+	    
+	    .like-btn:hover {
+	        border-color: #e50914;
+	        color: #e50914;
+	        transform: translateY(-1px);
+	    }
+	    
+	    .like-btn.liked {
+	        background-color: #e50914;
+	        border-color: #e50914;
+	        color: white;
+	    }
+	    
+	    .like-btn.liked:hover {
+	        background-color: #f40612;
+	        border-color: #f40612;
+	    }
+	
+	    /* 리뷰 내용 */
+	    .review-content {
+	        font-size: 15px;
+	        line-height: 1.6;
+	        color: #ddd;
+	        margin-bottom: 15px;
+	        white-space: pre-wrap;
+	    }
+	
+	    /* 리뷰 하단 (날짜 + 버튼) */
+	    .review-footer {
+	        display: flex;
+	        justify-content: space-between;
+	        align-items: center;
+	    }
+	
+	    .review-date {
+	        font-size: 13px;
+	        color: #666;
+	    }
+	
+	    .review-actions {
+	        display: flex;
+	        gap: 8px;
+	    }
+	
+	    /* TOP 배지 */
+	    .top-badge {
+	        display: inline-block;
+	        background: linear-gradient(135deg, #ffd700, #ffed4e);
+	        color: #000;
+	        padding: 5px 12px;
+	        border-radius: 6px;
+	        font-size: 13px;
+	        font-weight: bold;
+	        margin-bottom: 12px;
+	        box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
+	    }
+	
+	    /* 구분선 */
+	    .review-divider {
+	        margin: 40px 0;
+	        border: none;
+	        border-top: 2px solid #2a2a2a;
+	        position: relative;
+	    }
+	
+	    .review-divider::after {
+	        content: "기타 리뷰";
+	        position: absolute;
+	        top: -12px;
+	        left: 50%;
+	        transform: translateX(-50%);
+	        background: #141414;
+	        padding: 0 20px;
+	        color: #888;
+	        font-size: 14px;
+	        font-weight: bold;
+	    }
+	
+	    /* 리뷰 액션 버튼 */
+	    .review-action-btn {
+	        background: none;
+	        border: 1px solid #555;
+	        color: #999;
+	        padding: 6px 12px;
+	        border-radius: 6px;
+	        cursor: pointer;
+	        font-size: 13px;
+	        transition: all 0.2s;
+	    }
+	
+	    .review-action-btn:hover {
+	        border-color: #2036CA;
+	        color: #2036CA;
+	    }
+	
+	    .review-action-btn.delete:hover {
+	        border-color: #e50914;
+	        color: #e50914;
+	    }
+	</style>
 </head>
 
 <body>
@@ -98,50 +261,148 @@
     <h3>💬 리뷰</h3>
 
     <div class="review-list">
-        <%
-            MemberDAO mdao = new MemberDAO();
-
-            if (reviewList != null && !reviewList.isEmpty()) {
-                for (ReviewDTO r : reviewList) {
-
-                    // 사용자 닉네임 가져오기 (없으면 자동 생성)
-                    String nickname = mdao.getOrCreateNickname(r.getUserid());
-        %>
-
-            <div class="review-item" id="review_<%= r.getId() %>">
-
-                <!-- ⭐ 닉네임 출력 -->
-                <p><strong><%= nickname %></strong> | ⭐ <%= r.getRating() %>점</p>
-
-                <p><%= r.getContent() %></p>
-                <p class="review-date"><%= r.getCreatedAt() %></p>
-
-                <hr>
-
-                <% if (detailLoginUser != null && r.getUserid().equals(detailLoginUser
-                		)) { %>
-						<button class="review-action-btn"
-						        onclick="openEditForm('<%= r.getId() %>', '<%= r.getRating() %>', '<%= r.getContent() %>')">
-						    ✏ 수정
-						</button>
-						
-						<button class="review-action-btn delete"
-						        onclick="deleteReview(<%= r.getId() %>, <%= movie.getId() %>)">
-						    🗑 삭제
-						</button>
-                <% } %>
-
-            </div>
-
-        <%
-                }
-            } else {
-        %>
-            <p>(아직 리뷰가 없습니다. 첫 리뷰를 작성해보세요!)</p>
-        <%
-            }
-        %>
-    </div>
+	    <%
+	        MemberDAO mdao = new MemberDAO();
+	
+	        // 🔥 TOP 5 리뷰 먼저 표시
+	        if (topReviews != null && !topReviews.isEmpty()) {
+	            for (int i = 0; i < topReviews.size(); i++) {
+	                ReviewDTO r = topReviews.get(i);
+	                String nickname = mdao.getOrCreateNickname(r.getUserid());
+	    %>
+	
+	        <div class="review-item" id="review_<%= r.getId() %>">
+	            
+	            <!-- TOP 배지 -->
+	            <% if (r.getLikeCount() > 0) { %>
+	                <div class="top-badge">🏆 TOP <%= i + 1 %></div>
+	            <% } %>
+	
+	            <!-- 리뷰 헤더 (작성자 + 별점 + 추천) -->
+	            <div class="review-header">
+	                <div class="review-author-info">
+	                    <span class="review-author-name"><%= nickname %></span>
+	                    <span class="review-rating">⭐ <%= r.getRating() %>점</span>
+	                </div>
+	                
+	                <div class="review-like-section">
+	                    <!-- 추천 버튼 -->
+	                    <% if (detailLoginUser != null) { %>
+	                        <button class="like-btn <%= r.isLiked() ? "liked" : "" %>" 
+	                                onclick="toggleLike(<%= r.getId() %>, this)">
+	                            <span>👍</span>
+	                            <span class="like-count"><%= r.getLikeCount() %></span>
+	                        </button>
+	                    <% } else { %>
+	                        <span style="color:#999; font-size:14px;">
+	                            👍 <%= r.getLikeCount() %>
+	                        </span>
+	                    <% } %>
+	                </div>
+	            </div>
+	
+	            <!-- 리뷰 내용 -->
+	            <div class="review-content"><%= r.getContent() %></div>
+	
+	            <!-- 리뷰 하단 (날짜 + 수정/삭제 버튼) -->
+	            <div class="review-footer">
+	                <span class="review-date"><%= r.getCreatedAt() %></span>
+	                
+	                <% if (detailLoginUser != null && r.getUserid().equals(detailLoginUser)) { %>
+	                    <div class="review-actions">
+	                        <button class="review-action-btn"
+	                                onclick="openEditForm('<%= r.getId() %>', '<%= r.getRating() %>', `<%= r.getContent().replace("`", "\\`").replace("\n", "\\n") %>`)">
+	                            ✏ 수정
+	                        </button>
+	                        
+	                        <button class="review-action-btn delete"
+	                                onclick="deleteReview(<%= r.getId() %>, <%= movie.getId() %>)">
+	                            🗑 삭제
+	                        </button>
+	                    </div>
+	                <% } %>
+	            </div>
+	
+	        </div>
+	
+	    <%
+	            }
+	        }
+	
+	        // 🔥 구분선
+	        if (topReviews != null && !topReviews.isEmpty() && otherReviews != null && !otherReviews.isEmpty()) {
+	    %>
+	        <hr class="review-divider">
+	    <%
+	        }
+	
+	        // 🔥 나머지 리뷰 표시
+	        if (otherReviews != null && !otherReviews.isEmpty()) {
+	            for (ReviewDTO r : otherReviews) {
+	                String nickname = mdao.getOrCreateNickname(r.getUserid());
+	    %>
+	
+	        <div class="review-item" id="review_<%= r.getId() %>">
+	
+	            <!-- 리뷰 헤더 (작성자 + 별점 + 추천) -->
+	            <div class="review-header">
+	                <div class="review-author-info">
+	                    <span class="review-author-name"><%= nickname %></span>
+	                    <span class="review-rating">⭐ <%= r.getRating() %>점</span>
+	                </div>
+	                
+	                <div class="review-like-section">
+	                    <!-- 추천 버튼 -->
+	                    <% if (detailLoginUser != null) { %>
+	                        <button class="like-btn <%= r.isLiked() ? "liked" : "" %>" 
+	                                onclick="toggleLike(<%= r.getId() %>, this)">
+	                            <span>👍</span>
+	                            <span class="like-count"><%= r.getLikeCount() %></span>
+	                        </button>
+	                    <% } else { %>
+	                        <span style="color:#999; font-size:14px;">
+	                            👍 <%= r.getLikeCount() %>
+	                        </span>
+	                    <% } %>
+	                </div>
+	            </div>
+	
+	            <!-- 리뷰 내용 -->
+	            <div class="review-content"><%= r.getContent() %></div>
+	
+	            <!-- 리뷰 하단 (날짜 + 수정/삭제 버튼) -->
+	            <div class="review-footer">
+	                <span class="review-date"><%= r.getCreatedAt() %></span>
+	                
+	                <% if (detailLoginUser != null && r.getUserid().equals(detailLoginUser)) { %>
+	                    <div class="review-actions">
+	                        <button class="review-action-btn"
+	                                onclick="openEditForm('<%= r.getId() %>', '<%= r.getRating() %>', `<%= r.getContent().replace("`", "\\`").replace("\n", "\\n") %>`)">
+	                            ✏ 수정
+	                        </button>
+	                        
+	                        <button class="review-action-btn delete"
+	                                onclick="deleteReview(<%= r.getId() %>, <%= movie.getId() %>)">
+	                            🗑 삭제
+	                        </button>
+	                    </div>
+	                <% } %>
+	            </div>
+	
+	        </div>
+	
+	    <%
+	            }
+	        }
+	
+	        // 리뷰가 하나도 없는 경우
+	        if ((topReviews == null || topReviews.isEmpty()) && (otherReviews == null || otherReviews.isEmpty())) {
+	    %>
+	        <p>(아직 리뷰가 없습니다. 첫 리뷰를 작성해보세요!)</p>
+	    <%
+	        }
+	    %>
+	</div>
 
     <!-- 리뷰 작성 버튼 -->
 	<% if (detailLoginUser != null) { %>
@@ -264,6 +525,37 @@ function deleteReview(id, movieId) {
     if (confirm("정말 삭제하시겠습니까?")) {
         location.href = "deleteReview?id=" + id + "&movieId=" + movieId;
     }
+}
+
+// 🔥 추천 토글 함수 (AJAX)
+function toggleLike(reviewId, button) {
+    const isLiked = button.classList.contains('liked');
+    const action = isLiked ? 'unlike' : 'like';
+    
+    fetch('reviewLike', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'reviewId=' + reviewId + '&action=' + action
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // 버튼 스타일 토글
+            button.classList.toggle('liked');
+            
+            // 추천 수 업데이트
+            const likeCountSpan = button.querySelector('.like-count');
+            likeCountSpan.textContent = data.likeCount;
+        } else {
+            alert(data.message || '오류가 발생했습니다.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('오류가 발생했습니다.');
+    });
 }
 </script>
 

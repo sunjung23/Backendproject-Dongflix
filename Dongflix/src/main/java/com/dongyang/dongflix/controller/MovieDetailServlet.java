@@ -5,14 +5,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
 import com.dongyang.dongflix.dao.LikeMovieDAO;
 import com.dongyang.dongflix.dao.ReviewDAO;
+import com.dongyang.dongflix.dao.ReviewLikeDAO;
 import com.dongyang.dongflix.dto.MemberDTO;
 import com.dongyang.dongflix.dto.ReviewDTO;
 import com.dongyang.dongflix.model.TMDBmovie;
@@ -60,10 +64,42 @@ public class MovieDetailServlet extends HttpServlet {
 
             request.setAttribute("movie", movie);
 
+            // 리뷰 목록 조회
             ReviewDAO reviewDAO = new ReviewDAO();
+            ReviewLikeDAO likeDAO = new ReviewLikeDAO();
             List<ReviewDTO> reviewList = reviewDAO.getReviewsByMovie(movie.getId());
+            
+            // 로그인 사용자 정보
+            HttpSession session = request.getSession();
+            MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
+            
+            // 각 리뷰에 추천 수와 추천 여부 설정
+            for (ReviewDTO review : reviewList) {
+                int likeCount = likeDAO.getLikeCount(review.getId());
+                review.setLikeCount(likeCount);
+                
+                if (loginUser != null) {
+                    boolean isLiked = likeDAO.isLiked(review.getId(), loginUser.getUserid());
+                    review.setIsLiked(isLiked);
+                }
+            }
+            
+            // 추천 수 기준으로 정렬 (상위 5개를 앞에)
+            List<ReviewDTO> topReviews = reviewList.stream()
+                    .sorted(Comparator.comparingInt(ReviewDTO::getLikeCount).reversed())
+                    .limit(5)
+                    .collect(Collectors.toList());
+            
+            List<ReviewDTO> otherReviews = reviewList.stream()
+                    .sorted(Comparator.comparingInt(ReviewDTO::getLikeCount).reversed())
+                    .skip(5)
+                    .collect(Collectors.toList());
+            
+            request.setAttribute("topReviews", topReviews);
+            request.setAttribute("otherReviews", otherReviews);
             request.setAttribute("reviewList", reviewList);
 
+            // 평균 평점 계산
             double avgRating = 0;
             if (reviewList != null && !reviewList.isEmpty()) {
                 double sum = 0;
@@ -74,9 +110,7 @@ public class MovieDetailServlet extends HttpServlet {
             request.setAttribute("avgRating", avgRating);
             request.setAttribute("reviewCount", reviewList.size());
 
-            HttpSession session = request.getSession();
-            MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
-
+            // 찜 여부 확인
             boolean isWished = false;
             if (loginUser != null) {
                 LikeMovieDAO dao = new LikeMovieDAO();
