@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -28,6 +30,8 @@ public class MovieDetailServlet extends HttpServlet {
     private static final String API_KEY = "5c22fcbe6d86e21ad75efef7d85e867d";
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
 
+    private static final Map<Integer, TMDBmovie> cache = new HashMap<>();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -40,46 +44,55 @@ public class MovieDetailServlet extends HttpServlet {
         }
 
         try {
-            TMDBmovie movie = fetchMovieDetail(movieId);
+            int id = Integer.parseInt(movieId);
+
+            TMDBmovie movie;
+
+            if (cache.containsKey(id)) {
+                movie = cache.get(id);
+                System.out.println("TMDB 캐시 HIT: " + id);
+
+            } else {
+                movie = fetchMovieDetail(id);
+                cache.put(id, movie);
+                System.out.println("TMDB API 호출 & 캐싱: " + id);
+            }
 
             request.setAttribute("movie", movie);
-            
+
             ReviewDAO reviewDAO = new ReviewDAO();
             List<ReviewDTO> reviewList = reviewDAO.getReviewsByMovie(movie.getId());
             request.setAttribute("reviewList", reviewList);
-            
+
             double avgRating = 0;
             if (reviewList != null && !reviewList.isEmpty()) {
                 double sum = 0;
-                for (ReviewDTO r : reviewList) {
-                    sum += r.getRating();
-                }
+                for (ReviewDTO r : reviewList) sum += r.getRating();
                 avgRating = sum / reviewList.size();
             }
 
             request.setAttribute("avgRating", avgRating);
             request.setAttribute("reviewCount", reviewList.size());
-            
+
             HttpSession session = request.getSession();
             MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
 
             boolean isWished = false;
-
             if (loginUser != null) {
                 LikeMovieDAO dao = new LikeMovieDAO();
                 isWished = dao.isWished(loginUser.getUserid(), movie.getId());
             }
-
             request.setAttribute("isWished", isWished);
 
             request.getRequestDispatcher("/movie/movieDetail.jsp").forward(request, response);
+
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("indexMovie");
         }
     }
 
-    private TMDBmovie fetchMovieDetail(String movieId) throws Exception {
+    private TMDBmovie fetchMovieDetail(int movieId) throws Exception {
 
         String apiUrl = BASE_URL + movieId + "?api_key=" + API_KEY + "&language=ko-KR";
 
@@ -96,7 +109,7 @@ public class MovieDetailServlet extends HttpServlet {
 
         JSONObject obj = new JSONObject(sb.toString());
 
-        TMDBmovie movie = new TMDBmovie(
+        return new TMDBmovie(
                 obj.getInt("id"),
                 obj.optString("title", "제목 없음"),
                 obj.optString("overview", "줄거리 없음"),
@@ -105,7 +118,5 @@ public class MovieDetailServlet extends HttpServlet {
                 obj.optDouble("vote_average", 0),
                 obj.optString("release_date", "정보 없음")
         );
-
-        return movie;
     }
 }

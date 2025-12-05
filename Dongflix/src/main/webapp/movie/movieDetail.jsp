@@ -120,12 +120,15 @@
 
                 <% if (detailLoginUser != null && r.getUserid().equals(detailLoginUser
                 		)) { %>
-                    <button onclick="openEditForm('<%= r.getId() %>', '<%= r.getRating() %>', '<%= r.getContent() %>')">
-                        ✏ 수정
-                    </button>
-                    <button onclick="deleteReview(<%= r.getId() %>, <%= movie.getId() %>)">
-                        🗑 삭제
-                    </button>
+						<button class="review-action-btn"
+						        onclick="openEditForm('<%= r.getId() %>', '<%= r.getRating() %>', '<%= r.getContent() %>')">
+						    ✏ 수정
+						</button>
+						
+						<button class="review-action-btn delete"
+						        onclick="deleteReview(<%= r.getId() %>, <%= movie.getId() %>)">
+						    🗑 삭제
+						</button>
                 <% } %>
 
             </div>
@@ -141,16 +144,16 @@
     </div>
 
     <!-- 리뷰 작성 버튼 -->
-    <% if (detailLoginUser != null) { %>
-        <button class="review-write-btn" onclick="toggleReviewForm()">
-            ✏ 리뷰 작성하기
-        </button>
-    <% } else { %>
-        <p>리뷰를 작성하려면 로그인하세요.</p>
-    <% } %>
+	<% if (detailLoginUser != null) { %>
+	    <button class="review-write-btn" onclick="toggleReviewForm()" id="reviewToggle">
+	        ✏ 리뷰 작성하기
+	    </button>
+	<% } else { %>
+	    <p>리뷰를 작성하려면 로그인하세요.</p>
+	<% } %>
 
     <!-- ===== 리뷰 작성 폼 ===== -->
-    <div id="reviewForm" style="display:none; margin-top:20px;">
+    <div id="reviewForm" class="review-form-wrapper" style="display:none;">
        <form action="writeReview" method="post">
     <input type="hidden" name="movieId" value="<%= movie.getId() %>">
     <input type="hidden" name="movieTitle" value="<%= movie.getTitle() %>">
@@ -186,12 +189,12 @@
             <label>리뷰 내용</label><br>
             <textarea name="content" rows="4" cols="50" required></textarea><br><br>
 
-            <button type="submit">등록하기</button>
+            <button type="submit" class="review-submit-btn">등록하기</button>
         </form>
     </div>
 
     <!-- ===== 리뷰 수정 폼 ===== -->
-    <div id="editForm" style="display:none; margin-top:20px;">
+    <div id="editForm" class="review-form-wrapper" style="display:none;">
         <form action="<%=request.getContextPath()%>/updateReview" method="post">
             <input type="hidden" name="reviewId" id="edit_reviewId">
             <input type="hidden" name="movieId" value="<%= movie.getId() %>">
@@ -244,7 +247,7 @@
 
             <textarea id="edit_content" name="content" rows="4" required></textarea><br><br>
 
-            <button type="submit">수정 완료</button>
+            <button type="submit" class="review-submit-btn">수정 완료</button>
             <button type="button" onclick="closeEditForm()">취소</button>
         </form>
     </div>

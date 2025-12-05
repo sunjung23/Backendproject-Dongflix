@@ -121,15 +121,101 @@
             margin-bottom: 10px;
         }
 
-        .review-write-btn {
-            padding: 8px 12px;
-            border: 1px solid #888;
-            background: none;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-        }
 
-        .review-write-btn:hover {
-            background: #444;
-        }
+
+.review-write-btn {
+    padding: 10px 16px;
+    background: transparent;
+    color: #9db3ff;
+    border: 1px solid #4c5fbf;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    font-size: 14px;
+}
+
+.review-write-btn:hover {
+    background: rgba(76, 95, 191, 0.2);
+    color: #dce3ff;
+    transform: translateY(-2px);
+}
+
+.review-box {
+    background: #1a1a1a;
+    padding: 18px;
+    border-radius: 10px;
+    margin-top: 15px;
+    border: 1px solid #2a2a2a;
+}
+
+.review-action-btn {
+    padding: 6px 10px;
+    font-size: 13px;
+    border-radius: 5px;
+    background: #2c2c2c;
+    color: #ddd;
+    border: 1px solid #444;
+    cursor: pointer;
+    transition: 0.2s ease;
+    margin-right: 5px;
+}
+
+.review-action-btn:hover {
+    background: #3b3b3b;
+    color: white;
+    border-color: #666;
+}
+ 
+.review-action-btn.delete {
+    border: 1px solid #b14a4a;
+    color: #ffb3b3;
+}
+
+.review-action-btn.delete:hover {
+    background: #8a2e2e;
+    color: white;
+}
+
+.review-form-wrapper {
+    margin-top: 20px;
+    padding: 20px;
+    background: #181818;
+    border: 1px solid #2c2c2c;
+    border-radius: 10px;
+}
+
+.review-form-wrapper textarea {
+    width: 100%;
+    padding: 12px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: #eee;
+    resize: none;
+    margin-top: 10px;
+}
+
+.review-form-wrapper textarea:focus {
+    outline: none;
+    border-color: #4c5fbf;
+}
+
+.review-submit-btn {
+    margin-top: 3px;
+    padding: 10px 15px;
+    background: #2036CA;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.review-write-btn {
+	margin-top: 10px;
+}
+
+.review-submit-btn:hover {
+    background: #162a8c;
+    transform: translateY(-2px);
+}
