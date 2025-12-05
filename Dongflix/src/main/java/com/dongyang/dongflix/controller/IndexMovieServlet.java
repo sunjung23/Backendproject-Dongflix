@@ -31,6 +31,7 @@ public class IndexMovieServlet extends HttpServlet {
         GENRES.put("action", "28");
         GENRES.put("crime", "80");
         GENRES.put("fantasy", "14");
+        
     }
 
     @Override

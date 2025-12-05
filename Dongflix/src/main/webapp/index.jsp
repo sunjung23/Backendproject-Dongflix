@@ -57,7 +57,7 @@
         String displayName = genreKey;
         if ("animation".equals(genreKey)) displayName = "애니메이션";
         else if ("romance".equals(genreKey)) displayName = "로맨스";
-        else if ("action".equals(genreKey)) displayName = "액션 / 스릴러";
+        else if ("action".equals(genreKey)) displayName = "액션";
         else if ("crime".equals(genreKey)) displayName = "범죄";
         else if ("fantasy".equals(genreKey)) displayName = "판타지";
 %>
