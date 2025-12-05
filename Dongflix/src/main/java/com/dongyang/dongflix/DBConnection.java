@@ -1,26 +1,42 @@
 package com.dongyang.dongflix;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.SQLException;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DBConnection {
-    public static Connection getConnection() {
-        Connection conn = null;
+
+    private static HikariDataSource ds;
+
+    // HikariCP 초기화 
+    static {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            HikariConfig config = new HikariConfig();
 
-            String url = "jdbc:mysql://caboose.proxy.rlwy.net:13848/railway?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8";
-            String user = "root";
-            String pw = "peFGqfaJijwDqzkIgfgARzqtMEemSdtE";
+            config.setJdbcUrl("jdbc:mysql://caboose.proxy.rlwy.net:13848/railway?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8");
+            config.setUsername("root");
+            config.setPassword("peFGqfaJijwDqzkIgfgARzqtMEemSdtE");
 
-            conn = DriverManager.getConnection(url, user, pw);
+            config.setDriverClassName("com.mysql.cj.jdbc.Driver");
 
-            System.out.println(">>> DB 연결 성공!");
+            config.setMaximumPoolSize(10);     
+            config.setMinimumIdle(2);         
+            config.setConnectionTimeout(3000);    
+            config.setIdleTimeout(600000);        
+            config.setMaxLifetime(1800000);       
+            
+            ds = new HikariDataSource(config);
+
+            System.out.println(" HikariCP Connection Pool 초기화 완료");
 
         } catch (Exception e) {
-            System.out.println(">>> DB 연결 실패");
             e.printStackTrace();
         }
-        return conn;
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return ds.getConnection();
     }
 }
