@@ -13,6 +13,10 @@ public class ReviewDTO {
     // 새로 추가된 필드
     private String movieTitle;
     private String movieImg;
+    
+    // 🔥 추천 기능 추가
+    private int likeCount;      // 추천 수
+    private boolean isLiked;    // 현재 사용자가 추천했는지 여부
 
     public ReviewDTO() {}
 
@@ -40,7 +44,7 @@ public class ReviewDTO {
         this.rating = rating;
     }
 
-    // 🔥 새롭게 필요한 생성자 (오류 해결)
+    // 새롭게 필요한 생성자
     public ReviewDTO(String userid, int movieId, String title, String content,
                      int rating, String movieTitle, String movieImg) {
         this.userid = userid;
@@ -52,7 +56,7 @@ public class ReviewDTO {
         this.movieImg = movieImg;
     }
 
-    // getter / setter 
+    // getter / setter
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -79,4 +83,11 @@ public class ReviewDTO {
 
     public String getMovieImg() { return movieImg; }
     public void setMovieImg(String movieImg) { this.movieImg = movieImg; }
+
+    // 🔥 추천 기능 getter/setter
+    public int getLikeCount() { return likeCount; }
+    public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
+
+    public boolean isLiked() { return isLiked; }
+    public void setIsLiked(boolean isLiked) { this.isLiked = isLiked; }
 }
