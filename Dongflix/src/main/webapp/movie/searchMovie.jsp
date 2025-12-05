@@ -6,7 +6,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/searchMovie.css">
-    <title>영화 탐색</title>
+    <title>Dongflix - 탐색</title>
 </head>
 
 <body>
@@ -25,14 +25,13 @@
             <option value="80"  ${genre == '80'  ? "selected" : ""}>범죄</option>
             <option value="14"  ${genre == '14'  ? "selected" : ""}>판타지</option>
             <option value="10749" ${genre == '10749' ? "selected" : ""}>로맨스</option>
+            <option value="36" ${genre == '36' ? "selected" : ""}>역사</option>
+            <option value="35" ${genre == '35' ? "selected" : ""}>코미디</option>
+            <option value="27" ${genre == '27' ? "selected" : ""}>호러</option>
+            <option value="10751" ${genre == '10751' ? "selected" : ""}>가족</option>
+            <option value="9648" ${genre == '9648' ? "selected" : ""}>미스터리</option>
         </select>
 
-        <!-- 정렬 -->
-        <select name="sort" class="select-box">
-            <option value="popular" ${sort == "popular" ? "selected" : ""}>인기순</option>
-            <option value="rating"  ${sort == "rating" ? "selected" : ""}>평점순</option>
-            <option value="latest"  ${sort == "latest" ? "selected" : ""}>최신순</option>
-        </select>
 
         <button class="search-btn">검색</button>
     </form>
