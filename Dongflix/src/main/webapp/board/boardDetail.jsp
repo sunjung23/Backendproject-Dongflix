@@ -8,6 +8,13 @@
         response.sendRedirect("list");
         return;
     }
+
+    // 좋아요 관련 값 꺼내기
+    Integer likeCountObj = (Integer) request.getAttribute("likeCount");
+    int likeCount = (likeCountObj != null) ? likeCountObj : 0;
+
+    Boolean likedByMeObj = (Boolean) request.getAttribute("likedByMe");
+    boolean likedByMe = (likedByMeObj != null) ? likedByMeObj : false;
 %>
 
 <!DOCTYPE html>
@@ -75,7 +82,7 @@ body {
     font-size:14px;
     color:#c9c9c9;
     line-height:1.8;
-    margin-bottom:30px;
+    margin-bottom:20px;
     padding-left:14px;
     border-left:3px solid #e50914;
 }
@@ -162,8 +169,27 @@ body {
     <div class="post-meta">
         작성자 : <%= b.getUserid() %><br>
         작성일 : <%= b.getCreatedAt() %><br>
-        분류 : <%= b.getCategory() %>><br>
-        조회수 : <%= b.getViews() %>회
+        분류 : <%= b.getCategory() %><br>
+        조회수 : <%= b.getViews() %>
+    </div>
+
+    <!-- ❤️ 좋아요 버튼 영역 -->
+    <div style="margin-bottom:16px;">
+        <form action="<%= request.getContextPath() %>/board/like" method="post" style="display:inline;">
+            <input type="hidden" name="boardId" value="<%= b.getBoardId() %>">
+            <button type="submit"
+                    style="
+                        padding:8px 16px;
+                        border-radius:999px;
+                        border:none;
+                        cursor:pointer;
+                        font-size:14px;
+                        background:<%= likedByMe ? "#e50914" : "#333333" %>;
+                        color:#ffffff;
+                    ">
+                <%= likedByMe ? "♥ 좋아요 (" + likeCount + ")" : "♡ 좋아요 (" + likeCount + ")" %>
+            </button>
+        </form>
     </div>
 
     <!-- 🔥 본문 -->
