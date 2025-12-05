@@ -3,6 +3,7 @@ package com.dongyang.dongflix.controller;
 import java.io.IOException;
 
 import com.dongyang.dongflix.dao.BoardDAO;
+import com.dongyang.dongflix.dao.BoardLikeDAO;
 import com.dongyang.dongflix.dto.BoardDTO;
 import com.dongyang.dongflix.dto.MemberDTO;
 
@@ -35,14 +36,14 @@ public class BoardDetailServlet extends HttpServlet {
             return;
         }
 
-        // 2) 게시글 조회
-        
+        // 2) 게시글 조회 + 조회수 증가 처리
         BoardDAO dao = new BoardDAO();
+
         // 🔥 조회수 증가
         dao.increaseViews(id);
-        // 🔥 조회수 증가된 최신 데이터 다시 가져오기
-        BoardDTO dto = dao.getById(id);
 
+        // 🔥 조회수 반영된 최신 데이터 다시 가져오기
+        BoardDTO dto = dao.getById(id);
 
         // 3) 게시글 존재 여부 확인
         if (dto == null) {
@@ -67,8 +68,20 @@ public class BoardDetailServlet extends HttpServlet {
             }
         }
 
-        // 6) 데이터 전달 후 상세 페이지로 이동
+        // 6) 좋아요 정보 세팅
+        BoardLikeDAO likeDao = new BoardLikeDAO();
+        int likeCount = likeDao.getLikeCount(id);
+
+        boolean likedByMe = false;
+        if (user != null) {
+            likedByMe = likeDao.hasUserLiked(id, user.getUserid());
+        }
+
+        // 7) 데이터 전달 후 상세 페이지로 이동
         request.setAttribute("dto", dto);
+        request.setAttribute("likeCount", likeCount);
+        request.setAttribute("likedByMe", likedByMe);
+
         request.getRequestDispatcher("/board/boardDetail.jsp")
                .forward(request, response);
     }
