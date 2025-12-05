@@ -1,9 +1,10 @@
 package com.dongyang.dongflix.controller;
 
 import java.io.IOException;
-import java.util.List;   // ⭐ 반드시 필요
+import java.util.List;
+
 import com.dongyang.dongflix.dao.BoardDAO;
-import com.dongyang.dongflix.dto.BoardDTO;   // ⭐ 반드시 필요
+import com.dongyang.dongflix.dto.BoardDTO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -20,12 +21,16 @@ public class BoardListServlet extends HttpServlet {
 
         String category = request.getParameter("category");
         String sort = request.getParameter("sort");
-        
+
         BoardDAO dao = new BoardDAO();
         List<BoardDTO> list;
-        
-        if (category == null || category.equals("all")) {
-            list = (sort == null) ? dao.getAll() : dao.getSortedList(sort);
+
+        // 정렬 존재 시 → 정렬 우선
+        if (sort != null) {
+            list = dao.getSortedList(sort);
+        }
+        else if (category == null || category.equals("all")) {
+            list = dao.getAll();
         } else {
             list = dao.getByCategory(category);
         }
@@ -34,8 +39,7 @@ public class BoardListServlet extends HttpServlet {
         request.setAttribute("category", category);
         request.setAttribute("sort", sort);
 
-        request.getRequestDispatcher("/board/boardList.jsp").forward(request, response);
-
-        
+        request.getRequestDispatcher("/board/boardList.jsp")
+               .forward(request, response);
     }
 }

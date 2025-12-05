@@ -219,10 +219,17 @@ body {
     </div>
 
     <!-- 정렬 -->
-    <div class="sort-area">
-        <a href="list?category=<%= category %>&sort=new" class="<%= sort.equals("new") ? "active-sort" : "" %>">⬆ 최신순</a>
-        <a href="list?category=<%= category %>&sort=old" class="<%= sort.equals("old") ? "active-sort" : "" %>">⬇ 오래된순</a>
-    </div>
+<div class="sort-area">
+    <a href="list?category=<%= category %>&sort=new"
+       class="<%= "new".equals(sort) ? "active-sort" : "" %>">⬆ 최신순</a>
+
+    <a href="list?category=<%= category %>&sort=old"
+       class="<%= "old".equals(sort) ? "active-sort" : "" %>">⬇ 오래된순</a>
+
+    <a href="list?category=<%= category %>&sort=views"
+       class="<%= "views".equals(sort) ? "active-sort" : "" %>">🔥 조회수순</a>
+</div>
+
 
     <!-- 글쓰기 -->
     <a href="writeForm.jsp" class="write-btn">✏ 글쓰기</a>
@@ -241,11 +248,12 @@ body {
                     <a href="detail?id=<%= b.getBoardId() %>"><%= b.getTitle() %></a>
                 </div>
 
-                <div class="board-meta">
-                    작성자: <%= b.getUserid() %> |
-                    날짜: <%= b.getCreatedAt() %> |
-                    분류: <%= b.getCategory() %>
-                </div>
+               <div class="board-meta">
+    작성자: <%= b.getUserid() %> |
+    날짜: <%= b.getCreatedAt() %> |
+    조회수: <%= b.getViews() %>
+</div>
+
 
                 <div class="board-preview">
                     <%= (b.getContent().length() > 90)

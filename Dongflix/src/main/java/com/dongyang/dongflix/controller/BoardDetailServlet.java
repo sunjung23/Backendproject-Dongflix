@@ -36,7 +36,13 @@ public class BoardDetailServlet extends HttpServlet {
         }
 
         // 2) 게시글 조회
-        BoardDTO dto = new BoardDAO().getById(id);
+        
+        BoardDAO dao = new BoardDAO();
+        // 🔥 조회수 증가
+        dao.increaseViews(id);
+        // 🔥 조회수 증가된 최신 데이터 다시 가져오기
+        BoardDTO dto = dao.getById(id);
+
 
         // 3) 게시글 존재 여부 확인
         if (dto == null) {

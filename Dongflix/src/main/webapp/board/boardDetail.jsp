@@ -162,7 +162,8 @@ body {
     <div class="post-meta">
         작성자 : <%= b.getUserid() %><br>
         작성일 : <%= b.getCreatedAt() %><br>
-        분류 : <%= b.getCategory() %>
+        분류 : <%= b.getCategory() %>><br>
+        조회수 : <%= b.getViews() %>회
     </div>
 
     <!-- 🔥 본문 -->

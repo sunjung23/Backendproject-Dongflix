@@ -7,7 +7,7 @@ public class BoardDTO {
     private String content;
     private String createdAt;
     private String category;
-
+    private int views;
 
     public BoardDTO() {}
 
@@ -47,5 +47,8 @@ public class BoardDTO {
     
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+    
+    public int getViews() { return views; }
+    public void setViews(int views) { this.views = views; }
     
 }
