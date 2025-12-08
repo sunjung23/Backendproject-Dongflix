@@ -26,6 +26,12 @@
     int likeCount = likedMovies != null ? likedMovies.size() : 0;
     int reviewCount = reviews != null ? reviews.size() : 0;
     int boardCount = myBoards != null ? myBoards.size() : 0;
+    int visitCount = (request.getAttribute("visitCount") != null)
+            ? (Integer) request.getAttribute("visitCount")
+            : 0;
+    java.util.List<com.dongyang.dongflix.dto.MemberDTO> recentVisitors =
+            (java.util.List<com.dongyang.dongflix.dto.MemberDTO>) request.getAttribute("recentVisitors");
+
 %>
 
 <!DOCTYPE html>
@@ -434,7 +440,7 @@ function scrollToSection(id) {
         </div>
     </div>
 
-    <!-- 활동 요약 -->
+       <!-- 활동 요약 -->
     <div class="stats-grid">
 
         <div class="stat-card" onclick="scrollToSection('liked-section')">
@@ -469,6 +475,32 @@ function scrollToSection(id) {
             </div>
             <div class="stat-bottom">커뮤니티에서 남긴 나의 흔적들을 확인해보세요.</div>
         </div>
+
+        <!-- 🔥 프로필 방문 통계 카드 -->
+        <div class="stat-card">
+            <div class="stat-top">
+                <div class="stat-left">
+                    <div class="stat-icon">👀</div>
+                    <div class="stat-title">프로필 방문</div>
+                </div>
+                <div class="stat-chip"><%= visitCount %>회</div>
+            </div>
+            <div class="stat-bottom">
+                최근 방문자:
+                <% if (recentVisitors == null || recentVisitors.isEmpty()) { %>
+                    없음
+                <% } else { %>
+                    <%= (recentVisitors.get(0).getNickname() != null
+                         && !recentVisitors.get(0).getNickname().isEmpty())
+                        ? recentVisitors.get(0).getNickname()
+                        : recentVisitors.get(0).getUserid() %> 외
+                    <%= (recentVisitors.size() - 1) >= 0 ? (recentVisitors.size() - 1) : 0 %>명
+                <% } %>
+            </div>
+        </div>
+
+    </div>
+
 
     </div>
 

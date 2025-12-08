@@ -255,6 +255,39 @@ public class MemberDAO {
 
         return "사용자" + (int)(Math.random() * 90000 + 10000);
     }
+    
+    
+    
+    public MemberDTO getByUserid(String userid) {
+        String sql = "SELECT userid, userpw, name, nickname, phone, birth, profile_img, grade "
+                   + "FROM member WHERE userid = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, userid);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                MemberDTO dto = new MemberDTO();
+                dto.setUserid(rs.getString("userid"));
+                dto.setPassword(rs.getString("userpw"));   // ★ setter 이름 수정
+                dto.setUsername(rs.getString("name"));     // ★ DB의 name → username
+                dto.setNickname(rs.getString("nickname"));
+                dto.setPhone(rs.getString("phone"));
+                dto.setBirth(rs.getString("birth"));
+                dto.setProfileImg(rs.getString("profile_img"));
+                dto.setGrade(rs.getString("grade"));
+                return dto;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
 
 }

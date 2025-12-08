@@ -9,9 +9,13 @@ public class BoardDTO {
     private String category;
     private int views;
 
+    // ⭐ 추가된 필드: 작성자 프로필 이미지
+    private String profileImg;
+
     public BoardDTO() {}
 
-    public BoardDTO(int boardId, String userid, String title, String content, String createdAt, String category) {
+    public BoardDTO(int boardId, String userid, String title,
+                    String content, String createdAt, String category) {
         this.boardId = boardId;
         this.userid = userid;
         this.title = title;
@@ -20,7 +24,6 @@ public class BoardDTO {
         this.category = category;
     }
 
-   
     public BoardDTO(String userid, String title, String content, String category) {
         this.userid = userid;
         this.title = title;
@@ -28,8 +31,7 @@ public class BoardDTO {
         this.category = category;
     }
 
-
-    // getter & setter
+    // --- Getter & Setter ---
     public int getBoardId() { return boardId; }
     public void setBoardId(int boardId) { this.boardId = boardId; }
 
@@ -44,11 +46,14 @@ public class BoardDTO {
 
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
-    
+
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
-    
+
     public int getViews() { return views; }
     public void setViews(int views) { this.views = views; }
-    
+
+    // ⭐ 추가된 getter/setter
+    public String getProfileImg() { return profileImg; }
+    public void setProfileImg(String profileImg) { this.profileImg = profileImg; }
 }

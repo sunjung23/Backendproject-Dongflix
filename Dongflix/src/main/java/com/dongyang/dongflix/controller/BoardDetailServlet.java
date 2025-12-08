@@ -1,10 +1,14 @@
 package com.dongyang.dongflix.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.dongyang.dongflix.dao.BoardDAO;
 import com.dongyang.dongflix.dao.BoardLikeDAO;
+import com.dongyang.dongflix.dao.BoardCommentDAO;
+import com.dongyang.dongflix.dao.MemberDAO;
 import com.dongyang.dongflix.dto.BoardDTO;
+import com.dongyang.dongflix.dto.BoardCommentDTO;
 import com.dongyang.dongflix.dto.MemberDTO;
 
 import jakarta.servlet.ServletException;
@@ -36,16 +40,13 @@ public class BoardDetailServlet extends HttpServlet {
             return;
         }
 
-        // 2) 게시글 조회 + 조회수 증가 처리
         BoardDAO dao = new BoardDAO();
 
-        // 🔥 조회수 증가
+        // 2) 조회수 증가
         dao.increaseViews(id);
 
-        // 🔥 조회수 반영된 최신 데이터 다시 가져오기
+        // 3) 게시글 조회
         BoardDTO dto = dao.getById(id);
-
-        // 3) 게시글 존재 여부 확인
         if (dto == null) {
             response.sendRedirect(request.getContextPath() + "/board/list");
             return;
@@ -57,18 +58,17 @@ public class BoardDetailServlet extends HttpServlet {
 
         // 5) 비밀게시판 권한 제한
         if ("secret".equals(dto.getCategory())) {
-            // user == null 이거나 grade 가 null 이거나 gold 가 아니면 차단
             if (user == null || user.getGrade() == null
                     || !user.getGrade().equalsIgnoreCase("gold")) {
 
                 request.setAttribute("msg", "비밀게시판은 GOLD 등급만 열람할 수 있습니다.");
                 request.getRequestDispatcher("/error/permission.jsp")
-                       .forward(request, response);
+                        .forward(request, response);
                 return;
             }
         }
 
-        // 6) 좋아요 정보 세팅
+        // 6) 좋아요 정보
         BoardLikeDAO likeDao = new BoardLikeDAO();
         int likeCount = likeDao.getLikeCount(id);
 
@@ -77,12 +77,30 @@ public class BoardDetailServlet extends HttpServlet {
             likedByMe = likeDao.hasUserLiked(id, user.getUserid());
         }
 
-        // 7) 데이터 전달 후 상세 페이지로 이동
+        // 7) 댓글 목록
+        BoardCommentDAO cdao = new BoardCommentDAO();
+        List<BoardCommentDTO> comments = cdao.getByBoard(id);
+
+        // ⭐ 댓글 작성자 profileImg, nickname 포함 MemberDTO 주입
+        MemberDAO mdao = new MemberDAO();
+        if (comments != null) {
+            for (BoardCommentDTO c : comments) {
+                MemberDTO writer = mdao.getByUserid(c.getUserid());
+                c.setMember(writer);   // ⭐ 여기 반드시 있어야 profile 이미지 뜬다!
+            }
+        }
+
+        int commentCount = (comments != null) ? comments.size() : 0;
+
+        // 8) request에 세팅
         request.setAttribute("dto", dto);
         request.setAttribute("likeCount", likeCount);
         request.setAttribute("likedByMe", likedByMe);
+        request.setAttribute("comments", comments);
+        request.setAttribute("commentCount", commentCount);
 
+        // 9) 상세 페이지로 이동
         request.getRequestDispatcher("/board/boardDetail.jsp")
-               .forward(request, response);
+                .forward(request, response);
     }
 }
