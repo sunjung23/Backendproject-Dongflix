@@ -212,24 +212,23 @@ body {
 
     <!-- 카테고리 탭 -->
     <div class="board-tabs">
-        <a href="list" class="<%= category.equals("all") ? "active" : "" %>">전체</a>
-        <a href="list?category=free" class="<%= category.equals("free") ? "active" : "" %>">📢 자유게시판</a>
-        <a href="list?category=level" class="<%= category.equals("level") ? "active" : "" %>">⬆️ 등업게시판</a>
-        <a href="list?category=secret" class="<%= category.equals("secret") ? "active" : "" %>">🔒 비밀게시판</a>
+        <a href="list" class="<%= "all".equals(category) ? "active" : "" %>">전체</a>
+        <a href="list?category=free" class="<%= "free".equals(category) ? "active" : "" %>">📢 자유게시판</a>
+        <a href="list?category=level" class="<%= "level".equals(category) ? "active" : "" %>">⬆️ 등업게시판</a>
+        <a href="list?category=secret" class="<%= "secret".equals(category) ? "active" : "" %>">🔒 비밀게시판</a>
     </div>
 
     <!-- 정렬 -->
-<div class="sort-area">
-    <a href="list?category=<%= category %>&sort=new"
-       class="<%= "new".equals(sort) ? "active-sort" : "" %>">⬆ 최신순</a>
+    <div class="sort-area">
+        <a href="list?category=<%= category %>&sort=new"
+           class="<%= "new".equals(sort) ? "active-sort" : "" %>">⬆ 최신순</a>
 
-    <a href="list?category=<%= category %>&sort=old"
-       class="<%= "old".equals(sort) ? "active-sort" : "" %>">⬇ 오래된순</a>
+        <a href="list?category=<%= category %>&sort=old"
+           class="<%= "old".equals(sort) ? "active-sort" : "" %>">⬇ 오래된순</a>
 
-    <a href="list?category=<%= category %>&sort=views"
-       class="<%= "views".equals(sort) ? "active-sort" : "" %>">🔥 조회수순</a>
-</div>
-
+        <a href="list?category=<%= category %>&sort=views"
+           class="<%= "views".equals(sort) ? "active-sort" : "" %>">🔥 조회수순</a>
+    </div>
 
     <!-- 글쓰기 -->
     <a href="writeForm.jsp" class="write-btn">✏ 글쓰기</a>
@@ -248,12 +247,18 @@ body {
                     <a href="detail?id=<%= b.getBoardId() %>"><%= b.getTitle() %></a>
                 </div>
 
-               <div class="board-meta">
-    작성자: <%= b.getUserid() %> |
-    날짜: <%= b.getCreatedAt() %> |
-    조회수: <%= b.getViews() %>
-</div>
-
+                <!-- 🔹 메타 정보: 한 줄로 깔끔하게 -->
+                <div class="board-meta">
+                    작성자:
+                    <a href="<%= request.getContextPath() %>/user/profile?userid=<%= b.getUserid() %>"
+                       style="color:#e50914; text-decoration:none;">
+                        <%= b.getUserid() %>
+                    </a>
+                    |
+                    날짜: <%= b.getCreatedAt() %>
+                    |
+                    조회수: <%= b.getViews() %>
+                </div>
 
                 <div class="board-preview">
                     <%= (b.getContent().length() > 90)

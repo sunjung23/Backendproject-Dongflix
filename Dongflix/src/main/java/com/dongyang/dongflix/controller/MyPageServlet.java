@@ -1,6 +1,7 @@
 package com.dongyang.dongflix.controller;
 
 import java.io.IOException;
+import com.dongyang.dongflix.dao.ProfileVisitDAO;
 import java.util.List;
 
 import com.dongyang.dongflix.dao.BoardDAO;
@@ -54,6 +55,14 @@ public class MyPageServlet extends HttpServlet {
         BoardDAO bdao = new BoardDAO();
         List<BoardDTO> myBoards = bdao.getByUser(user.getUserid());   // ★ 여기!!!
         request.setAttribute("myBoards", myBoards);
+        
+        ProfileVisitDAO vdao = new ProfileVisitDAO();
+        int visitCount = vdao.getVisitCount(user.getUserid());
+        List<MemberDTO> recentVisitors = vdao.getRecentVisitors(user.getUserid(), 5);
+
+        request.setAttribute("visitCount", visitCount);
+        request.setAttribute("recentVisitors", recentVisitors);
+
 
         request.getRequestDispatcher("/user/mypage.jsp").forward(request, response);
     }
