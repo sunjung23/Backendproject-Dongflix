@@ -163,6 +163,76 @@
             color: #999;
             font-size: 16px;
         }
+        /* 검색창 스타일 */
+		.search-container {
+		    margin-bottom: 20px;
+		    display: flex;
+		    justify-content: space-between;
+		    align-items: center;
+		}
+		
+		.search-box {
+		    display: flex;
+		    gap: 10px;
+		    align-items: center;
+		}
+		
+		.search-input {
+		    padding: 10px 15px;
+		    background-color: #2a2a2a;
+		    color: white;
+		    border: 1px solid #555;
+		    border-radius: 6px;
+		    font-size: 14px;
+		    width: 300px;
+		}
+		
+		.search-input:focus {
+		    outline: none;
+		    border-color: #2036CA;
+		}
+		
+		.search-input::placeholder {
+		    color: #888;
+		}
+		
+		.btn-search {
+		    padding: 10px 20px;
+		    background-color: #2036CA;
+		    color: white;
+		    border: none;
+		    border-radius: 6px;
+		    cursor: pointer;
+		    font-size: 14px;
+		    font-weight: bold;
+		    transition: .2s;
+		}
+		
+		.btn-search:hover {
+		    background-color: #1a2ba3;
+		}
+		
+		.btn-reset {
+		    padding: 10px 20px;
+		    background-color: #555;
+		    color: white;
+		    border: none;
+		    border-radius: 6px;
+		    cursor: pointer;
+		    font-size: 14px;
+		    text-decoration: none;
+		    display: inline-block;
+		    transition: .2s;
+		}
+		
+		.btn-reset:hover {
+		    background-color: #666;
+		}
+		
+		.search-result {
+		    color: #999;
+		    font-size: 14px;
+}
     </style>
     <script>
         function updateGrade(userid, selectElement) {
@@ -204,6 +274,32 @@
 
 <div class="container">
     <h2>전체 회원 목록</h2>
+    
+    <!-- 🔥 검색창 추가 -->
+    <div class="search-container">
+        <form action="admin-member.do" method="get" class="search-box">
+            <input type="text" 
+                   name="search" 
+                   class="search-input" 
+                   placeholder="아이디 검색..." 
+                   value="<%= request.getAttribute("searchKeyword") != null ? request.getAttribute("searchKeyword") : "" %>">
+            <button type="submit" class="btn-search">🔍 검색</button>
+            <% if (request.getAttribute("searchKeyword") != null && !request.getAttribute("searchKeyword").toString().isEmpty()) { %>
+                <a href="admin-member.do" class="btn-reset">✕ 초기화</a>
+            <% } %>
+        </form>
+        
+        <div class="search-result">
+            <% if (request.getAttribute("searchKeyword") != null && !request.getAttribute("searchKeyword").toString().isEmpty()) { %>
+                "<%= request.getAttribute("searchKeyword") %>" 검색 결과: <%= members.size() %>명
+            <% } else { %>
+                전체: <%= members != null ? members.size() : 0 %>명
+            <% } %>
+        </div>
+    </div>
+    
+    <div class="table-container">
+        <table>
     
     <div class="table-container">
         <table>

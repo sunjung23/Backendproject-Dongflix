@@ -56,10 +56,10 @@
             background-color: #1a2ba3;
         }
         .container {
-            max-width: 1200px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
+		    max-width: 1400px;  /* 1200px → 1400px */
+		    margin: 50px auto;
+		    padding: 0 20px;
+		}
         .welcome {
             margin-bottom: 40px;
         }
@@ -72,11 +72,32 @@
             font-size: 16px;
         }
         .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            margin-top: 30px;
-        }
+		    display: grid;
+		    grid-template-columns: repeat(3, 1fr);  /* 기본: 3개 */
+		    gap: 30px;
+		    margin-top: 30px;
+		}
+		
+		/* 반응형 */
+		@media (max-width: 1200px) {
+		    .menu-grid {
+		        grid-template-columns: repeat(2, 1fr);  /* 중간: 2개 */
+		    }
+		}
+		
+		@media (max-width: 768px) {
+		    .menu-grid {
+		        grid-template-columns: 1fr;  /* 작은 화면: 1개 */
+		    }
+		    
+		    .container {
+		        margin: 30px auto;
+		    }
+		    
+		    .header {
+		        padding: 15px 20px;
+		    }
+		}
         .menu-card {
             background-color: #1f1f1f;
             padding: 40px;
