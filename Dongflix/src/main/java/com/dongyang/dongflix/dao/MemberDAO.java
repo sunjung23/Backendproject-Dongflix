@@ -219,6 +219,42 @@ public class MemberDAO {
         return 0;
     }
     
+    // 아이디로 회원 검색
+    public List<MemberDTO> searchByUserid(String keyword) {
+        List<MemberDTO> list = new ArrayList<>();
+        String sql = "SELECT userid, userpw, name, nickname, phone, birth, profile_img, grade " +
+                     "FROM member WHERE userid LIKE ? ORDER BY userid";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, "%" + keyword + "%");
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                MemberDTO dto = new MemberDTO();
+                dto.setUserid(rs.getString("userid"));
+                dto.setPassword(rs.getString("userpw"));
+                dto.setUsername(rs.getString("name"));  // name → username
+                dto.setNickname(rs.getString("nickname"));
+                dto.setPhone(rs.getString("phone"));
+                dto.setBirth(rs.getString("birth"));
+                dto.setProfileImg(rs.getString("profile_img"));
+                
+                String grade = rs.getString("grade");
+                if (grade == null || grade.isEmpty()) grade = "bronze";
+                dto.setGrade(grade);
+                
+                list.add(dto);
+            }
+            
+        } catch (Exception e) {
+            System.out.println(">>> 회원 검색 실패");
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
     
  // 닉네임이 null이면 자동 생성해서 저장하는 기능
     public String getOrCreateNickname(String userid) {

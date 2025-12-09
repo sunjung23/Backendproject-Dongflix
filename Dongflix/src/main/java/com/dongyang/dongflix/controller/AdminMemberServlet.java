@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/admin/admin-member.do")
 public class AdminMemberServlet extends HttpServlet {
     
-    // 회원 목록 조회
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
@@ -24,18 +23,30 @@ public class AdminMemberServlet extends HttpServlet {
         HttpSession session = request.getSession();
         MemberDTO adminUser = (MemberDTO) session.getAttribute("adminUser");
         if (adminUser == null || !"admin".equals(adminUser.getGrade())) {
-            response.sendRedirect("/admin/admin-login.jsp");
+            response.sendRedirect("admin-login.jsp");
             return;
         }
         
-        MemberDAO dao = new MemberDAO();
-        List<MemberDTO> members = dao.getAllMembers();
+        // 검색어 받기
+        String searchKeyword = request.getParameter("search");
+        
+        MemberDAO memberDao = new MemberDAO();
+        List<MemberDTO> members;
+        
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            // 검색어가 있으면 검색
+            members = memberDao.searchByUserid(searchKeyword.trim());
+        } else {
+            // 검색어가 없으면 전체 조회
+            members = memberDao.getAllMembers();
+        }
         
         request.setAttribute("members", members);
+        request.setAttribute("searchKeyword", searchKeyword);
+        
         request.getRequestDispatcher("/admin/admin-members.jsp").forward(request, response);
     }
     
-    // 회원 등급 변경
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -44,15 +55,18 @@ public class AdminMemberServlet extends HttpServlet {
         HttpSession session = request.getSession();
         MemberDTO adminUser = (MemberDTO) session.getAttribute("adminUser");
         if (adminUser == null || !"admin".equals(adminUser.getGrade())) {
-            response.sendRedirect("/admin/admin-login.jsp");
+            response.sendRedirect("admin-login.jsp");
             return;
         }
         
+        // 등급 변경 처리
         String userid = request.getParameter("userid");
         String grade = request.getParameter("grade");
         
-        MemberDAO dao = new MemberDAO();
-        dao.updateGrade(userid, grade);
+        if (userid != null && grade != null) {
+            MemberDAO memberDao = new MemberDAO();
+            memberDao.updateGrade(userid, grade);
+        }
         
         response.sendRedirect("admin-member.do");
     }
