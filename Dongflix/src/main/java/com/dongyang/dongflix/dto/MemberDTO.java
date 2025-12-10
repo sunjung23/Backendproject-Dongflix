@@ -11,8 +11,9 @@ public class MemberDTO {
     private String birth;
     private String profileImg;
     private String grade;
-    private String email;          // 추가!
-    private Timestamp createdAt;   // 추가!
+    private String email;
+    private Timestamp createdAt;
+    private String movieStyle;  // 🔥 추가
 
     // 기본 생성자
     public MemberDTO() {}
@@ -39,74 +40,81 @@ public class MemberDTO {
     }
 
     // Getter & Setter
-    public String getUserid() { 
-        return userid; 
+    public String getUserid() {
+        return userid;
     }
-    public void setUserid(String userid) { 
-        this.userid = userid; 
-    }
-
-    public String getPassword() { 
-        return userpw; 
-    }
-    public void setPassword(String password) { 
-        this.userpw = password; 
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
-    public String getUsername() { 
-        return username; 
+    public String getPassword() {
+        return userpw;
     }
-    public void setUsername(String username) { 
-        this.username = username; 
-    }
-
-    public String getNickname() { 
-        return nickname; 
-    }
-    public void setNickname(String nickname) { 
-        this.nickname = nickname; 
+    public void setPassword(String password) {
+        this.userpw = password;
     }
 
-    public String getPhone() { 
-        return phone; 
+    public String getUsername() {
+        return username;
     }
-    public void setPhone(String phone) { 
-        this.phone = phone; 
-    }
-
-    public String getBirth() { 
-        return birth; 
-    }
-    public void setBirth(String birth) { 
-        this.birth = birth; 
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getProfileImg() { 
-        return profileImg; 
+    public String getNickname() {
+        return nickname;
     }
-    public void setProfileImg(String profileImg) { 
-        this.profileImg = profileImg; 
-    }
-
-    public String getGrade() { 
-        return grade; 
-    }
-    public void setGrade(String grade) { 
-        this.grade = grade; 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
-    // 추가된 Getter & Setter
-    public String getEmail() { 
-        return email; 
+    public String getPhone() {
+        return phone;
     }
-    public void setEmail(String email) { 
-        this.email = email; 
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public Timestamp getCreatedAt() { 
-        return createdAt; 
+    public String getBirth() {
+        return birth;
     }
-    public void setCreatedAt(Timestamp createdAt) { 
-        this.createdAt = createdAt; 
+    public void setBirth(String birth) {
+        this.birth = birth;
+    }
+
+    public String getProfileImg() {
+        return profileImg;
+    }
+    public void setProfileImg(String profileImg) {
+        this.profileImg = profileImg;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    // 🔥 추가
+    public String getMovieStyle() {
+        return movieStyle;
+    }
+    public void setMovieStyle(String movieStyle) {
+        this.movieStyle = movieStyle;
     }
 }
