@@ -8,9 +8,8 @@ public class BoardDTO {
     private String createdAt;
     private String category;
     private int views;
-
-    // ⭐ 추가된 필드: 작성자 프로필 이미지
     private String profileImg;
+    
 
     public BoardDTO() {}
 

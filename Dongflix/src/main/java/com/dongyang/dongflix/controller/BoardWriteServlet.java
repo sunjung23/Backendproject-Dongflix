@@ -1,12 +1,17 @@
 package com.dongyang.dongflix.controller;
 
-import java.io.*;
+import java.io.IOException;
+
 import com.dongyang.dongflix.dao.BoardDAO;
 import com.dongyang.dongflix.dto.BoardDTO;
 import com.dongyang.dongflix.dto.MemberDTO;
-import jakarta.servlet.*;
+
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/board/write")
 public class BoardWriteServlet extends HttpServlet {
@@ -21,7 +26,7 @@ public class BoardWriteServlet extends HttpServlet {
         MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
 
         if (user == null) {
-            response.sendRedirect("../login.jsp");
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
@@ -29,12 +34,16 @@ public class BoardWriteServlet extends HttpServlet {
         String content = request.getParameter("content");
         String category = request.getParameter("category");
 
-
         BoardDTO dto = new BoardDTO(user.getUserid(), title, content, category);
 
-        new BoardDAO().insert(dto);
+        int result = new BoardDAO().insert(dto);
 
-        response.sendRedirect(request.getContextPath() + "/mypage.do");
-
+        // ⭐ 작성 성공 → 전체 게시판 목록으로 이동
+        if (result > 0) {
+            response.sendRedirect(request.getContextPath() + "/board/list");
+        } else {
+            request.setAttribute("msg", "게시글 작성 실패");
+            request.getRequestDispatcher("/board/writeForm.jsp").forward(request, response);
+        }
     }
 }

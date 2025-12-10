@@ -343,33 +343,43 @@ body {
     <div class="post-title"><%= b.getTitle() %></div>
 
     <!-- 🔥 작성 정보 -->
-   <div class="post-meta">
-   
-    <div style="display:flex; align-items:center; gap:10px;">
-        
-        <a href="<%= request.getContextPath() %>/user/profile?userid=<%= b.getUserid() %>"
-           style="display:flex; align-items:center; text-decoration:none; color:#fff; gap:10px;">
+    <div class="post-meta">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <a href="<%= request.getContextPath() %>/user/profile?userid=<%= b.getUserid() %>"
+               style="display:flex; align-items:center; text-decoration:none; color:#fff; gap:10px;">
 
-            <img src="<%= (request.getContextPath() + "/upload/profile/" + b.getProfileImg()) %>"
-                 onerror="this.src='<%= request.getContextPath()%>/assets/default_profile.png';"
-                 style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:1px solid #333;">
-            
-            <span style="font-weight:600;">
+                <%
+                String profile = b.getProfileImg();
+                boolean isUrl = (profile != null && profile.startsWith("http"));
+
+                String imgSrc =
+                    (profile == null || profile.trim().isEmpty())
+                        ? request.getContextPath() + "/assets/default_profile.png"
+                        : (isUrl
+                            ? profile
+                            : request.getContextPath() + "/upload/profile/" + profile);
+                %>
+
+                <img src="<%= imgSrc %>"
+                     onerror="this.src='<%= request.getContextPath()%>/assets/default_profile.png';"
+                     style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:1px solid #333;">
+
+                <span style="font-weight:600;">
+                    <%= b.getUserid() %>
+                </span>
+            </a>
+        </div>
+
+        <div style="margin-top:6px;">
+            작성자 :
+            <a href="<%= request.getContextPath() %>/user/profile?userid=<%= b.getUserid() %>"
+               style="color:#e50914; text-decoration:none;">
                 <%= b.getUserid() %>
-            </span>
-        </a>
+            </a><br>
+            작성일 : <%= b.getCreatedAt() %><br>
+            분류 : <%= b.getCategory() %>
+        </div>
     </div>
-   <div style="margin-top:6px;">
-    작성자 :
-    <a href="<%= request.getContextPath() %>/user/profile?userid=<%= b.getUserid() %>"
-       style="color:#e50914; text-decoration:none;">
-        <%= b.getUserid() %>
-    </a><br>
-    작성일 : <%= b.getCreatedAt() %><br>
-    분류 : <%= b.getCategory() %>
-     </div>
-</div>
-
 
     <!-- 🔥 본문 -->
     <div class="post-content">
@@ -435,53 +445,61 @@ body {
         <% if (comments != null) {
                for (BoardCommentDTO c : comments) {
 
-            	   String displayName = c.getUserid();
-
+                   String displayName = c.getUserid();
 
                    boolean myComment = (loginUser != null &&
                        loginUser.getUserid().equals(c.getUserid()));
         %>
-          <div class="comment-item">
-    <div class="comment-header">
+        <div class="comment-item">
+            <div class="comment-header">
 
-        <div style="display:flex; align-items:center; gap:8px;">
-            <a href="<%= request.getContextPath() %>/user/profile?userid=<%= c.getUserid() %>"
-               style="display:flex; align-items:center; text-decoration:none; color:#fff; gap:8px;">
-                
-                <img src="<%= request.getContextPath() %>/upload/profile/<%= 
-                        (c.getMember() != null && c.getMember().getProfileImg() != null
-                         ? c.getMember().getProfileImg()
-                         : "default_profile.png") %>"
-                     onerror="this.src='<%= request.getContextPath() %>/assets/default_profile.png';"
-                     style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid #333;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <a href="<%= request.getContextPath() %>/user/profile?userid=<%= c.getUserid() %>"
+                       style="display:flex; align-items:center; text-decoration:none; color:#fff; gap:8px;">
 
-                <span class="comment-author">
-                    <%= c.getMember() != null ? 
-                            (c.getMember().getNickname() != null && !c.getMember().getNickname().isEmpty()
-                            ? c.getMember().getNickname()
-                            : c.getUserid())
-                        : c.getUserid() %>
-                </span>
-            </a>
+                        <%
+                        String cProfile = (c.getMember() != null) ? c.getMember().getProfileImg() : null;
+                        boolean cIsUrl = (cProfile != null && cProfile.startsWith("http"));
+
+                        String cImgSrc =
+                            (cProfile == null || cProfile.trim().isEmpty())
+                                ? request.getContextPath() + "/assets/default_profile.png"
+                                : (cIsUrl
+                                    ? cProfile
+                                    : request.getContextPath() + "/upload/profile/" + cProfile);
+                        %>
+
+                        <img src="<%= cImgSrc %>"
+                             onerror="this.src='<%= request.getContextPath() %>/assets/default_profile.png';"
+                             style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid #333;">
+
+                        <span class="comment-author">
+                            <%= c.getMember() != null ? 
+                                    (c.getMember().getNickname() != null && !c.getMember().getNickname().isEmpty()
+                                        ? c.getMember().getNickname()
+                                        : c.getUserid())
+                                : c.getUserid() %>
+                        </span>
+                    </a>
+                </div>
+
+                <span class="comment-date"><%= c.getCreatedAt() %></span>
+            </div>
+
+            <div class="comment-body">
+                <%= c.getContent().replaceAll("\n", "<br>") %>
+            </div>
+
+            <% if (myComment) { %>
+                <div class="comment-delete-form">
+                    <form action="<%= request.getContextPath() %>/board/comment/delete" method="post">
+                        <input type="hidden" name="commentId" value="<%= c.getCommentId() %>">
+                        <input type="hidden" name="boardId" value="<%= b.getBoardId() %>">
+                        <button type="submit" class="comment-delete-btn">삭제</button>
+                    </form>
+                </div>
+            <% } %>
         </div>
-
-        <span class="comment-date"><%= c.getCreatedAt() %></span>
-    </div>
-
-    <div class="comment-body">
-        <%= c.getContent().replaceAll("\n", "<br>") %>
-    </div>
-
-    <% if (myComment) { %>
-        <div class="comment-delete-form">
-            <form action="<%= request.getContextPath() %>/board/comment/delete" method="post">
-                <input type="hidden" name="commentId" value="<%= c.getCommentId() %>">
-                <input type="hidden" name="boardId" value="<%= b.getBoardId() %>">
-                <button type="submit" class="comment-delete-btn">삭제</button>
-            </form>
-        </div>
-    <% } %>
-</div>
         <%   }
            } %>
     </div>

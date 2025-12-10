@@ -16,7 +16,7 @@
 
 		<input type="hidden" name="redirect" value="${sessionScope.redirectAfterLogin}">
 	
-        <div class="form-group">
+        <div class="form-gsroup">
             <label for="userid">아이디</label>
             <input type="text" id="userid" name="userid"
                 class="form-input" placeholder="아이디를 입력하세요">
