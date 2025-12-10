@@ -201,11 +201,15 @@ select:focus, input:focus {
 
         <!-- 카테고리 -->
         <label>카테고리</label>
-        <select name="category" id="category">
-            <option value="free">📢 자유게시판</option>
-            <option value="level">⬆️ 등업게시판</option>
-            <option value="secret">🔒 비밀게시판</option>
-        </select>
+       <select name="category" id="category">
+    <option value="free">📢 자유게시판</option>
+    <option value="level">⬆️ 등업게시판</option>
+
+    <% if (user != null && "gold".equalsIgnoreCase(user.getGrade())) { %>
+        <option value="secret">🔒 비밀게시판</option>
+    <% } %>
+</select>
+
 
         <!-- 제목 -->
         <label>제목</label>

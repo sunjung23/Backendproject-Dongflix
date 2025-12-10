@@ -26,30 +26,34 @@ public class BoardListServlet extends HttpServlet {
         // ★ 로그인 사용자 확인
         MemberDTO user = (MemberDTO) request.getSession().getAttribute("loginUser");
 
-        // ★ 비밀게시판 접근 제한 — GOLD만
+        // ★ 비밀게시판 전체 목록 접근 제한 (GOLD ONLY)
         if ("secret".equals(category)) {
-            if (user == null || !"gold".equalsIgnoreCase(user.getGrade())) {
 
-                // ★ alert + redirect 방식
+            if (user == null || user.getGrade() == null ||
+                !user.getGrade().equalsIgnoreCase("gold")) {
+
                 response.setContentType("text/html; charset=UTF-8");
                 response.getWriter().println(
-                    "<script>alert('비밀 게시판은 GOLD 회원만 접근 가능합니다.');" +
+                    "<script>alert('비밀게시판은 GOLD 회원만 접근 가능합니다.');" +
                     "location.href='" + request.getContextPath() + "/board/list?category=all';</script>"
                 );
-                return; // ★ 반드시 return
+                return;
             }
         }
 
         BoardDAO dao = new BoardDAO();
         List<BoardDTO> list;
 
-        // 정렬 우선
+        // ⭐ 정렬이 우선
         if (sort != null) {
             list = dao.getSortedList(sort);
         }
+        // ⭐ 전체 카테고리(list?category=all)
         else if (category == null || category.equals("all")) {
             list = dao.getAll();
-        } else {
+        }
+        // ⭐ 특정 카테고리
+        else {
             list = dao.getByCategory(category);
         }
 

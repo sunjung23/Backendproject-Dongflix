@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.dongyang.dongflix.dto.BoardDTO" %>
+<%@ page import="com.dongyang.dongflix.dto.MemberDTO" %>
 <%@ include file="/common/header.jsp" %>
 
 <%
@@ -10,6 +11,9 @@
 
     if (category == null) category = "all";
     if (sort == null) sort = "new";
+
+    // ⭐ 로그인 사용자 정보 가져오기 (비밀글 처리용)
+    MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
 %>
 
 <!DOCTYPE html>
@@ -19,9 +23,7 @@
 <title>게시판 목록 - DONGFLIX</title>
 
 <style>
-/* ============================================================
-   GLOBAL Premium Style
-   ============================================================ */
+/* ---- CSS 원본 전체 유지 ---- */
 body {
     margin:0;
     background:#000;
@@ -29,9 +31,6 @@ body {
     font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ============================================================
-   전체 배경 + Glow
-   ============================================================ */
 .board-wrapper {
     min-height:100vh;
     padding:100px 16px;
@@ -41,9 +40,6 @@ body {
         #000;
 }
 
-/* ============================================================
-   메인 컨테이너
-   ============================================================ */
 .board-container {
     max-width:900px;
     margin:0 auto;
@@ -64,9 +60,6 @@ body {
     margin-bottom:26px;
 }
 
-/* ============================================================
-   카테고리 탭
-   ============================================================ */
 .board-tabs {
     display:flex;
     gap:12px;
@@ -96,9 +89,6 @@ body {
     box-shadow:0 0 10px rgba(229,9,20,0.4);
 }
 
-/* ============================================================
-   정렬 버튼
-   ============================================================ */
 .sort-area {
     display:flex;
     justify-content:flex-end;
@@ -127,9 +117,6 @@ body {
     border-color:#e50914;
 }
 
-/* ============================================================
-   글쓰기 버튼
-   ============================================================ */
 .write-btn {
     display:inline-block;
     padding:12px 20px;
@@ -149,9 +136,6 @@ body {
     transform:translateY(-2px);
 }
 
-/* ============================================================
-   게시글 카드
-   ============================================================ */
 .board-item {
     background:rgba(255,255,255,0.03);
     padding:22px;
@@ -166,7 +150,6 @@ body {
     transform:translateY(-3px);
 }
 
-/* 제목 */
 .board-title a {
     font-size:20px;
     font-weight:700;
@@ -179,23 +162,18 @@ body {
     text-decoration:underline;
 }
 
-/* 메타 정보 */
 .board-meta {
     margin:10px 0 12px;
     color:#bbb;
     font-size:13px;
 }
 
-/* 본문 미리보기 */
 .board-preview {
     color:#ddd;
     font-size:15px;
     line-height:1.65;
 }
 
-/* ============================================================
-   반응형
-   ============================================================ */
 @media (max-width:600px) {
     .board-container { padding:26px 18px; }
     .board-title a { font-size:18px; }
@@ -242,12 +220,27 @@ body {
 
         <% for (BoardDTO b : list) { %>
 
+            <%
+                boolean isSecret = "secret".equals(b.getCategory());
+                boolean isGold = (loginUser != null && "gold".equalsIgnoreCase(loginUser.getGrade()));
+
+                // ⭐ 추가된 로직: GOLD 아니면 목록에서 비밀글 자체를 숨김
+                if (isSecret && !isGold) continue;
+            %>
+
             <div class="board-item">
+
                 <div class="board-title">
-                    <a href="detail?id=<%= b.getBoardId() %>"><%= b.getTitle() %></a>
+                    <a href="detail?id=<%= b.getBoardId() %>">
+                        <% if (isSecret) { %>
+                            🔒 <%= b.getTitle() %>
+                            <span style="color:#f1c40f; font-size:12px; margin-left:6px;">[GOLD 전용]</span>
+                        <% } else { %>
+                            <%= b.getTitle() %>
+                        <% } %>
+                    </a>
                 </div>
 
-                <!-- 🔹 메타 정보: 한 줄로 깔끔하게 -->
                 <div class="board-meta">
                     작성자:
                     <a href="<%= request.getContextPath() %>/user/profile?userid=<%= b.getUserid() %>"
@@ -262,9 +255,10 @@ body {
 
                 <div class="board-preview">
                     <%= (b.getContent().length() > 90)
-                        ? b.getContent().substring(0, 90) + "..."
-                        : b.getContent() %>
+                            ? b.getContent().substring(0, 90) + "..."
+                            : b.getContent() %>
                 </div>
+
             </div>
 
         <% } %>
