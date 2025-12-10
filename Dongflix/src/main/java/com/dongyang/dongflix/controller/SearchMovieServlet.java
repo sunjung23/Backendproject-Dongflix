@@ -7,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
-
 import com.dongyang.dongflix.model.TMDBmovie;
 
 import jakarta.servlet.ServletException;
@@ -32,13 +31,34 @@ public class SearchMovieServlet extends HttpServlet {
         String keyword = req.getParameter("keyword");
         String genre = req.getParameter("genre");
 
+        if (keyword == null) keyword = "";
+        if (genre == null) genre = "";
+
         try {
-            List<TMDBmovie> movieList = fetchMovies(keyword, genre, 6);
+            // 검색어 변형 만들기 
+            String kOriginal = keyword.trim();
+            String kNoSpace = kOriginal.replaceAll("\\s+", "");
+            String kHyphen = kOriginal.replaceAll("\\s+", "-");
 
-            // 포스터 없는 영화 제외
-            movieList.removeIf(m -> m.getPosterUrl() == null || m.getPosterUrl().isEmpty());
+            List<TMDBmovie> allResults = new ArrayList<>();
 
-            req.setAttribute("movies", movieList);
+            allResults.addAll(fetchMovies(kOriginal, genre, 3));
+            if (!kNoSpace.equals(kOriginal))
+                allResults.addAll(fetchMovies(kNoSpace, genre, 3));
+            if (!kHyphen.equals(kOriginal))
+                allResults.addAll(fetchMovies(kHyphen, genre, 3));
+
+            // 중복 제거 
+            Map<Integer, TMDBmovie> uniqueMap = new LinkedHashMap<>();
+            for (TMDBmovie m : allResults) {
+                if (m.getPosterUrl() != null && !m.getPosterUrl().isEmpty()) {
+                    uniqueMap.put(m.getId(), m);
+                }
+            }
+
+            List<TMDBmovie> finalList = new ArrayList<>(uniqueMap.values());
+
+            req.setAttribute("movies", finalList);
             req.setAttribute("keyword", keyword);
             req.setAttribute("genre", genre);
 
@@ -50,8 +70,8 @@ public class SearchMovieServlet extends HttpServlet {
         }
     }
 
-    /** 여러 페이지에서 영화 수집 */
     private List<TMDBmovie> fetchMovies(String keyword, String genre, int pages) throws Exception {
+
         List<TMDBmovie> collected = new ArrayList<>();
 
         for (int p = 1; p <= pages; p++) {
@@ -62,9 +82,11 @@ public class SearchMovieServlet extends HttpServlet {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            BufferedReader br =
+                    new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
             StringBuilder sb = new StringBuilder();
             String line;
+
             while ((line = br.readLine()) != null) sb.append(line);
             br.close();
 
@@ -92,20 +114,21 @@ public class SearchMovieServlet extends HttpServlet {
     }
 
     private String buildApiUrl(String keyword, String genre, int page) throws Exception {
-        StringBuilder apiUrl = new StringBuilder(BASE_URL);
+
+        StringBuilder api = new StringBuilder(BASE_URL);
 
         if (keyword != null && !keyword.isEmpty()) {
-            apiUrl.append("/search/movie?query=")
-                    .append(URLEncoder.encode(keyword, "UTF-8"));
+            api.append("/search/movie?query=")
+               .append(URLEncoder.encode(keyword, "UTF-8"));
         } else {
-            apiUrl.append("/discover/movie?with_genres=")
-                    .append(genre == null ? "" : genre);
+            api.append("/discover/movie?with_genres=")
+               .append(genre);
         }
 
-        apiUrl.append("&language=ko-KR&api_key=").append(API_KEY);
-        apiUrl.append("&page=").append(page);
+        api.append("&language=ko-KR")
+           .append("&api_key=").append(API_KEY)
+           .append("&page=").append(page);
 
-
-        return apiUrl.toString();
+        return api.toString();
     }
 }
