@@ -391,6 +391,20 @@ body {
     .mypage-container { padding:28px 18px; }
     .profile-section { flex-direction:column; align-items:flex-start; }
 }
+
+/* 🔥 영화 취향 배지 */
+.movie-style-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-top: 6px;
+    margin-left: 8px;
+    background: linear-gradient(135deg, rgba(229,9,20,0.3) 0%, rgba(255,60,60,0.25) 100%);
+    border: 1px solid rgba(229,9,20,0.4);
+    color: #ffffff;  /* 🔥 흰색으로 변경 */
+    font-weight: 600;
+}
 </style>
 
 <script>
@@ -412,33 +426,40 @@ function scrollToSection(id) {
 
     <!-- 프로필 -->
     <div class="profile-section">
-        <div class="profile-img"
-             style="background-image:url('<%= 
-                (user.getProfileImg()!=null && !user.getProfileImg().isEmpty())
-                ? user.getProfileImg()
-                : "img/default_profile.png"
-             %>');"></div>
-
-        <div>
-            <div class="user-name"><%= user.getUsername() %> 님</div>
-
-            <span class="grade-badge 
-                <%
-                    String g = user.getGrade().toLowerCase();
-                    if(g.equals("bronze")) out.print("grade-bronze");
-                    else if(g.equals("silver")) out.print("grade-silver");
-                    else if(g.equals("gold")) out.print("grade-gold");
-                %>">
-                등급 : <%= user.getGrade() %>
-            </span>
-
-            <div class="mypage-actions">
-                <a href="<%=request.getContextPath()%>/editProfileForm" class="mp-btn">회원정보 수정</a>
-                <a href="<%=request.getContextPath()%>/changePasswordForm" class="mp-btn">비밀번호 변경</a>
-                <a href="logout.do" class="mp-btn">로그아웃</a>
-            </div>
-        </div>
-    </div>
+	    <div class="profile-img"
+	         style="background-image:url('<%= 
+	            (user.getProfileImg()!=null && !user.getProfileImg().isEmpty())
+	            ? user.getProfileImg()
+	            : "img/default_profile.png"
+	         %>');"></div>
+	
+	    <div>
+	        <div class="user-name"><%= user.getUsername() %> 님</div>
+	
+	        <span class="grade-badge 
+	            <%
+	                String g = user.getGrade().toLowerCase();
+	                if(g.equals("bronze")) out.print("grade-bronze");
+	                else if(g.equals("silver")) out.print("grade-silver");
+	                else if(g.equals("gold")) out.print("grade-gold");
+	            %>">
+	            등급 : <%= user.getGrade() %>
+	        </span>
+	
+	        <!-- 영화 취향 배지 -->
+			<% if (user.getMovieStyle() != null && !user.getMovieStyle().isEmpty()) { %>
+			    <span class="movie-style-badge">
+			        <%= user.getMovieStyle() %>
+			    </span>
+			<% } %>
+	
+	        <div class="mypage-actions">
+	            <a href="<%=request.getContextPath()%>/editProfileForm" class="mp-btn">회원정보 수정</a>
+	            <a href="<%=request.getContextPath()%>/changePasswordForm" class="mp-btn">비밀번호 변경</a>
+	            <a href="logout.do" class="mp-btn">로그아웃</a>
+	        </div>
+	    </div>
+	</div>
 
        <!-- 활동 요약 -->
     <div class="stats-grid">
@@ -510,31 +531,31 @@ function scrollToSection(id) {
     </div>
 
     <div class="info-grid">
-        <div class="info-card">
-            <div class="info-label">아이디</div>
-            <div class="info-value"><%= user.getUserid() %></div>
-        </div>
-        <div class="info-card">
-            <div class="info-label">이름</div>
-            <div class="info-value"><%= user.getUsername() %></div>
-        </div>
-        <div class="info-card">
-            <div class="info-label">닉네임</div>
-            <div class="info-value"><%= user.getNickname() != null ? user.getNickname() : "-" %></div>
-        </div>
-        <div class="info-card">
-            <div class="info-label">연락처</div>
-            <div class="info-value"><%= user.getPhone() != null ? user.getPhone() : "-" %></div>
-        </div>
-        <div class="info-card">
-            <div class="info-label">생일</div>
-            <div class="info-value"><%= user.getBirth() != null ? user.getBirth() : "-" %></div>
-        </div>
-        <div class="info-card">
-            <div class="info-label">등급</div>
-            <div class="info-value"><%= user.getGrade() %></div>
-        </div>
-    </div>
+	    <div class="info-card">
+	        <div class="info-label">아이디</div>
+	        <div class="info-value"><%= user.getUserid() %></div>
+	    </div>
+	    <div class="info-card">
+	        <div class="info-label">이름</div>
+	        <div class="info-value"><%= user.getUsername() %></div>
+	    </div>
+	    <div class="info-card">
+	        <div class="info-label">닉네임</div>
+	        <div class="info-value"><%= user.getNickname() != null ? user.getNickname() : "-" %></div>
+	    </div>
+	    <div class="info-card">
+	        <div class="info-label">연락처</div>
+	        <div class="info-value"><%= user.getPhone() != null ? user.getPhone() : "-" %></div>
+	    </div>
+	    <div class="info-card">
+	        <div class="info-label">생일</div>
+	        <div class="info-value"><%= user.getBirth() != null ? user.getBirth() : "-" %></div>
+	    </div>
+	    <div class="info-card">
+	        <div class="info-label">등급</div>
+	        <div class="info-value"><%= user.getGrade() %></div>
+	    </div>
+</div>
 
     <!-- 찜한 영화 -->
     <div id="liked-section" class="section-header">

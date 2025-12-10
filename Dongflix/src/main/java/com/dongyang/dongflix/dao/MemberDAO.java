@@ -170,6 +170,7 @@ public class MemberDAO {
                 dto.setBirth(rs.getString("birth"));
                 dto.setProfileImg(rs.getString("profile_img"));
                 dto.setGrade(rs.getString("grade"));
+                dto.setMovieStyle(rs.getString("movie_style")); 
 
                 return dto;
             }
@@ -292,6 +293,24 @@ public class MemberDAO {
         return "사용자" + (int)(Math.random() * 90000 + 10000);
     }
     
+    // 영화 취향 저장
+    public int updateMovieStyle(String userid, String movieStyle) {
+        String sql = "UPDATE member SET movie_style = ? WHERE userid = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, movieStyle);
+            ps.setString(2, userid);
+            
+            return ps.executeUpdate();
+            
+        } catch (Exception e) {
+            System.out.println(">>> 영화 취향 저장 실패");
+            e.printStackTrace();
+        }
+        return 0;
+    }
     
     
     public MemberDTO getByUserid(String userid) {

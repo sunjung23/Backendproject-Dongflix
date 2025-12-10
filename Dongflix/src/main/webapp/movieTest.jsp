@@ -473,19 +473,35 @@ body {
     </div>
 
     <!-- 결과 화면 -->
-    <div class="result-container" id="resultContainer">
-        <div class="result-type" id="resultEmoji"></div>
-        <div class="result-title" id="resultTitle"></div>
-        <div class="result-description" id="resultDesc"></div>
-
-        <div class="recommended-movies">
-            <h3>🎞️ <%= userName %>님을 위한 추천 영화</h3>
-            <div class="movie-list" id="movieList"></div>
-        </div>
-
-        <a href="indexMovie" class="back-btn">메인으로 돌아가기</a>
-    </div>
-</div>
+	<div class="result-container" id="resultContainer">
+	    <div class="result-type" id="resultEmoji"></div>
+	    <div class="result-title" id="resultTitle"></div>
+	    <div class="result-description" id="resultDesc"></div>
+	
+	    <div class="recommended-movies">
+	        <h3>🎞️ <%= userName %>님을 위한 추천 영화</h3>
+	        <div class="movie-list" id="movieList"></div>
+	    </div>
+	
+	    <!-- 버튼 영역 -->
+		<div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px; flex-wrap: wrap;">
+		    <% if (user != null) { %>
+		        <!-- 로그인한 경우: 저장 버튼 표시 -->
+		        <form action="saveMovieStyle" method="post" style="display: inline;">
+		            <input type="hidden" name="movieStyle" id="saveMovieStyle">
+		            <button type="submit" class="back-btn" style="background: #1a5f3f; cursor: pointer; border: none;">
+		                마이페이지에 저장
+		            </button>
+		        </form>
+		    <% } else { %>
+		        <!-- 비로그인 상태: 로그인 유도 버튼 -->
+		        <button onclick="promptLogin()" class="back-btn" style="background: #555; cursor: pointer; border: none;">
+		            마이페이지에 저장 (로그인 필요)
+		        </button>
+		    <% } %>
+		    <a href="indexMovie" class="back-btn">메인으로 돌아가기</a>
+		</div>
+	</div>
 
 <script>
 var currentQuestion = 1;
@@ -644,6 +660,12 @@ function showResult() {
     document.getElementById('resultTitle').textContent = result.title;
     document.getElementById('resultDesc').textContent = result.description;
     
+    // 🔥 hidden input에 이모지 + 결과 타입 저장
+    var saveInput = document.getElementById('saveMovieStyle');
+    if (saveInput) {
+        saveInput.value = result.emoji + ' ' + result.title;
+    }
+    
     // 영화 목록 로딩 중 표시
     document.getElementById('movieList').innerHTML = '<p style="text-align: center; color: #b3b3b3;">🎬 영화 추천 목록을 불러오는 중...</p>';
     
@@ -769,6 +791,14 @@ function analyzeAnswers(answers) {
     };
 
     return results[maxType];
+}
+
+//로그인 유도 팝업
+function promptLogin() {
+    if (confirm('로그인 후 이용 가능한 기능입니다.\n로그인 하시겠습니까?')) {
+        // 현재 페이지를 저장해서 로그인 후 다시 돌아오기
+        window.location.href = 'login.jsp?returnUrl=' + encodeURIComponent(window.location.href);
+    }
 }
 </script>
 

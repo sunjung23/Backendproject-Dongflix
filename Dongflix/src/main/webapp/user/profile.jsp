@@ -227,6 +227,31 @@ body {
     .profile-container { padding:26px 18px; }
     .profile-top { flex-direction:column; align-items:flex-start; }
 }
+
+/* 🔥 영화 취향 배지 */
+.movie-style-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-top: 6px;
+    background: linear-gradient(135deg, rgba(229,9,20,0.3) 0%, rgba(255,60,60,0.25) 100%);
+    border: 1px solid rgba(229,9,20,0.4);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.grade-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    display: inline-block;
+    margin-top: 6px;
+}
+
+.grade-bronze { background: rgba(205,127,50,0.25); color: #e2b77c; }
+.grade-silver { background: rgba(192,192,192,0.25); color: #e8e8e8; }
+.grade-gold { background: rgba(255,215,0,0.3); color: #ffe680; }
 </style>
 </head>
 <body>
@@ -235,28 +260,44 @@ body {
 <div class="profile-container">
 
     <!-- 상단 프로필 -->
-    <div class="profile-top">
-        <div class="profile-avatar"
-             style="background-image:url('<%= 
-                (owner.getProfileImg() != null && !owner.getProfileImg().isEmpty())
-                ? owner.getProfileImg()
-                : "img/default_profile.png"
-             %>');"></div>
-
-        <div>
-            <div class="profile-main-name">
-                <%= (owner.getNickname() != null && !owner.getNickname().isEmpty())
-                        ? owner.getNickname()
-                        : owner.getUserid() %>
-            </div>
-            <div class="profile-sub">
-                @<%= owner.getUserid() %> · 등급: <%= owner.getGrade() %>
-            </div>
-            <div class="profile-badge">
-                프로필 방문 <strong><%= visitCount %></strong>회
-            </div>
-        </div>
-    </div>
+	<div class="profile-top">
+	    <div class="profile-avatar"
+	         style="background-image:url('<%= 
+	            (owner.getProfileImg() != null && !owner.getProfileImg().isEmpty())
+	            ? owner.getProfileImg()
+	            : "img/default_profile.png"
+	         %>');"></div>
+	
+	    <div>
+	        <div class="profile-main-name">
+	            <%= (owner.getNickname() != null && !owner.getNickname().isEmpty())
+	                    ? owner.getNickname()
+	                    : owner.getUserid() %>
+	        </div>
+	        <div class="profile-sub">
+	            @<%= owner.getUserid() %> · 등급: <%= owner.getGrade() %>
+	        </div>
+	        
+	        <!-- 🔥 등급 배지 + 영화 취향 배지 -->
+	        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+	            <span class="grade-badge 
+	                <%
+	                    String g = owner.getGrade().toLowerCase();
+	                    if(g.equals("bronze")) out.print("grade-bronze");
+	                    else if(g.equals("silver")) out.print("grade-silver");
+	                    else if(g.equals("gold")) out.print("grade-gold");
+	                %>">
+	                <%= owner.getGrade().toUpperCase() %>
+	            </span>
+	            
+	            <% if (owner.getMovieStyle() != null && !owner.getMovieStyle().isEmpty()) { %>
+	                <span class="movie-style-badge">
+	                    <%= owner.getMovieStyle() %>
+	                </span>
+	            <% } %>
+	        </div>
+	    </div>
+	</div>
 
     <!-- 통계 -->
     <div class="profile-stats">
