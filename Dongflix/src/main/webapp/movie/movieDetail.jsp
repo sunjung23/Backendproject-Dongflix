@@ -26,7 +26,6 @@
     <link rel="stylesheet" type="text/css" 
           href="<%= request.getContextPath() %>/css/movieDetail.css?v=<%= System.currentTimeMillis() %>">
 
-    <!-- ⭐ 별점용 CSS -->
     <style>
 	    .star-rating {
 	        font-size: 32px;
@@ -38,7 +37,6 @@
 	        color: #ffdf00;
 	    }
 	
-	    /* 수정 모드 별점 */
 	    .edit-star-rating .star {
 	        font-size: 28px;
 	        cursor: pointer;
@@ -48,7 +46,6 @@
 	        color: #ffdf00;
 	    }
 	
-	    /* 🔥 리뷰 아이템 개선 */
 	    .review-item {
 	        background-color: #1a1a1a;
 	        border: 1px solid #333;
@@ -96,7 +93,6 @@
 	        gap: 8px;
 	    }
 	
-	    /* 추천 버튼 스타일 개선 */
 	    .like-btn {
 	        background: none;
 	        border: 1px solid #555;
@@ -154,7 +150,6 @@
 	        gap: 8px;
 	    }
 	
-	    /* TOP 배지 */
 	    .top-badge {
 	        display: inline-block;
 	        background: linear-gradient(135deg, #ffd700, #ffed4e);
@@ -167,7 +162,6 @@
 	        box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
 	    }
 	
-	    /* 구분선 */
 	    .review-divider {
 	        margin: 40px 0;
 	        border: none;
@@ -188,7 +182,6 @@
 	        font-weight: bold;
 	    }
 	
-	    /* 리뷰 액션 버튼 */
 	    .review-action-btn {
 	        background: none;
 	        border: 1px solid #555;
@@ -251,8 +244,9 @@
 			            : "❤️ 찜하기" %>
 			</button>
         </form>
-
-        <a href="indexMovie" class="back-btn">← 메인으로 돌아가기</a>
+			<a href="<%= request.getContextPath() %>/writeDiary?movieId=<%= movie.getId() %>" class="diary-btn">
+		    📘 영화 일기 작성하기
+		</a>
     </div>
 </div>
 

@@ -34,7 +34,7 @@ public class MovieDetailServlet extends HttpServlet {
     private static final String API_KEY = "5c22fcbe6d86e21ad75efef7d85e867d";
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
 
-    private static final Map<Integer, TMDBmovie> cache = new HashMap<>();
+    static final Map<Integer, TMDBmovie> cache = new HashMap<>();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
