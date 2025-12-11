@@ -341,8 +341,28 @@ public class MemberDAO {
         }
         return null;
     }
+    
+ // MemberDAO 내부에 추가
+    public boolean isUserIdExists(String userid) {
+        String sql = "SELECT COUNT(*) FROM member WHERE userid = ?";
+        int count = 0;
 
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
+            ps.setString(1, userid);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count > 0;
+    }
 
 
 }

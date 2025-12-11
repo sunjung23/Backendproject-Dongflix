@@ -7,13 +7,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
+import com.dongyang.dongflix.dto.MemberDTO;
 import com.dongyang.dongflix.model.TMDBmovie;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.*;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,7 +30,6 @@ public class IndexMovieServlet extends HttpServlet {
         GENRES.put("action", "28");
         GENRES.put("crime", "80");
         GENRES.put("fantasy", "14");
-        
     }
 
     @Override
@@ -39,6 +37,10 @@ public class IndexMovieServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
+
+            /* ============================================================
+               1) 기본 장르 추천: 기존 영화 목록 로딩
+            ============================================================ */
             Map<String, List<TMDBmovie>> movieLists = new HashMap<>();
 
             for (Map.Entry<String, String> entry : GENRES.entrySet()) {
@@ -46,6 +48,9 @@ public class IndexMovieServlet extends HttpServlet {
                 movieLists.put(entry.getKey(), list);
             }
 
+            /* ============================================================
+               2) 배너용 랜덤 영화 선택
+            ============================================================ */
             List<TMDBmovie> allMovies = new ArrayList<>();
             for (List<TMDBmovie> list : movieLists.values()) {
                 allMovies.addAll(list);
@@ -57,8 +62,63 @@ public class IndexMovieServlet extends HttpServlet {
                 bannerMovie = allMovies.get(0);
             }
 
+            /* ============================================================
+               3) 로그인 사용자 기반 개인화 추천 로직
+            ============================================================ */
+            HttpSession session = request.getSession();
+            MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
+
+            List<TMDBmovie> personalRecommend = null;
+
+            if (user != null) {
+
+                String style = user.getMovieStyle(); // ex) "액션,코미디,로맨스"
+
+                if (style != null && !style.trim().isEmpty()) {
+
+                    // 장르 분리
+                    String[] favGenres = style.split(",");
+
+                    // 결과 리스트
+                    personalRecommend = new ArrayList<>();
+
+                    for (String g : favGenres) {
+                        g = g.trim();
+
+                        String tmdbId = genreToTMDB(g);
+                        if (tmdbId != null) {
+                            // 선호 장르 영화 fetch (하나당 10개 로드)
+                            List<TMDBmovie> temp = fetchByGenre(tmdbId);
+                            Collections.shuffle(temp);
+                            personalRecommend.addAll(temp.subList(0, Math.min(temp.size(), 10)));
+                        }
+                    }
+
+                    // 추천을 너무 편중되지 않게 약간 섞어줌
+                    Collections.shuffle(personalRecommend);
+
+                    // 최대 20개만
+                    if (personalRecommend.size() > 20) {
+                        personalRecommend = personalRecommend.subList(0, 20);
+                    }
+                }
+            }
+
+            /* ============================================================
+               4) recommend 리스트가 비어 있으면 fallback
+            ============================================================ */
+            if (personalRecommend == null || personalRecommend.isEmpty()) {
+                // 전체 인기 영화에서 랜덤 12개 제공
+                Collections.shuffle(allMovies);
+                personalRecommend = allMovies.subList(0, Math.min(12, allMovies.size()));
+            }
+
+            /* ============================================================
+               5) JSP 전달
+            ============================================================ */
             request.setAttribute("bannerMovie", bannerMovie);
             request.setAttribute("movieLists", movieLists);
+            request.setAttribute("personalRecommend", personalRecommend);
             request.setAttribute("fromServlet", true);
 
             request.getRequestDispatcher("index.jsp").forward(request, response);
@@ -69,6 +129,28 @@ public class IndexMovieServlet extends HttpServlet {
         }
     }
 
+    /* ============================================================
+       TMDB 장르 변환 (한글 → TMDB ID)
+    ============================================================ */
+    private String genreToTMDB(String genre) {
+
+        switch (genre) {
+            case "액션": return "28";
+            case "로맨스": return "10749";
+            case "스릴러": return "53";
+            case "코미디": return "35";
+            case "SF": return "878";
+            case "판타지": return "14";
+            case "애니메이션": return "16";
+            case "공포": return "27";
+            case "드라마": return "18";
+            default: return null;
+        }
+    }
+
+    /* ============================================================
+       TMDB API로 장르별 영화 로드
+    ============================================================ */
     private List<TMDBmovie> fetchByGenre(String genreId) throws Exception {
 
         Random rnd = new Random();
@@ -79,15 +161,17 @@ public class IndexMovieServlet extends HttpServlet {
                 "&with_genres=" + genreId +
                 "&language=ko-KR" +
                 "&sort_by=popularity.desc" +
-                "&vote_average.gte=7.0" +
-                "&vote_count.gte=300" +
+                "&vote_average.gte=6.0" +
+                "&vote_count.gte=200" +
                 "&page=" + randomPage;
 
-        URL url = new URL(apiUrl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        HttpURLConnection conn = (HttpURLConnection) new URL(apiUrl).openConnection();
         conn.setRequestMethod("GET");
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(conn.getInputStream(), "UTF-8")
+        );
+
         StringBuilder sb = new StringBuilder();
         String line;
 
