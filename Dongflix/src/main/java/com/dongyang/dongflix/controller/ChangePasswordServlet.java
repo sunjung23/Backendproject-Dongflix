@@ -29,31 +29,40 @@ public class ChangePasswordServlet extends HttpServlet {
         String newPw = request.getParameter("newPw");
         String newPw2 = request.getParameter("newPw2");
 
-        // 새 비밀번호 2개 불일치
+        // 1) 새 비밀번호 일치 여부
         if (!newPw.equals(newPw2)) {
-            response.sendRedirect("changePassword.jsp?error=nomatch");
+            request.setAttribute("alertType", "error");
+            request.setAttribute("alertMsg", "새 비밀번호가 서로 일치하지 않습니다.");
+            request.getRequestDispatcher("/user/changePassword.jsp").forward(request, response);
             return;
         }
 
         MemberDAO dao = new MemberDAO();
 
-        // 현재 비밀번호 확인
+        // 2) 현재 비밀번호 검증
         if (!dao.checkPassword(user.getUserid(), currentPw)) {
-            response.sendRedirect("changePassword.jsp?error=wrongpw");
+            request.setAttribute("alertType", "error");
+            request.setAttribute("alertMsg", "현재 비밀번호가 올바르지 않습니다.");
+            request.getRequestDispatcher("/user/changePassword.jsp").forward(request, response);
             return;
         }
 
-        // 비밀번호 업데이트
+        // 3) 비밀번호 업데이트
         int result = dao.updatePassword(user.getUserid(), newPw);
 
         if (result == 1) {
-            // 세션에도 반영
+            // 세션 비밀번호도 갱신
             user.setPassword(newPw);
             session.setAttribute("loginUser", user);
 
-            response.sendRedirect("mypage.do?pw=success");
+            request.setAttribute("alertType", "success");
+            request.setAttribute("alertMsg", "비밀번호가 성공적으로 변경되었습니다!");
+
+            request.getRequestDispatcher("/user/changePassword.jsp").forward(request, response);
         } else {
-            response.sendRedirect("changePassword.jsp?error=db");
+            request.setAttribute("alertType", "error");
+            request.setAttribute("alertMsg", "비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+            request.getRequestDispatcher("/user/changePassword.jsp").forward(request, response);
         }
     }
 }

@@ -16,186 +16,199 @@
 <meta charset="UTF-8">
 <title>게시글 수정 - DONGFLIX</title>
 
-<!-- Summernote -->
+<!-- Summernote CDN -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
 
 <style>
 /* ===============================================================
-    GLOBAL THEME: DONGFLIX PREMIUM RED
-    =============================================================== */
+   GLOBAL - Navy / Royal Blue Premium Theme
+=============================================================== */
 body {
     margin: 0;
     padding: 0;
-    background:#000;
-    color:#fff;
-    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #05080f;  /* 깊은 네이비 */
+    color: #e6e6e6;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* =====================================================================
-   배경 Glow
-   ===================================================================== */
+/* ===============================================================
+   배경 영역
+=============================================================== */
 .update-bg {
     min-height: 100vh;
     padding: 100px 16px;
-    background:
-       radial-gradient(circle at 15% 20%, rgba(229, 9, 20, 0.35), transparent 60%),
-       radial-gradient(circle at 85% 85%, rgba(255, 60, 60, 0.25), transparent 60%),
-       #000;
     display: flex;
     justify-content: center;
+    background:
+        radial-gradient(circle at 18% 10%, rgba(63,111,255,0.25), transparent 60%),
+        radial-gradient(circle at 85% 80%, rgba(0,212,255,0.25), transparent 70%),
+        #05080f;
 }
 
-/* =====================================================================
-   메인 수정 컨테이너
-   ===================================================================== */
+/* ===============================================================
+   메인 컨테이너 (Glass Blue)
+=============================================================== */
 .update-container {
     width: 100%;
     max-width: 830px;
     padding: 36px;
-    background: rgba(20,20,20,0.97);
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 14px 50px rgba(0,0,0,0.75);
-    backdrop-filter: blur(6px);
+    background: rgba(10,15,25,0.92);
+    border-radius: 22px;
+    border: 1px solid rgba(120,155,255,0.18);
+    box-shadow: 0 20px 55px rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    position: relative;
 }
 
-/* =====================================================================
-   제목 스타일
-   ===================================================================== */
+/* 하이라이트 효과 */
+.update-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(63,111,255,0.18), transparent 40%, rgba(0,212,255,0.15));
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.update-container > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* ===============================================================
+   제목
+=============================================================== */
 .update-container h2 {
     font-size: 30px;
     font-weight: 800;
-    margin-bottom: 28px;
-    background: linear-gradient(90deg, #ff3434, #e50914);
+    margin-bottom: 26px;
+    background: linear-gradient(90deg, #3F6FFF, #00D4FF, #9be7ff);
     -webkit-background-clip: text;
     color: transparent;
-    letter-spacing: -0.3px;
 }
 
-/* =====================================================================
-   form label
-   ===================================================================== */
+/* ===============================================================
+   INPUT & LABEL
+=============================================================== */
 label {
     display: block;
-    font-size: 15px;
-    color: #ddd;
-    font-weight: 500;
     margin-bottom: 8px;
+    color: #c9d4ff;
+    font-size: 15px;
+    font-weight: 500;
 }
 
-/* =====================================================================
-    input
-   ===================================================================== */
 .update-container input {
     width: 100%;
     padding: 12px;
-    background: #1b1b1b;
-    border: 1px solid #333;
+    background: #0d1321;
+    border: 1px solid #27335a;
     border-radius: 10px;
-    color:#fff;
-    font-size:15px;
-    transition:.25s;
+    color: #e6ebff;
+    font-size: 15px;
+    transition: .25s;
 }
 
 .update-container input:focus {
-    outline:none;
-    border-color:#e50914;
-    background:#222;
-    box-shadow:0 0 0 1px rgba(229,9,20,0.6);
+    outline: none;
+    background: #121a33;
+    border-color: #3F6FFF;
+    box-shadow: 0 0 8px rgba(63,111,255,0.5);
 }
 
-/* =====================================================================
-   에러 문구
-   ===================================================================== */
+/* ===============================================================
+   ERROR MESSAGE
+=============================================================== */
 .error-msg {
-    font-size:13px;
-    margin-top:3px;
-    color:#ff4646;
-    display:none;
+    font-size: 13px;
+    margin-top: 5px;
+    color: #ff6d6d;
+    display: none;
 }
 
-/* =====================================================================
-   버튼들
-   ===================================================================== */
+/* ===============================================================
+   BUTTON AREA
+=============================================================== */
 .btn-area {
-    margin-top: 28px;
-    display:flex;
-    justify-content:flex-end;
-    gap:14px;
-    flex-wrap:wrap;
+    margin-top: 26px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    flex-wrap: wrap;
 }
 
 .btn-update {
-    padding:12px 22px;
-    background:#e50914;
-    border:none;
-    border-radius:10px;
-    font-size:15px;
-    color:#fff;
-    font-weight:600;
-    cursor:pointer;
-    transition:.2s;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2036CA, #3F6FFF);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .25s;
 }
 
 .btn-update:hover {
-    background:#b20710;
-    box-shadow:0 6px 20px rgba(229,9,20,0.45);
+    background: linear-gradient(135deg, #3250ff, #00D4FF);
+    box-shadow: 0 6px 20px rgba(63,111,255,0.6);
 }
 
 .btn-cancel {
-    padding:12px 20px;
-    background:#444;
-    border-radius:10px;
-    color:#fff;
-    font-size:15px;
-    text-decoration:none;
-    transition:.2s;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: rgba(12,18,35,0.9);
+    border: 1px solid #3F6FFF;
+    color: #c9d4ff;
+    text-decoration: none;
+    transition: .25s;
 }
 
 .btn-cancel:hover {
-    background:#333;
+    background: rgba(28,38,75,1);
+    color: #fff;
 }
 
 /* ===============================================================
-   Summernote Dark Mode Custom
-   =============================================================== */
+   SUMMERNOTE - DARK BLUE CUSTOM
+=============================================================== */
 .note-editor.note-frame {
-    background:#1a1a1a !important;
-    color:#fff !important;
-    border:1px solid #333 !important;
-    border-radius:12px !important;
+    background: #0d1321 !important;
+    border: 1px solid #27335a !important;
+    border-radius: 12px !important;
 }
 
 .note-toolbar {
-    background:#111 !important;
-    border-bottom:1px solid #333 !important;
+    background: #0a0f1c !important;
+    border-bottom: 1px solid #27335a !important;
 }
 
 .note-editable {
-    background:#1a1a1a !important;
-    color:#fff !important;
-    font-size:15px !important;
-    line-height:1.6 !important;
+    background: #0d1321 !important;
+    color: #e6ebff !important;
+    min-height: 260px !important;
+    line-height: 1.6 !important;
 }
 
 .note-btn {
-    background:#222 !important;
-    border:1px solid #444 !important;
-    color:#ddd !important;
+    background: #141b2d !important;
+    border: 1px solid #27335a !important;
+    color: #cdd8ff !important;
 }
 
 .note-btn:hover {
-    background:#333 !important;
+    background: #1e2742 !important;
 }
 
 /* ===============================================================
-   반응형
-   =============================================================== */
+   RESPONSIVE
+=============================================================== */
 @media (max-width: 600px) {
-    .update-container { padding:26px; border-radius:16px; }
-    .btn-area { flex-direction:column; align-items:stretch; }
+    .update-container { padding: 26px 22px; }
+    .btn-area { flex-direction: column; }
 }
 </style>
 </head>
@@ -212,19 +225,19 @@ label {
         <input type="hidden" name="id" value="<%= b.getBoardId() %>">
 
         <!-- 제목 -->
-        <label>제목</label>
+        <label for="title">제목</label>
         <input type="text" id="title" name="title" value="<%= b.getTitle() %>">
         <div id="titleError" class="error-msg">제목을 입력해주세요.</div>
 
         <!-- 내용 -->
-        <label>내용</label>
+        <label for="content">내용</label>
         <textarea id="content" name="content"><%= b.getContent() %></textarea>
         <div id="contentError" class="error-msg">내용을 입력해주세요.</div>
 
+        <!-- 버튼 -->
         <div class="btn-area">
             <button type="submit" class="btn-update">✔ 수정하기</button>
-
-            <a href="<%=request.getContextPath()%>/board/detail?id=<%= b.getBoardId() %>" 
+            <a href="<%=request.getContextPath()%>/board/detail?id=<%= b.getBoardId() %>"
                class="btn-cancel">취소</a>
         </div>
 
@@ -237,11 +250,11 @@ label {
 /* Summernote 초기화 */
 $(document).ready(function() {
     $('#content').summernote({
-        height: 300,
+        height: 280,
         placeholder: '내용을 입력하세요...',
         toolbar: [
-            ['style', ['bold', 'italic', 'underline']],
-            ['para', ['ul', 'ol']],
+            ['style', ['bold','italic','underline']],
+            ['para', ['ul','ol']],
             ['insert', ['link']],
             ['view', ['fullscreen']]
         ]
@@ -251,7 +264,8 @@ $(document).ready(function() {
 /* 입력 검증 */
 document.getElementById("updateForm").addEventListener("submit", function(e) {
     let title = document.getElementById("title").value.trim();
-    let content = $('#content').summernote('code').replace(/(<([^>]+)>)/gi, "").trim();
+    let content = $('#content').summernote('code')
+                   .replace(/(<([^>]+)>)/gi, "").trim();
 
     let valid = true;
 
@@ -274,4 +288,5 @@ document.getElementById("updateForm").addEventListener("submit", function(e) {
 </script>
 
 </body>
+<%@ include file="/common/alert.jsp" %>
 </html>

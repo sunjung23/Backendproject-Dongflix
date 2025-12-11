@@ -2,9 +2,13 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.dongyang.dongflix.dto.BoardDTO" %>
 <%@ page import="com.dongyang.dongflix.dto.MemberDTO" %>
+<%@ page import="com.dongyang.dongflix.dao.MemberDAO" %>
 <%@ include file="/common/header.jsp" %>
 
 <%
+    // -----------------------------
+    // 기본 데이터 세팅
+    // -----------------------------
     List<BoardDTO> list = (List<BoardDTO>) request.getAttribute("list");
     String category = (String) request.getAttribute("category");
     String sort = (String) request.getAttribute("sort");
@@ -12,8 +16,42 @@
     if (category == null) category = "all";
     if (sort == null) sort = "new";
 
-    // ⭐ 로그인 사용자 정보 가져오기 (비밀글 처리용)
     MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
+    MemberDAO mdao = new MemberDAO();
+
+    // -----------------------------
+    // 비밀게시판 필터링 + 페이지네이션용 리스트 구성
+    // -----------------------------
+    List<BoardDTO> visibleList = new java.util.ArrayList<BoardDTO>();
+    if (list != null) {
+        for (BoardDTO b : list) {
+            boolean isSecret = "secret".equals(b.getCategory());
+            boolean isGold = (loginUser != null && "gold".equalsIgnoreCase(loginUser.getGrade()));
+            // 비밀게시판인데 GOLD가 아니면 아예 보이지 않게
+            if (isSecret && !isGold) continue;
+            visibleList.add(b);
+        }
+    }
+
+    int totalCount = visibleList.size();   // 화면에 실제로 보여줄 게시글 개수
+    int pageSize = 9;                     // 한 페이지당 9개
+    int currentPage = 1;
+
+    try {
+        if (request.getParameter("page") != null) {
+            currentPage = Integer.parseInt(request.getParameter("page"));
+        }
+    } catch (NumberFormatException e) {
+        currentPage = 1;
+    }
+    if (currentPage < 1) currentPage = 1;
+
+    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+    if (totalPage == 0) totalPage = 1;
+    if (currentPage > totalPage) currentPage = totalPage;
+
+    int start = (currentPage - 1) * pageSize;
+    int end = Math.min(start + pageSize, totalCount);
 %>
 
 <!DOCTYPE html>
@@ -23,160 +61,266 @@
 <title>게시판 목록 - DONGFLIX</title>
 
 <style>
-/* ---- CSS 원본 전체 유지 ---- */
+/* ============================================
+   GLOBAL — Premium Dark Navy UI
+============================================ */
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin:0;
-    background:#000;
-    color:#fff;
+    background:#05080f; /* 딥네이비 */
+    color:#e6e6e6;
     font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+/* ============================================
+   배경 — 절제된 Deep Navy Gradient
+============================================ */
 .board-wrapper {
     min-height:100vh;
-    padding:100px 16px;
+    padding:100px 16px 40px;
     background:
-        radial-gradient(circle at 18% 20%, rgba(229,9,20,0.4) 0%, transparent 65%),
-        radial-gradient(circle at 82% 80%, rgba(255,80,80,0.25) 0%, transparent 65%),
-        #000;
+        radial-gradient(circle at 15% 10%, rgba(32,95,242,0.20) 0%, transparent 55%),
+        linear-gradient(180deg, #05080f 0%, #070b12 40%, #05080f 100%);
 }
 
+/* ============================================
+   메인 카드 컨테이너 (Glass + Minimal)
+============================================ */
 .board-container {
-    max-width:900px;
+    max-width:960px;
     margin:0 auto;
-    padding:34px 28px;
-    background:rgba(15,15,15,0.96);
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.08);
-    box-shadow:0 20px 60px rgba(0,0,0,0.7);
-    backdrop-filter:blur(5px);
+    padding:32px 28px;
+    background:rgba(10,15,25,0.92);
+    border-radius:22px;
+    border:1px solid rgba(255,255,255,0.06);
+    box-shadow:0 18px 48px rgba(0,0,0,0.7);
+    backdrop-filter:blur(6px);
 }
 
+/* 타이틀 */
 .board-container h2 {
-    font-size:30px;
+    font-size:32px;
     font-weight:800;
-    background:linear-gradient(90deg,#ff4040,#e50914);
+    margin:0 0 6px;
+    background:linear-gradient(90deg,#3F6FFF,#205FF2);
     -webkit-background-clip:text;
     color:transparent;
-    margin-bottom:26px;
 }
-
-.board-tabs {
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
+.board-subtitle {
+    font-size:13px;
+    color:#96a1b5;
     margin-bottom:22px;
 }
 
+/* ============================================
+   카테고리 탭 — 심플한 칩 형태
+============================================ */
+.board-tabs {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
 .board-tabs a {
-    padding:10px 18px;
-    border-radius:10px;
-    background:#1a1a1a;
-    color:#ddd;
-    border:1px solid #2b2b2b;
+    padding:8px 16px;
+    border-radius:14px;
+    background:#0b0f18;
+    color:#aeb7cc;
+    border:1px solid rgba(255,255,255,0.05);
     text-decoration:none;
-    font-size:14px;
-    transition:.25s;
+    font-size:13px;
+    transition:.2s;
 }
-
 .board-tabs a:hover {
-    background:#262626;
-}
-
-.board-tabs a.active {
-    background:#e50914;
+    background:#111722;
+    border-color:rgba(255,255,255,0.12);
     color:#fff;
-    border-color:#e50914;
-    box-shadow:0 0 10px rgba(229,9,20,0.4);
+}
+.board-tabs a.active {
+    background:#205FF2;
+    color:#fff;
+    border-color:#205FF2;
+    box-shadow:0 0 10px rgba(32,95,242,0.4);
 }
 
+/* ============================================
+   정렬 버튼 + 글쓰기 버튼
+============================================ */
 .sort-area {
     display:flex;
-    justify-content:flex-end;
-    gap:10px;
+    justify-content:space-between;
+    align-items:center;
     margin-bottom:18px;
+    gap:16px;
 }
 
+.sort-buttons { display:flex; gap:8px; }
+
 .sort-area a {
-    padding:6px 12px;
-    border-radius:8px;
-    background:#1b1b1b;
-    color:#bbb;
-    font-size:13px;
-    border:1px solid #333;
+    padding:6px 14px;
+    border-radius:14px;
+    background:#0b0f18;
+    color:#aeb7cc;
+    font-size:12px;
+    border:1px solid rgba(255,255,255,0.06);
     text-decoration:none;
     transition:.2s;
 }
-
-.sort-area a:hover {
-    background:#292929;
-    color:#fff;
-}
+.sort-area a:hover { background:#111722; color:#fff; }
 
 .sort-area a.active-sort {
-    color:#e50914;
-    border-color:#e50914;
+    color:#3F6FFF;
+    border-color:#3F6FFF;
+    box-shadow:0 0 8px rgba(63,111,255,0.4);
 }
 
+/* 글쓰기 버튼 */
 .write-btn {
-    display:inline-block;
-    padding:12px 20px;
-    background:#e50914;
-    border-radius:10px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 18px;
+    background:#3F6FFF;
+    border-radius:14px;
     color:#fff;
     text-decoration:none;
-    margin-bottom:26px;
-    font-size:15px;
-    font-weight:700;
-    transition:.25s;
+    font-size:13px;
+    font-weight:600;
+    border:1px solid #3F6FFF;
+    transition:.2s;
+}
+.write-btn:hover {
+    background:#205FF2;
+    border-color:#205FF2;
 }
 
-.write-btn:hover {
-    background:#b20710;
-    box-shadow:0 6px 18px rgba(229,9,20,0.4);
+/* ============================================
+   게시글 카드 — Vertical List
+============================================ */
+.board-item {
+    background:#0b111d;
+    padding:18px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,0.04);
+    margin-bottom:16px;
+    transition:.22s;
+    box-shadow:0 4px 14px rgba(0,0,0,0.5);
+}
+.board-item:hover {
+    background:#0e1625;
+    border-color:rgba(255,255,255,0.1);
     transform:translateY(-2px);
 }
 
-.board-item {
-    background:rgba(255,255,255,0.03);
-    padding:22px;
-    border-radius:14px;
-    border:1px solid rgba(255,255,255,0.06);
-    margin-bottom:20px;
-    transition:.25s;
-}
-
-.board-item:hover {
-    background:rgba(255,255,255,0.06);
-    transform:translateY(-3px);
-}
-
+/* 제목 */
 .board-title a {
-    font-size:20px;
+    font-size:18px;
     font-weight:700;
     text-decoration:none;
-    color:#e50914;
+    color:#e6e6e6;
+    transition:.2s;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.board-title a:hover {
+    color:#3F6FFF;
+}
+
+/* GOLD 배지 */
+.gold-badge {
+    font-size:10px;
+    padding:3px 8px;
+    border-radius:10px;
+    background:linear-gradient(145deg,#ffe47a,#ffce2e);
+    color:#3d2c00;
+    font-weight:700;
+}
+
+/* ============================================
+   메타 정보 (작성자, 날짜)
+============================================ */
+.board-meta {
+    margin:8px 0 10px;
+    color:#9da8bc;
+    font-size:12px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+}
+.board-meta a {
+    color:#3F6FFF;
+    text-decoration:none;
+}
+.board-meta a:hover { text-decoration:underline; }
+
+.meta-dot::before {
+    content:"•";
+    margin:0 4px;
+    opacity:0.4;
+}
+
+/* ============================================
+   본문 미리보기
+============================================ */
+.board-preview {
+    color:#cfd4df;
+    font-size:14px;
+    line-height:1.6;
+    max-height:3.4em;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* ============================================
+   페이지네이션 (네이비 프리미엄 스타일)
+============================================ */
+.pagination {
+    margin-top:24px;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.page-link {
+    min-width:32px;
+    padding:6px 10px;
+    border-radius:999px;
+    background:#0b0f18;
+    border:1px solid rgba(255,255,255,0.06);
+    color:#aeb7cc;
+    font-size:13px;
+    text-align:center;
+    text-decoration:none;
     transition:.2s;
 }
-
-.board-title a:hover {
-    text-decoration:underline;
+.page-link:hover {
+    background:#111722;
+    color:#fff;
+    border-color:rgba(255,255,255,0.2);
+}
+.page-link.active {
+    background:#205FF2;
+    color:#fff;
+    border-color:#205FF2;
+    box-shadow:0 0 8px rgba(32,95,242,0.5);
+}
+.page-link.disabled {
+    opacity:0.35;
+    pointer-events:none;
 }
 
-.board-meta {
-    margin:10px 0 12px;
-    color:#bbb;
-    font-size:13px;
-}
-
-.board-preview {
-    color:#ddd;
-    font-size:15px;
-    line-height:1.65;
-}
-
-@media (max-width:600px) {
-    .board-container { padding:26px 18px; }
-    .board-title a { font-size:18px; }
+/* ============================================
+   반응형
+============================================ */
+@media (max-width:768px) {
+    .sort-area { flex-direction:column-reverse; align-items:flex-start; }
+    .write-btn { align-self:flex-end; }
 }
 </style>
 </head>
@@ -187,72 +331,83 @@ body {
 <div class="board-container">
 
     <h2>게시판</h2>
+    <div class="board-subtitle">
+        DONGFLIX 커뮤니티에서 자유롭게 의견을 나눠보세요.
+    </div>
 
     <!-- 카테고리 탭 -->
     <div class="board-tabs">
-        <a href="list" class="<%= "all".equals(category) ? "active" : "" %>">전체</a>
-        <a href="list?category=free" class="<%= "free".equals(category) ? "active" : "" %>">📢 자유게시판</a>
-        <a href="list?category=level" class="<%= "level".equals(category) ? "active" : "" %>">⬆️ 등업게시판</a>
-        <a href="list?category=secret" class="<%= "secret".equals(category) ? "active" : "" %>">🔒 비밀게시판</a>
+        <a href="list"
+           class="<%= "all".equals(category) ? "active" : "" %>">전체</a>
+
+        <a href="list?category=free"
+           class="<%= "free".equals(category) ? "active" : "" %>">📢 자유게시판</a>
+
+        <a href="list?category=level"
+           class="<%= "level".equals(category) ? "active" : "" %>">⬆️ 등업게시판</a>
+
+        <a href="list?category=secret"
+           class="<%= "secret".equals(category) ? "active" : "" %>">🔒 비밀게시판</a>
     </div>
 
-    <!-- 정렬 -->
+    <!-- 정렬 + 글쓰기 -->
     <div class="sort-area">
-        <a href="list?category=<%= category %>&sort=new"
-           class="<%= "new".equals(sort) ? "active-sort" : "" %>">⬆ 최신순</a>
+        <div class="sort-buttons">
+            <a href="list?category=<%= category %>&sort=new"
+               class="<%= "new".equals(sort) ? "active-sort" : "" %>">최신순</a>
 
-        <a href="list?category=<%= category %>&sort=old"
-           class="<%= "old".equals(sort) ? "active-sort" : "" %>">⬇ 오래된순</a>
+            <a href="list?category=<%= category %>&sort=old"
+               class="<%= "old".equals(sort) ? "active-sort" : "" %>">오래된순</a>
 
-        <a href="list?category=<%= category %>&sort=views"
-           class="<%= "views".equals(sort) ? "active-sort" : "" %>">🔥 조회수순</a>
+            <a href="list?category=<%= category %>&sort=views"
+               class="<%= "views".equals(sort) ? "active-sort" : "" %>">조회수순</a>
+        </div>
+
+        <a href="writeForm.jsp" class="write-btn">글쓰기</a>
     </div>
-
-    <!-- 글쓰기 -->
-    <a href="writeForm.jsp" class="write-btn">✏ 글쓰기</a>
 
     <!-- 게시글 리스트 -->
-    <% if (list == null || list.isEmpty()) { %>
+    <% if (visibleList == null || visibleList.isEmpty()) { %>
 
-        <p style="color:#bbb;">게시글이 없습니다.</p>
+        <p style="color:#96a1b5; margin-top:10px;">게시글이 없습니다.</p>
 
     <% } else { %>
 
-        <% for (BoardDTO b : list) { %>
+        <% for (int i = start; i < end; i++) {
+               BoardDTO b = visibleList.get(i);
 
-            <%
-                boolean isSecret = "secret".equals(b.getCategory());
-                boolean isGold = (loginUser != null && "gold".equalsIgnoreCase(loginUser.getGrade()));
-
-                // ⭐ 추가된 로직: GOLD 아니면 목록에서 비밀글 자체를 숨김
-                if (isSecret && !isGold) continue;
-            %>
+               boolean isSecret = "secret".equals(b.getCategory()); // GOLD에게는 잠금표시만
+               String nickname = mdao.getOrCreateNickname(b.getUserid());
+        %>
 
             <div class="board-item">
 
+                <!-- 제목 -->
                 <div class="board-title">
                     <a href="detail?id=<%= b.getBoardId() %>">
                         <% if (isSecret) { %>
                             🔒 <%= b.getTitle() %>
-                            <span style="color:#f1c40f; font-size:12px; margin-left:6px;">[GOLD 전용]</span>
+                            <span class="gold-badge">GOLD</span>
                         <% } else { %>
                             <%= b.getTitle() %>
                         <% } %>
                     </a>
                 </div>
 
+                <!-- 메타 -->
                 <div class="board-meta">
-                    작성자:
-                    <a href="<%= request.getContextPath() %>/user/profile?userid=<%= b.getUserid() %>"
-                       style="color:#e50914; text-decoration:none;">
-                        <%= b.getUserid() %>
-                    </a>
-                    |
-                    날짜: <%= b.getCreatedAt() %>
-                    |
-                    조회수: <%= b.getViews() %>
+                    <span>작성자:
+                        <a href="<%= request.getContextPath() %>/user/profile?userid=<%= b.getUserid() %>">
+                            <%= nickname %>
+                        </a>
+                    </span>
+                    <span class="meta-dot"></span>
+                    <span>날짜: <%= b.getCreatedAt() %></span>
+                    <span class="meta-dot"></span>
+                    <span>조회수: <%= b.getViews() %></span>
                 </div>
 
+                <!-- 본문 프리뷰 -->
                 <div class="board-preview">
                     <%= (b.getContent().length() > 90)
                             ? b.getContent().substring(0, 90) + "..."
@@ -263,10 +418,45 @@ body {
 
         <% } %>
 
+        <!-- 페이지네이션 -->
+        <%
+            if (totalCount > 0) {
+                String baseUrl = "list?category=" + category + "&sort=" + sort + "&page=";
+                int windowSize = 5; // 중앙에 5개 페이지 노출
+                int startPage = Math.max(1, currentPage - 2);
+                int endPage = Math.min(totalPage, startPage + windowSize - 1);
+                if (endPage - startPage < windowSize - 1) {
+                    startPage = Math.max(1, endPage - windowSize + 1);
+                }
+        %>
+        <div class="pagination">
+            <!-- 이전 -->
+            <a class="page-link <%= (currentPage == 1 ? "disabled" : "") %>"
+               href="<%= (currentPage == 1) ? "#" : (baseUrl + (currentPage - 1)) %>">
+                이전
+            </a>
+
+            <!-- 페이지 번호 -->
+            <% for (int p = startPage; p <= endPage; p++) { %>
+                <a class="page-link <%= (p == currentPage ? "active" : "") %>"
+                   href="<%= baseUrl + p %>">
+                    <%= p %>
+                </a>
+            <% } %>
+
+            <!-- 다음 -->
+            <a class="page-link <%= (currentPage == totalPage ? "disabled" : "") %>"
+               href="<%= (currentPage == totalPage) ? "#" : (baseUrl + (currentPage + 1)) %>">
+                다음
+            </a>
+        </div>
+        <% } %>
+
     <% } %>
 
 </div>
 </div>
 
 </body>
+<%@ include file="/common/alert.jsp" %>
 </html>

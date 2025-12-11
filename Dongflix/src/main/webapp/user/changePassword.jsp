@@ -16,131 +16,135 @@
 <title>비밀번호 변경 - DONGFLIX</title>
 
 <style>
-    body {
-        margin:0;
-        background:#000;
-        color:#fff;
-        font-family:-apple-system, BlinkMacSystemFont,"Segoe UI", sans-serif;
-    }
+/* ================================
+   GLOBAL PREMIUM NAVY / ROYAL BLUE
+================================ */
+body {
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
 
-    .bg-overlay {
-        min-height:100vh;
-        background:
-            radial-gradient(circle at top, rgba(229,9,20,0.25) 0, transparent 55%),
-            #000;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        padding:80px 16px;
-        box-sizing:border-box;
-    }
+.bg-overlay {
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:90px 20px;
+    background:
+        radial-gradient(circle at 20% 10%, rgba(40,70,160,0.25) 0%, transparent 55%),
+        radial-gradient(circle at 80% 90%, rgba(90,130,255,0.22) 0%, transparent 55%),
+        #000;
+}
 
-    .pw-container {
-        width:100%;
-        max-width:460px;
-        background:rgba(17,17,17,0.96);
-        border-radius:18px;
-        padding:30px 26px 26px;
-        border:1px solid #222;
-        box-shadow:0 10px 35px rgba(0,0,0,0.7);
-    }
+/* 메인 박스 */
+.pw-container {
+    width:100%;
+    max-width:460px;
+    background:rgba(12,14,30,0.94);
+    border-radius:24px;
+    padding:36px 30px 34px;
+    border:1px solid rgba(120,150,255,0.18);
+    box-shadow:0 24px 60px rgba(0,0,40,0.85);
+    backdrop-filter:blur(8px);
+}
 
-    h2 {
-        margin:0 0 8px;
-        font-size:23px;
-        font-weight:700;
-    }
+/* 제목 */
+h2 {
+    margin:0 0 6px;
+    font-size:25px;
+    font-weight:800;
+}
 
-    .sub-text {
-        font-size:13px;
-        color:#b3b3b3;
-        margin-bottom:22px;
-    }
+.sub-text {
+    font-size:13px;
+    color:#c1c7ea;
+    margin-bottom:26px;
+}
 
-    .form-group { margin-bottom:16px; }
-    label { display:block; margin-bottom:6px; font-size:13px; }
+/* 입력 폼 */
+.form-group { margin-bottom:18px; }
 
-    input {
-        width:100%;
-        padding:11px 12px;
-        border:none;
-        border-radius:9px;
-        background:#1f1f1f;
-        color:#fff;
-        box-sizing:border-box;
-        border:1px solid #333;
-        font-size:14px;
-        transition:border-color .2s, background .2s, box-shadow .2s;
-    }
+label {
+    display:block;
+    margin-bottom:6px;
+    font-size:13px;
+    color:#e8ebff;
+}
 
-    input:focus {
-        outline:none;
-        border-color:#e50914;
-        background:#232323;
-        box-shadow:0 0 0 1px rgba(229,9,20,0.6);
-    }
+input {
+    width:100%;
+    padding:12px 14px;
+    border:none;
+    border-radius:12px;
+    background:#0f1325;
+    border:1px solid rgba(100,120,210,0.35);
+    color:#e8ebff;
+    font-size:14px;
+    box-sizing:border-box;
+    transition:.22s;
+}
 
-    .btn-save {
-        width:100%;
-        padding:12px;
-        border:none;
-        border-radius:9px;
-        background:#e50914;
-        font-size:15px;
-        color:#fff;
-        margin-top:10px;
-        cursor:pointer;
-        font-weight:600;
-        transition:background .2s, box-shadow .2s, transform .1s;
-    }
+input:focus {
+    outline:none;
+    background:#131a34;
+    border-color:#3f6fff;
+    box-shadow:0 0 0 2px rgba(80,120,255,0.45);
+}
 
-    .btn-save:hover {
-        background:#b20710;
-        box-shadow:0 6px 18px rgba(229,9,20,0.45);
-        transform:translateY(-1px);
-    }
+/* 버튼 */
+.btn-save {
+    width:100%;
+    padding:14px 0;
+    border:none;
+    border-radius:999px;
+    background:#3f6fff;
+    font-size:15px;
+    color:#fff;
+    margin-top:12px;
+    cursor:pointer;
+    font-weight:700;
+    transition:.22s;
+}
 
-    .helper {
-        margin-top:15px;
-        text-align:center;
-    }
+.btn-save:hover {
+    background:#5d84ff;
+    box-shadow:0 6px 18px rgba(80,120,255,0.45);
+    transform:translateY(-1px);
+}
 
-    .helper a {
-        color:#b3b3b3;
-        text-decoration:none;
-        font-size:13px;
-        transition:color .2s;
-    }
+/* 링크 */
+.helper {
+    margin-top:16px;
+    text-align:center;
+}
 
-    .helper a:hover {
-        color:#fff;
-    }
+.helper a {
+    color:#a8b1dd;
+    text-decoration:none;
+    font-size:13px;
+}
 
-    .hint {
-        font-size:12px;
-        color:#777;
-        margin-top:3px;
-    }
+.helper a:hover {
+    color:#fff;
+}
 
-    /* 에러 메시지 표시용 (옵션: 필요 시 사용) */
-    .error-msg {
-        font-size:12px;
-        color:#ff6b6b;
-        margin-bottom:4px;
-    }
+/* 작은 힌트 */
+.hint {
+    font-size:12px;
+    color:#8e96c8;
+    margin-top:4px;
+}
 
-    @media (max-width:600px) {
-        .bg-overlay {
-            padding:72px 14px;
-        }
-        .pw-container {
-            padding:24px 18px 22px;
-            border-radius:14px;
-        }
-        h2 {
-            font-size:21px;
-        }
+/* 반응형 */
+@media (max-width:600px){
+    .pw-container{
+        padding:26px 20px 24px;
+        border-radius:20px;
     }
+    h2{ font-size:22px; }
+}
 </style>
 
 </head>
@@ -150,7 +154,7 @@
     <div class="pw-container">
         <h2>비밀번호 변경</h2>
         <div class="sub-text">
-            비밀번호는 다른 사이트와 겹치지 않게, 영문/숫자/기호를 섞어서 안전하게 설정해주세요.
+            영문/숫자/기호 조합을 사용해 더 안전한 비밀번호를 설정해주세요.
         </div>
 
         <form action="changePassword.do" method="post">
@@ -163,7 +167,7 @@
             <div class="form-group">
                 <label>새 비밀번호</label>
                 <input type="password" name="newPw" required>
-                <div class="hint">8자 이상, 영문/숫자/기호를 섞어서 추천드려요.</div>
+                <div class="hint">8자 이상, 영문/숫자/기호 조합을 권장 드려요.</div>
             </div>
 
             <div class="form-group">
@@ -180,5 +184,116 @@
     </div>
 </div>
 
+
+
 </body>
+
+<!-- ============================
+     Premium Navy Alert Modal
+============================ -->
+<style>
+.alert-overlay {
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.55);
+    backdrop-filter:blur(3px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    animation:fadeIn .25s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity:0; }
+    to   { opacity:1; }
+}
+
+.alert-box {
+    background:rgba(15,18,40,0.95);
+    padding:30px 28px;
+    border-radius:22px;
+    width:90%;
+    max-width:360px;
+    text-align:center;
+    border:1px solid rgba(120,150,255,0.28);
+    box-shadow:0 18px 55px rgba(40,60,150,0.55);
+    animation:pop .22s ease-out;
+}
+
+@keyframes pop {
+    from { transform:scale(.85); opacity:.6; }
+    to   { transform:scale(1); opacity:1; }
+}
+
+.alert-title {
+    font-size:19px;
+    font-weight:700;
+    margin-bottom:12px;
+}
+
+.alert-msg {
+    font-size:14px;
+    color:#ccd5ff;
+    line-height:1.5;
+    margin-bottom:22px;
+}
+
+.alert-btn {
+    display:inline-block;
+    padding:10px 26px;
+    border-radius:12px;
+    border:none;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    transition:.22s;
+}
+
+/* 성공 */
+.alert-success .alert-title { color:#7ab8ff; }
+.alert-success .alert-btn {
+    background:#3f6fff;
+    color:#fff;
+}
+.alert-success .alert-btn:hover {
+    background:#5e87ff;
+}
+
+/* 실패 */
+.alert-error .alert-title { color:#ff6b6b; }
+.alert-error .alert-btn {
+    background:#ff4d4d;
+    color:#fff;
+}
+.alert-error .alert-btn:hover {
+    background:#ff6b6b;
+}
+</style>
+
+<%
+    String alertType = (String) request.getAttribute("alertType");  // "success" or "error"
+    String alertMsg  = (String) request.getAttribute("alertMsg");   // 실제 메시지
+%>
+
+<% if (alertMsg != null && alertType != null) { %>
+<div class="alert-overlay">
+    <div class="alert-box <%="alert-" + alertType %>">
+        <div class="alert-title">
+            <%
+                if ("success".equals(alertType)) out.print("✔ 성공");
+                else out.print("⚠ 오류");
+            %>
+        </div>
+
+        <div class="alert-msg"><%= alertMsg %></div>
+
+        <button class="alert-btn" onclick="document.querySelector('.alert-overlay').remove();">
+            닫기
+        </button>
+    </div>
+</div>
+<% } %>
+
 </html>

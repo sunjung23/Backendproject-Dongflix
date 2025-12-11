@@ -59,8 +59,9 @@ public class BoardWriteServlet extends HttpServlet {
         if (result > 0) {
             response.sendRedirect(request.getContextPath() + "/board/list");
         } else {
-            request.setAttribute("msg", "게시글 작성 실패");
-            request.getRequestDispatcher("/board/writeForm.jsp").forward(request, response);
+        	request.setAttribute("alertType", "error");
+        	request.setAttribute("alertMsg", "게시글 등록 중 오류가 발생했습니다.");
+        	request.getRequestDispatcher("/board/writeForm.jsp").forward(request, response);
         }
     }
 }

@@ -2,6 +2,7 @@
 <%@ page import="com.dongyang.dongflix.dto.BoardDTO" %>
 <%@ page import="com.dongyang.dongflix.dto.BoardCommentDTO" %>
 <%@ page import="com.dongyang.dongflix.dto.MemberDTO" %>
+<%@ page import="com.dongyang.dongflix.dao.MemberDAO" %>
 <%@ page import="java.util.List" %>
 <%@ include file="/common/header.jsp" %>
 
@@ -12,33 +13,28 @@
         return;
     }
 
-    // 좋아요 관련
     int likeCount = 0;
     Object likeObj = request.getAttribute("likeCount");
-    if (likeObj != null) {
-        likeCount = (Integer) likeObj;
-    }
+    if (likeObj != null) likeCount = (Integer) likeObj;
 
     boolean likedByMe = false;
     Object likedByMeObj = request.getAttribute("likedByMe");
-    if (likedByMeObj instanceof Boolean) {
-        likedByMe = (Boolean) likedByMeObj;
-    }
+    if (likedByMeObj instanceof Boolean) likedByMe = (Boolean) likedByMeObj;
 
-    // 댓글 관련
-    List<BoardCommentDTO> comments =
+    List<BoardCommentDTO> comments = 
         (List<BoardCommentDTO>) request.getAttribute("comments");
 
     int commentCount = 0;
     Object ccObj = request.getAttribute("commentCount");
-    if (ccObj != null) {
-        commentCount = (Integer) ccObj;
-    } else if (comments != null) {
-        commentCount = comments.size();
-    }
+    if (ccObj != null) commentCount = (Integer) ccObj;
+    else if (comments != null) commentCount = comments.size();
 
-    MemberDTO loginUser =
-        (MemberDTO) session.getAttribute("loginUser");
+    MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
+
+    MemberDAO memberDao = new MemberDAO();
+    String writerNickname = memberDao.getOrCreateNickname(b.getUserid());
+    MemberDTO writer = memberDao.getByUserid(b.getUserid());
+    String writerProfileImg = (writer != null) ? writer.getProfileImg() : null;
 %>
 
 <!DOCTYPE html>
@@ -49,288 +45,289 @@
 
 <style>
 /* ===========================================
-   GLOBAL Premium Style
-   =========================================== */
+   GLOBAL Premium Blue Style
+=========================================== */
+* { box-sizing:border-box; }
+
 body {
     margin:0;
-    background:#000;
-    color:#fff;
-    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:#040611;
+    color:#e6e9ff;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
 }
 
 /* ===========================================
-   배경 (Glow + Deep Black)
-   =========================================== */
+   BACKGROUND (Deep Navy + Blue Glow)
+=========================================== */
 .detail-bg {
     min-height:100vh;
-    padding:100px 16px;
+    padding:100px 16px 60px;
     background:
-        radial-gradient(circle at 20% 15%, rgba(229,9,20,0.35) 0%, transparent 60%),
-        radial-gradient(circle at 85% 85%, rgba(255,60,60,0.28) 0%, transparent 60%),
-        #000;
+        radial-gradient(circle at 15% 0%, rgba(63,111,255,0.32) 0%, transparent 55%),
+        radial-gradient(circle at 85% 100%, rgba(0,212,255,0.20) 0%, transparent 55%),
+        linear-gradient(180deg, #040611 0%, #070b12 45%, #040611 100%);
     display:flex;
     justify-content:center;
-    align-items:flex-start;
 }
 
 /* ===========================================
-   콘텐츠 박스 (Glassmorphism)
-   =========================================== */
+   MAIN CONTENT BOX (Glass Navy)
+=========================================== */
 .detail-container {
-    max-width:900px;
     width:100%;
-    background:rgba(17,17,17,0.95);
+    max-width:900px;
+    background:rgba(8,13,28,0.92);
     padding:38px 32px 30px;
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.08);
-    box-shadow:0 20px 60px rgba(0,0,0,0.7);
-    backdrop-filter:blur(5px);
+    border-radius:22px;
+    border:1px solid rgba(120,150,255,0.18);
+    backdrop-filter:blur(12px);
+    box-shadow:0 26px 70px rgba(0,0,0,0.85);
+    position:relative;
+    overflow:hidden;
 }
 
+.detail-container::before {
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:22px;
+    pointer-events:none;
+    background:
+        linear-gradient(135deg, rgba(63,111,255,0.20), transparent 50%, rgba(0,212,255,0.12));
+    opacity:0.55;
+    mix-blend-mode:screen;
+}
+
+.detail-container > * { position:relative; z-index:2; }
+
 /* ===========================================
-   제목
-   =========================================== */
+   TITLE
+=========================================== */
 .post-title {
     font-size:30px;
     font-weight:800;
-    background:linear-gradient(90deg,#ff3d3d,#e50914);
+    margin-bottom:18px;
+    background:linear-gradient(90deg,#3F6FFF,#00C8FF,#9bd3ff);
     -webkit-background-clip:text;
     color:transparent;
-    margin-bottom:20px;
 }
 
 /* ===========================================
-   작성 정보
-   =========================================== */
+   POST META
+=========================================== */
 .post-meta {
+    padding:14px 18px;
+    border-left:3px solid #3F6FFF;
+    background:rgba(15,20,40,0.65);
+    border-radius:12px;
     font-size:14px;
-    color:#c9c9c9;
-    line-height:1.8;
-    margin-bottom:24px;
-    padding-left:14px;
-    border-left:3px solid #e50914;
+    color:#cdd6ff;
+    line-height:1.75;
+    margin-bottom:26px;
 }
 
 /* ===========================================
-   본문
-   =========================================== */
+   CONTENT BOX
+=========================================== */
 .post-content {
-    background:#1a1a1a;
-    padding:20px 22px;
+    background:#0b1328;
+    border:1px solid rgba(120,150,255,0.28);
+    padding:22px 24px;
     border-radius:16px;
     font-size:16px;
-    border:1px solid #2e2e2e;
     line-height:1.75;
-    color:#ececec;
+    color:#e6ecff;
+    box-shadow:0 16px 40px rgba(0,0,0,0.7);
 }
 
 /* ===========================================
-   좋아요 버튼
-   =========================================== */
+   LIKE AREA
+=========================================== */
 .like-area {
-    margin-top:14px;
+    margin-top:18px;
     margin-bottom:18px;
 }
 
 .like-btn {
-    padding:7px 14px;
+    padding:8px 16px;
     border-radius:999px;
-    border:1px solid transparent;
-    cursor:pointer;
+    border:1px solid rgba(120,150,255,0.55);
+    background:#0c1329;
+    color:#ced7ff;
     font-size:13px;
     font-weight:600;
-    background:#333;
-    color:#fff;
-    transition:.2s;
-}
-
-.like-btn.like-on {
-    background:#e50914;
-    border-color:#e50914;
-    box-shadow:0 0 10px rgba(229,9,20,0.5);
-}
-
-.like-btn.like-off:hover {
-    background:#444;
-}
-
-/* ===========================================
-   버튼 영역
-   =========================================== */
-.post-actions {
-    margin-top:10px;
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-}
-
-/* 버튼 공통 */
-.post-actions a {
-    padding:10px 18px;
-    border-radius:10px;
-    text-decoration:none;
-    color:white;
-    font-size:14px;
-    font-weight:600;
+    cursor:pointer;
     transition:.22s;
 }
 
-/* 목록 버튼 */
-.btn-back {
-    background:#222;
-}
-.btn-back:hover {
-    background:#333;
-}
-
-/* 수정 버튼 */
-.btn-edit {
-    background:#e50914;
-}
-.btn-edit:hover {
-    background:#b20710;
-    box-shadow:0 8px 18px rgba(229,9,20,0.45);
+.like-btn.like-on {
+    background:linear-gradient(135deg,#2036CA,#3F6FFF);
+    color:#fff;
+    border-color:#3F6FFF;
+    box-shadow:0 0 12px rgba(63,111,255,0.65);
 }
 
-/* 삭제 버튼 */
-.btn-delete {
-    background:#444;
-}
-.btn-delete:hover {
-    background:#222;
+.like-btn.like-off:hover {
+    background:#15204a;
+    border-color:#3F6FFF;
+    color:#fff;
 }
 
 /* ===========================================
-   댓글 영역 (컴팩트 UI)
-   =========================================== */
-.comment-title {
-    margin-top:26px;
-    font-size:17px;
-    font-weight:600;
-    border-bottom:1px solid #2b2b2b;
-    padding-bottom:8px;
+   ACTION BUTTONS
+=========================================== */
+.post-actions {
+    margin-top:12px;
+    display:flex;
+    gap:12px;
 }
 
-/* 댓글 작성 폼 */
+.post-actions a {
+    padding:10px 20px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+    color:white;
+    border:1px solid transparent;
+    transition:.2s;
+}
+
+/* BACK */
+.btn-back {
+    background:#0d142b;
+    border-color:rgba(120,150,255,0.35);
+    color:#d3dbff;
+}
+.btn-back:hover {
+    background:#18245a;
+    border-color:#3F6FFF;
+}
+
+/* EDIT */
+.btn-edit {
+    background:linear-gradient(135deg,#2036CA,#3F6FFF);
+}
+.btn-edit:hover {
+    background:linear-gradient(135deg,#3250ff,#00d4ff);
+    box-shadow:0 10px 26px rgba(63,111,255,0.6);
+}
+
+/* DELETE */
+.btn-delete {
+    background:rgba(60,15,25,0.9);
+    border-color:rgba(229,9,20,0.5);
+}
+.btn-delete:hover {
+    background:#d9081a;
+    box-shadow:0 10px 24px rgba(229,9,20,0.6);
+}
+
+/* ===========================================
+   COMMENT SECTION
+=========================================== */
+.comment-title {
+    margin-top:28px;
+    font-size:18px;
+    font-weight:700;
+    border-bottom:1px solid rgba(120,150,255,0.4);
+    padding-bottom:8px;
+    color:#dbe3ff;
+}
+
 .comment-box {
-    margin-top:10px;
+    margin-top:12px;
     display:flex;
-    gap:8px;
+    gap:10px;
 }
 
 .comment-box textarea {
     flex:1;
-    resize:vertical;
-    min-height:60px;
-    max-height:140px;
+    background:#060b1a;
+    border:1px solid rgba(120,150,255,0.55);
     border-radius:10px;
-    border:1px solid #333;
-    background:#141414;
-    color:#fff;
-    padding:8px 10px;
-    font-size:13px;
-    line-height:1.5;
-    box-sizing:border-box;
+    padding:10px;
+    color:#e6ecff;
+    resize:vertical;
+    min-height:70px;
+    max-height:160px;
 }
 
 .comment-box textarea:focus {
     outline:none;
-    border-color:#e50914;
-    background:#171717;
+    border-color:#3F6FFF;
+    background:#081024;
+    box-shadow:0 0 10px rgba(63,111,255,0.7);
 }
 
 .comment-submit {
-    padding:0 14px;
+    background:linear-gradient(135deg,#2036CA,#3F6FFF);
+    padding:0 16px;
     border-radius:10px;
-    border:none;
-    background:#e50914;
-    color:#fff;
-    font-size:13px;
+    color:white;
     font-weight:600;
+    border:1px solid transparent;
     cursor:pointer;
-    white-space:nowrap;
-    transition:.2s;
+    transition:.22s;
 }
 
 .comment-submit:hover {
-    background:#b20710;
+    background:linear-gradient(135deg,#3250ff,#00d4ff);
 }
 
-/* 댓글 리스트 */
+/* ===========================================
+   COMMENT LIST
+=========================================== */
 .comment-list {
-    margin-top:14px;
+    margin-top:16px;
     display:flex;
     flex-direction:column;
-    gap:8px;
+    gap:12px;
 }
 
 .comment-item {
-    padding:10px 12px;
-    border-radius:10px;
-    background:#151515;
-    border:1px solid #242424;
+    background:#0b1328;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1px solid rgba(120,150,255,0.35);
+    box-shadow:0 10px 24px rgba(0,0,0,0.6);
     font-size:13px;
 }
 
-/* 한 줄 상단 정보 */
 .comment-header {
     display:flex;
     justify-content:space-between;
-    align-items:center;
     margin-bottom:4px;
 }
 
 .comment-author {
     font-weight:600;
-    color:#f0f0f0;
+    color:#e8edff;
 }
 
 .comment-date {
     font-size:11px;
-    color:#909090;
+    color:#9aa6d8;
 }
 
-/* 댓글 내용 */
 .comment-body {
-    color:#dddddd;
-    line-height:1.5;
+    color:#dbe3ff;
+    line-height:1.55;
 }
 
-/* 댓글 삭제 버튼 */
-.comment-delete-form {
-    margin-top:4px;
-    text-align:right;
-}
-
+/* DELETE BTN */
 .comment-delete-btn {
-    background:transparent;
+    background:none;
     border:none;
-    color:#999;
-    font-size:11px;
+    color:#bb4646;
+    font-size:12px;
     cursor:pointer;
-    padding:0;
+    margin-top:4px;
 }
-
 .comment-delete-btn:hover {
-    color:#ff6666;
+    color:#ff6b6b;
 }
 
-/* ===========================================
-   반응형
-   =========================================== */
-@media (max-width:700px) {
-    .detail-container { padding:24px 18px 22px; }
-    .post-title { font-size:24px; }
-    .post-content { padding:18px; }
-    .comment-box {
-        flex-direction:column;
-    }
-    .comment-submit {
-        align-self:flex-end;
-        height:32px;
-        margin-top:2px;
-    }
-}
 </style>
 </head>
 
@@ -339,70 +336,64 @@ body {
 <div class="detail-bg">
 <div class="detail-container">
 
-    <!-- 🔥 제목 -->
+    <!-- Title -->
     <div class="post-title"><%= b.getTitle() %></div>
 
-    <!-- 🔥 작성 정보 -->
+    <!-- Author Info -->
     <div class="post-meta">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <a href="<%= request.getContextPath() %>/user/profile?userid=<%= b.getUserid() %>"
-               style="display:flex; align-items:center; text-decoration:none; color:#fff; gap:10px;">
+        <a href="<%= request.getContextPath() %>/user/profile?userid=<%= b.getUserid() %>"
+           style="display:flex; align-items:center; gap:10px; text-decoration:none; color:#fff;">
 
-                <%
-                String profile = b.getProfileImg();
+            <%
+                String profile = writerProfileImg;
                 boolean isUrl = (profile != null && profile.startsWith("http"));
-
                 String imgSrc =
                     (profile == null || profile.trim().isEmpty())
-                        ? request.getContextPath() + "/assets/default_profile.png"
-                        : (isUrl
-                            ? profile
-                            : request.getContextPath() + "/upload/profile/" + profile);
-                %>
+                    ? request.getContextPath()+"/assets/default_profile.png"
+                    : (isUrl
+                        ? profile
+                        : request.getContextPath()+"/upload/profile/"+profile);
+            %>
 
-                <img src="<%= imgSrc %>"
-                     onerror="this.src='<%= request.getContextPath()%>/assets/default_profile.png';"
-                     style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:1px solid #333;">
+            <img src="<%= imgSrc %>"
+                 onerror="this.src='<%=request.getContextPath()%>/assets/default_profile.png';"
+                 style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:1px solid #3F6FFF;">
 
-                <span style="font-weight:600;">
-                    <%= b.getUserid() %>
-                </span>
-            </a>
-        </div>
+            <span style="font-size:15px; font-weight:600;">
+                <%= writerNickname %>
+            </span>
+        </a>
 
-        <div style="margin-top:6px;">
+        <div style="margin-top:10px;">
             작성자 :
             <a href="<%= request.getContextPath() %>/user/profile?userid=<%= b.getUserid() %>"
-               style="color:#e50914; text-decoration:none;">
-                <%= b.getUserid() %>
+               style="color:#3F6FFF; text-decoration:none;">
+               <%= writerNickname %>
             </a><br>
+
             작성일 : <%= b.getCreatedAt() %><br>
             분류 : <%= b.getCategory() %>
         </div>
     </div>
 
-    <!-- 🔥 본문 -->
+    <!-- Content -->
     <div class="post-content">
         <%= b.getContent().replaceAll("\n", "<br>") %>
     </div>
 
-    <!-- ❤️ 좋아요 영역 -->
+    <!-- Like -->
     <div class="like-area">
-        <form action="<%= request.getContextPath() %>/board/like"
-              method="post"
-              style="display:inline;">
+        <form action="<%= request.getContextPath() %>/board/like" method="post" style="display:inline;">
             <input type="hidden" name="boardId" value="<%= b.getBoardId() %>">
-            <button type="submit"
-                    class="like-btn <%= likedByMe ? "like-on" : "like-off" %>">
+            <button type="submit" class="like-btn <%= likedByMe ? "like-on":"like-off"%>">
                 ♡ 좋아요 (<%= likeCount %>)
             </button>
         </form>
     </div>
 
-    <!-- 🔘 기본 버튼들 -->
+    <!-- Buttons -->
     <div class="post-actions">
-        <a class="btn-back"
-           href="list?category=<%= b.getCategory() %>">← 목록으로</a>
+        <a class="btn-back" href="list?category=<%= b.getCategory() %>">← 목록으로</a>
 
         <a class="btn-edit"
            href="<%= request.getContextPath() %>/board/updateForm?id=<%= b.getBoardId() %>">
@@ -411,83 +402,71 @@ body {
 
         <a class="btn-delete"
            href="delete?id=<%= b.getBoardId() %>"
-           onclick="return confirm('정말 삭제할까요?')">
+           onclick="return confirm('정말 삭제할까요?');">
            🗑 삭제
         </a>
     </div>
 
-    <!-- 💬 댓글 영역 -->
+    <!-- Comments -->
     <div class="comment-title">
         💬 댓글 (<%= commentCount %>)
     </div>
 
     <% if (loginUser != null) { %>
-        <!-- 댓글 작성 폼 -->
-        <form action="<%= request.getContextPath() %>/board/comment/write"
-              method="post">
+        <form action="<%= request.getContextPath() %>/board/comment/write" method="post">
             <input type="hidden" name="boardId" value="<%= b.getBoardId() %>">
 
             <div class="comment-box">
-                <textarea name="content"
-                          placeholder="댓글을 입력하세요."
-                          required></textarea>
+                <textarea name="content" placeholder="댓글을 입력하세요." required></textarea>
                 <button type="submit" class="comment-submit">등록</button>
             </div>
         </form>
     <% } else { %>
-        <p style="color:#bbb; margin-top:10px; font-size:13px;">
-            댓글 작성은 로그인 후 가능합니다.
-        </p>
+        <p style="color:#9aa6d8; margin-top:10px; font-size:13px;">댓글 작성은 로그인 후 가능합니다.</p>
     <% } %>
 
-    <!-- 댓글 리스트 -->
+    <!-- Comment List -->
     <div class="comment-list">
         <% if (comments != null) {
-               for (BoardCommentDTO c : comments) {
+            for (BoardCommentDTO c : comments) {
 
-                   String displayName = c.getUserid();
-
-                   boolean myComment = (loginUser != null &&
+                boolean myComment = (loginUser != null &&
                        loginUser.getUserid().equals(c.getUserid()));
         %>
+
         <div class="comment-item">
+
             <div class="comment-header">
 
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <a href="<%= request.getContextPath() %>/user/profile?userid=<%= c.getUserid() %>"
-                       style="display:flex; align-items:center; text-decoration:none; color:#fff; gap:8px;">
-
-                        <%
+                    <%
                         String cProfile = (c.getMember() != null) ? c.getMember().getProfileImg() : null;
                         boolean cIsUrl = (cProfile != null && cProfile.startsWith("http"));
 
                         String cImgSrc =
                             (cProfile == null || cProfile.trim().isEmpty())
-                                ? request.getContextPath() + "/assets/default_profile.png"
-                                : (cIsUrl
-                                    ? cProfile
-                                    : request.getContextPath() + "/upload/profile/" + cProfile);
-                        %>
+                            ? request.getContextPath()+"/assets/default_profile.png"
+                            : (cIsUrl
+                                ? cProfile
+                                : request.getContextPath()+"/upload/profile/"+cProfile);
+                    %>
 
-                        <img src="<%= cImgSrc %>"
-                             onerror="this.src='<%= request.getContextPath() %>/assets/default_profile.png';"
-                             style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid #333;">
+                    <img src="<%= cImgSrc %>"
+                         onerror="this.src='<%= request.getContextPath() %>/assets/default_profile.png';"
+                         style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid #3F6FFF;">
 
-                        <span class="comment-author">
-                            <%= c.getMember() != null ? 
-                                    (c.getMember().getNickname() != null && !c.getMember().getNickname().isEmpty()
-                                        ? c.getMember().getNickname()
-                                        : c.getUserid())
+                    <span class="comment-author">
+                        <%= (c.getMember()!=null && c.getMember().getNickname()!=null && !c.getMember().getNickname().isEmpty())
+                                ? c.getMember().getNickname()
                                 : c.getUserid() %>
-                        </span>
-                    </a>
+                    </span>
                 </div>
 
                 <span class="comment-date"><%= c.getCreatedAt() %></span>
             </div>
 
             <div class="comment-body">
-                <%= c.getContent().replaceAll("\n", "<br>") %>
+                <%= c.getContent().replaceAll("\n","<br>") %>
             </div>
 
             <% if (myComment) { %>
@@ -499,13 +478,16 @@ body {
                     </form>
                 </div>
             <% } %>
+
         </div>
-        <%   }
-           } %>
+
+        <% } } %>
+
     </div>
 
 </div>
 </div>
 
 </body>
+<%@ include file="/common/alert.jsp" %>
 </html>

@@ -54,7 +54,8 @@ public class ProfileVisitDAO {
         List<MemberDTO> list = new ArrayList<>();
 
         String sql =
-            "SELECT m.userid, m.userpw, m.username, m.nickname, m.phone, m.birth, m.profile_img, m.grade " +
+            "SELECT m.userid, m.userpw, m.username, m.nickname, m.phone, m.birth, " +
+            "       m.profile_img, m.grade, m.movie_style " +
             "FROM profile_visit v " +
             "JOIN member m ON v.visitor_userid = m.userid " +
             "WHERE v.owner_userid = ? " +
@@ -69,6 +70,8 @@ public class ProfileVisitDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
+
+                    // 생성자 8개 필드 세팅
                     MemberDTO dto = new MemberDTO(
                         rs.getString("userid"),
                         rs.getString("userpw"),
@@ -79,6 +82,10 @@ public class ProfileVisitDAO {
                         rs.getString("profile_img"),
                         rs.getString("grade")
                     );
+
+                    // movie_style 추가로 세터 처리
+                    dto.setMovieStyle(rs.getString("movie_style"));
+
                     list.add(dto);
                 }
             }
@@ -89,4 +96,5 @@ public class ProfileVisitDAO {
 
         return list;
     }
+
 }

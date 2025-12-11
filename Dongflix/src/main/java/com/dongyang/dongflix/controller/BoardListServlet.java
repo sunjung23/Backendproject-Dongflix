@@ -26,20 +26,26 @@ public class BoardListServlet extends HttpServlet {
         // ★ 로그인 사용자 확인
         MemberDTO user = (MemberDTO) request.getSession().getAttribute("loginUser");
 
-        // ★ 비밀게시판 전체 목록 접근 제한 (GOLD ONLY)
+     // ★ 비밀게시판 전체 목록 접근 제한 (GOLD ONLY)
         if ("secret".equals(category)) {
 
             if (user == null || user.getGrade() == null ||
                 !user.getGrade().equalsIgnoreCase("gold")) {
 
-                response.setContentType("text/html; charset=UTF-8");
-                response.getWriter().println(
-                    "<script>alert('비밀게시판은 GOLD 회원만 접근 가능합니다.');" +
-                    "location.href='" + request.getContextPath() + "/board/list?category=all';</script>"
-                );
+                // 🚨 기존 alert() → JSP 팝업으로 변경
+                request.setAttribute("alertType", "error");
+                request.setAttribute("alertMsg", "비밀게시판은 GOLD 회원만 접근 가능합니다.");
+
+                // 다시 일반 게시판으로 돌아가도록 category 세팅
+                request.setAttribute("redirectUrl", request.getContextPath() + "/board/list?category=all");
+
+                request.getRequestDispatcher("/common/alert.jsp")
+                       .forward(request, response);
                 return;
             }
         }
+
+        
 
         BoardDAO dao = new BoardDAO();
         List<BoardDTO> list;

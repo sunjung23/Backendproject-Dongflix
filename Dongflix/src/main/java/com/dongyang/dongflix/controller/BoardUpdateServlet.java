@@ -1,6 +1,6 @@
 package com.dongyang.dongflix.controller;
 
-import java.io.*;
+import java.io.IOException;
 
 import com.dongyang.dongflix.dao.BoardDAO;
 import com.dongyang.dongflix.dto.BoardDTO;
@@ -8,7 +8,10 @@ import com.dongyang.dongflix.dto.MemberDTO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/board/update")
 public class BoardUpdateServlet extends HttpServlet {
@@ -18,52 +21,74 @@ public class BoardUpdateServlet extends HttpServlet {
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
-
         HttpSession session = request.getSession();
-        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
 
-        // 로그인 체크
+        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
+        String contextPath = request.getContextPath();
+
+        // 1) 로그인 체크
         if (user == null) {
-            response.setContentType("text/html; charset=UTF-8");
-            response.getWriter().println(
-                "<script>alert('로그인 후 이용 가능합니다.'); location.href='"
-                + request.getContextPath() + "/login.jsp';</script>");
+            request.setAttribute("alertType", "error");
+            request.setAttribute("alertMsg", "로그인 후 이용 가능합니다.");
+            request.setAttribute("redirectUrl", contextPath + "/login.jsp");
+            request.getRequestDispatcher("/common/alert.jsp").forward(request, response);
             return;
         }
 
-        int id = Integer.parseInt(request.getParameter("id"));
+        // 2) 게시글 ID 파라미터 체크
+        String idParam = request.getParameter("id");
+        if (idParam == null) {
+            request.setAttribute("alertType", "error");
+            request.setAttribute("alertMsg", "잘못된 요청입니다.");
+            request.setAttribute("redirectUrl", contextPath + "/board/list");
+            request.getRequestDispatcher("/common/alert.jsp").forward(request, response);
+            return;
+        }
+
+        int id = Integer.parseInt(idParam);
         String title = request.getParameter("title");
         String content = request.getParameter("content");
 
         BoardDAO dao = new BoardDAO();
         BoardDTO origin = dao.getById(id);  // 기존 게시글 조회
 
-        // 게시글 존재 여부 체크
+        // 3) 게시글 존재 여부 체크
         if (origin == null) {
-            response.setContentType("text/html; charset=UTF-8");
-            response.getWriter().println(
-                "<script>alert('존재하지 않는 게시글입니다.'); location.href='"
-                + request.getContextPath() + "/board/list';</script>");
+            request.setAttribute("alertType", "error");
+            request.setAttribute("alertMsg", "존재하지 않는 게시글입니다.");
+            request.setAttribute("redirectUrl", contextPath + "/board/list");
+            request.getRequestDispatcher("/common/alert.jsp").forward(request, response);
             return;
         }
 
-        // 작성자 != 로그인 사용자 → 수정 불가
+        // 4) 작성자 != 로그인 사용자 → 수정 불가
         if (!origin.getUserid().equals(user.getUserid())) {
-            response.setContentType("text/html; charset=UTF-8");
-            response.getWriter().println(
-                "<script>alert('본인 글만 수정할 수 있습니다.'); location.href='"
-                + request.getContextPath() + "/board/list';</script>");
+            request.setAttribute("alertType", "error");
+            request.setAttribute("alertMsg", "본인이 작성한 글만 수정할 수 있습니다.");
+            request.setAttribute("redirectUrl", contextPath + "/board/list");
+            request.getRequestDispatcher("/common/alert.jsp").forward(request, response);
             return;
         }
 
-        // 수정 데이터 반영
+        // 5) 수정 데이터 반영
         BoardDTO dto = new BoardDTO();
         dto.setBoardId(id);
         dto.setTitle(title);
         dto.setContent(content);
 
-        dao.update(dto);
+        int result = dao.update(dto);
 
-        response.sendRedirect("detail?id=" + id);
+        // 6) 결과에 따라 팝업
+        if (result > 0) {
+            request.setAttribute("alertType", "success");
+            request.setAttribute("alertMsg", "게시글이 수정되었습니다.");
+            request.setAttribute("redirectUrl", contextPath + "/board/detail?id=" + id);
+        } else {
+            request.setAttribute("alertType", "error");
+            request.setAttribute("alertMsg", "게시글 수정 중 오류가 발생했습니다.");
+            request.setAttribute("redirectUrl", contextPath + "/board/list");
+        }
+
+        request.getRequestDispatcher("/common/alert.jsp").forward(request, response);
     }
 }
