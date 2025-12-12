@@ -1,56 +1,193 @@
-header {
+/* 페이지 전체 위에 헤더가 올라가므로 여백 확보 */
+body {
+    padding-top: 100px;
+}
+
+/* ================================
+   프리미엄 고정 헤더
+================================ */
+.df-header {
+    position: fixed;
+    top: 0; left: 0;
     width: 100%;
-    height: 70px;
+    z-index: 9999;
 
-    background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+    background: #060814;
+    box-shadow: 0 3px 20px rgba(0,0,0,0.6);
+}
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 50px;
+/* 내부 컨테이너 (1200px 중앙 정렬) */
+.df-header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+
+    height: 80px;
+    padding: 0 30px;
     box-sizing: border-box;
 
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 100;
+    display: grid;
+    align-items: center;
+    grid-template-columns:
+        180px        /* 로고 */
+        320px        /* 메뉴 */
+        1fr          /* 검색창 */
+        200px;       /* 마이페이지 */
+    gap: 20px;
 }
 
-.logo img {
-    height: 40px;
-    width: auto;
-    display: block;
+/* 로고 */
+.df-logo img {
+    height: 38px;
 }
 
-nav ul {
-    list-style: none;
+/* 메뉴 */
+.df-nav ul {
     display: flex;
-    gap: 30px;
-    margin: 0;
-    padding: 0;
+    gap: 26px;
+    list-style: none;
+    margin: 0; padding: 0;
 }
 
-nav ul li {
-    font-size: 18px;
+.df-nav ul li a {
+    color: #e7eaff;
+    font-size: 16px;
+    padding-bottom: 2px;
+    position: relative;
 }
 
+.df-nav ul li a::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg,#3f6fff,#7aa0ff);
+    transition: width .22s;
+}
+
+/* hover 시 밑줄 */
+.df-nav ul li a:hover::after {
+    width: 100%;
+}
+
+/* ⭐ 문제되던 ‘밑줄이 다른 페이지에서도 고정되는 버그 제거’ */
+.df-nav ul li a:focus::after,
+.df-nav ul li a:active::after {
+    width: 0 !important;
+}
+
+/* 마이페이지 / 로그아웃 */
+.df-user-area {
+    text-align: right;
+}
+.df-user-area a {
+    color: #f8f9ff;
+    font-size: 15px;
+    margin-left: 6px;
+}
+.df-divider {
+    color: #8d91b7;
+    margin: 0 4px;
+}
+
+/* 검색창 wrapper */
+.df-search-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 14px 44px;
+    background: #12172d;
+    border-radius: 999px;
+    border: 1px solid rgba(140,160,255,0.45);
+    color: #f5f7ff;
+    font-size: 14px;
+}
+#searchInput:focus {
+    border-color: #5d81ff;
+    box-shadow: 0 0 0 2px rgba(90,120,255,0.4);
+}
+
+.df-search-icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+}
+
+#voiceBtn {
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    background: #2e3868;
+    border: none;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* 드롭다운 */
+.search-dropdown {
+    display: none;
+    position: absolute;
+    top: 52px;
+    left: 0; right: 0;
+
+    background: #0a0f24;
+    border-radius: 14px;
+    border: 1px solid rgba(120,150,255,0.45);
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.65);
+    z-index: 10000;
+}
+
+.drop-title {
+    padding: 10px 14px 6px;
+    color: #98a1d9;
+    font-size: 11px;
+}
+
+.drop-item {
+    padding: 10px 14px;
+    color: #e8ebff;
+    cursor: pointer;
+}
+.drop-item:hover {
+    background: rgba(70,110,255,0.22);
+}
+
+.drop-empty {
+    padding: 14px;
+    text-align: center;
+    color: #9ba0c4;
+}
+
+/* 검색창 열릴 때 화면 어둡게 */
+#searchOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 9000;
+}
 nav ul li a {
-    text-decoration: none;
-    color: #ffffff;
-    transition: color 0.2s ease;
+    text-decoration: none !important;
+    border-bottom: none !important;
 }
 
 nav ul li a:hover {
-    color: #2036CA;
+    color: #6f8bff;
+    text-decoration: none !important;
+    border-bottom: none !important;
 }
 
-.mypage a {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 16px;
-    transition: color 0.2s ease;
-}
-
-.mypage a:hover {
-    color: #2036CA;
+nav ul li a:focus,
+nav ul li a:active,
+nav ul li a:visited {
+    text-decoration: none !important;
+    border: none !important;
 }
