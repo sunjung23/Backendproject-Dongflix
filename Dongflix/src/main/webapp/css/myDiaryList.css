@@ -34,9 +34,17 @@
 
     .card:hover {
         transform: scale(1.03);
-        border-color: #e50914;
-        box-shadow: 0 3px 10px rgba(229, 9, 20, 0.4);
+        border-color: #4c5fbf;
     }
+    
+	    .card-link {
+	    text-decoration: none;
+	    color: inherit;
+	}
+	.card-link:hover .card {
+	    transform: scale(1.03);
+	    border-color: #4c5fbf;
+	}
 
     .poster {
         width: 100%;

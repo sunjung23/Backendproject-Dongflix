@@ -1,23 +1,20 @@
 package com.dongyang.dongflix.dto;
 
 public class DiaryDTO {
-
-    private int diary_id;
+    private int id;              // ★ diary_id <- 여기 매핑됨
     private String userid;
     private int movieId;
     private String movieTitle;
     private String diaryDate;
     private String content;
-    private String regDate; 
-    private String posterPath; 
+    private String regDate;
+    private String posterPath;
 
-    public DiaryDTO() {}
-
-    public int getId() {
-        return diary_id;
+    public int getId() {         // ★ JSP에서 쓰는 getter
+        return id;
     }
-    public void setId(int id) {
-        this.diary_id = diary_id;
+    public void setId(int id) {  // ★ DAO에서 쓰는 setter
+        this.id = id;
     }
 
     public String getUserid() {
