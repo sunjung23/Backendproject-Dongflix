@@ -178,25 +178,62 @@
             transform:translateY(-50%) scale(1.1);
         }
 
-        /* ============================
-           FLOATING TEST BUTTON
-        ============================ */
-        .floating-test-btn {
-            position:fixed;
-            right:24px;
-            bottom:24px;
-            padding:16px;
-            border-radius:50%;
-            background:#3f6fff;
-            font-size:22px;
-            color:white;
-            box-shadow:0 8px 26px rgba(80,120,255,0.55);
-            transition:.25s;
-        }
-        .floating-test-btn:hover {
-            transform:translateY(-3px);
-            background:#678aff;
-        }
+      /* ============================
+   FLOATING TEST BUTTON (OTT PREMIUM FINAL)
+============================ */
+.floating-test-btn {
+    position: fixed;
+    right: 26px;
+    bottom: 26px;
+
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    /* 고급스러운 글래스 느낌 */
+    background: linear-gradient(
+        135deg,
+        rgba(55, 80, 190, 0.75),
+        rgba(35, 55, 140, 0.75)
+    );
+    backdrop-filter: blur(8px);
+
+    font-size: 21px;
+    line-height: 1;
+    color: #eef1ff;
+
+    border: 1px solid rgba(140, 165, 255, 0.45);
+
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.55),
+        0 0 0 rgba(255,255,255,0);
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        background .18s ease;
+}
+
+/* hover는 “과하지 않게” */
+.floating-test-btn:hover {
+    transform: translateY(-2px) scale(1.06);
+
+    background: linear-gradient(
+        135deg,
+        rgba(90, 120, 255, 0.95),
+        rgba(60, 90, 210, 0.95)
+    );
+
+    box-shadow:
+        0 10px 28px rgba(80, 120, 255, 0.55),
+        0 0 0 1px rgba(255,255,255,0.25);
+}
+
     </style>
 </head>
 
