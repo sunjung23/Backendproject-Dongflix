@@ -778,7 +778,15 @@ window.addEventListener("load", setupBoardPagination);
 
 <% } %>
 
-
+<!-- 내 영화 일기장 바로가기 버튼 -->
+<div class="section-header" style="margin-top:45px;">
+    <div class="section-title">내 영화 일기장</div>
+    <a href="<%= request.getContextPath() %>/myDiaryList"
+       class="section-badge"
+       style="cursor:pointer; text-decoration:none; margin-bottom: 20px;]">
+        열기 →
+    </a>
+</div>
 
 <!-- ================================
      내가 작성한 리뷰 (캐러셀)
