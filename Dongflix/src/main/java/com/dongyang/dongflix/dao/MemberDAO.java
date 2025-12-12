@@ -54,7 +54,7 @@ public class MemberDAO {
                 dto.setBirth(rs.getString("birth"));
                 dto.setProfileImg(rs.getString("profile_img"));
                 dto.setGrade(rs.getString("grade"));
-
+                dto.setMovieStyle(rs.getString("movie_style"));
                 return dto;
             }
         } catch (Exception e) {

@@ -30,7 +30,7 @@ body {
     grid-template-columns:
         180px        /* 로고 */
         320px        /* 메뉴 */
-        1fr          /* 검색창 */
+        400px            /* 검색창 */
         200px;       /* 마이페이지 */
     gap: 20px;
 }
