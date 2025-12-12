@@ -489,7 +489,7 @@ body {
 		        <!-- 로그인한 경우: 저장 버튼 표시 -->
 		        <form action="saveMovieStyle" method="post" style="display: inline;">
 		            <input type="hidden" name="movieStyle" id="saveMovieStyle">
-		            <button type="submit" class="back-btn" style="background: #1a5f3f; cursor: pointer; border: none;">
+		            <button type="submit" class="back-btn" style="background: #2036CA; cursor: pointer; border: none;">
 		                마이페이지에 저장
 		            </button>
 		        </form>
