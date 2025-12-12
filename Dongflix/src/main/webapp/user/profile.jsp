@@ -522,7 +522,8 @@ body {
                     </div>
                 </div>
             </div>
-            <a class="taste-subbtn" href="<%= request.getContextPath() %>/movieTest">
+            <a class="taste-subbtn" href="<%= request.getContextPath() %>/movieTest.jsp"
+>
                 나도 테스트 받으러 가기
             </a>
         </div>
