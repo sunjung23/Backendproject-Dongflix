@@ -40,8 +40,8 @@ public class DiaryDAO {
     public List<DiaryDTO> getMyDiaryList(String userid) {
         List<DiaryDTO> list = new ArrayList<>();
 
-        String sql = "SELECT diary_id, userid, movie_id, movie_title, diary_date, content, reg_date, poster_path "
-                   + "FROM movie_diary WHERE userid = ? ORDER BY diary_id DESC";
+        String sql = "SELECT diary_id, userid, movie_id, movie_title, diary_date, content, poster_path, reg_date " +
+                     "FROM movie_diary WHERE userid = ? ORDER BY diary_id DESC";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -51,14 +51,14 @@ public class DiaryDAO {
 
             while (rs.next()) {
                 DiaryDTO dto = new DiaryDTO();
-                dto.setId(rs.getInt("diary_id")); // DTO의 id에 diary_id 저장
+                dto.setId(rs.getInt("diary_id"));
                 dto.setUserid(rs.getString("userid"));
                 dto.setMovieId(rs.getInt("movie_id"));
                 dto.setMovieTitle(rs.getString("movie_title"));
                 dto.setDiaryDate(rs.getString("diary_date"));
                 dto.setContent(rs.getString("content"));
-                dto.setRegDate(rs.getString("reg_date"));
                 dto.setPosterPath(rs.getString("poster_path"));
+                dto.setRegDate(rs.getString("reg_date"));
 
                 list.add(dto);
             }
@@ -71,7 +71,6 @@ public class DiaryDAO {
 
     /** 일기 삭제 */
     public int deleteDiary(int id) {
-
         String sql = "DELETE FROM movie_diary WHERE diary_id = ?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -90,8 +89,8 @@ public class DiaryDAO {
     public DiaryDTO getDiaryById(int id) {
         DiaryDTO dto = null;
 
-        String sql = "SELECT diary_id, userid, movie_id, movie_title, diary_date, content, reg_date, poster_path "
-                   + "FROM movie_diary WHERE diary_id = ?";
+        String sql = "SELECT diary_id, userid, movie_id, movie_title, diary_date, content, poster_path, reg_date " +
+                "FROM movie_diary WHERE diary_id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
