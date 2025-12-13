@@ -32,13 +32,14 @@ body {
   transition: box-shadow .2s ease, border-color .2s ease;
 }
 
-/* ✨ focus 시 전체 glow */
+/* 🔕 focus 시 glow 제거 */
 .search-container:focus-within {
-  border-color: rgba(110,140,255,0.55);
+  border-color: rgba(120,150,255,0.14);
   box-shadow:
-    0 0 0 1px rgba(110,140,255,0.35),
-    0 14px 36px rgba(80,120,255,0.45);
+    0 8px 22px rgba(0,0,0,0.45),
+    inset 0 0 0 1px rgba(255,255,255,0.02);
 }
+
 
 /* ===============================
    ONE LINE BAR

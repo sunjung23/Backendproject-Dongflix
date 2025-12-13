@@ -21,11 +21,11 @@ public class JoinServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        // 폼 파라미터
+        // 1) 폼 파라미터
         String userid   = request.getParameter("userid");
         String password = request.getParameter("password");
         String username = request.getParameter("username");
-        String genres   = request.getParameter("genres");   // "액션,로맨스,코미디" 이런 식으로 넘어옴 (선택 안 하면 null 또는 "")
+        String genres   = request.getParameter("genres"); // "액션,로맨스,코미디" or "" or null
 
         // null 방지 & trim
         userid   = (userid   == null) ? "" : userid.trim();
@@ -33,7 +33,7 @@ public class JoinServlet extends HttpServlet {
         username = (username == null) ? "" : username.trim();
         genres   = (genres   == null) ? "" : genres.trim();
 
-        // ===== 1) 기본 서버측 유효성 검사 =====
+        // 2) 서버측 유효성 검사
         if (userid.isEmpty() || password.isEmpty() || username.isEmpty()) {
             request.setAttribute("alertType", "error");
             request.setAttribute("alertMsg", "아이디, 비밀번호, 이름을 모두 입력해주세요.");
@@ -42,7 +42,6 @@ public class JoinServlet extends HttpServlet {
             return;
         }
 
-        // (선택) 비밀번호 아주 기초적인 길이 검사 정도만 — UI에서 강도 안내는 이미 하고 있음
         if (password.length() < 6) {
             request.setAttribute("alertType", "error");
             request.setAttribute("alertMsg", "비밀번호는 6자 이상으로 설정해주세요.");
@@ -53,7 +52,7 @@ public class JoinServlet extends HttpServlet {
 
         MemberDAO dao = new MemberDAO();
 
-        // ===== 2) 아이디 중복 체크 (서버 측에서도 한 번 더) =====
+        // 3) 아이디 중복 체크
         if (dao.isUserIdExists(userid)) {
             request.setAttribute("alertType", "error");
             request.setAttribute("alertMsg", "이미 사용 중인 아이디입니다. 다른 아이디를 사용해주세요.");
@@ -62,30 +61,28 @@ public class JoinServlet extends HttpServlet {
             return;
         }
 
-        // ===== 3) 회원 정보 DTO 구성 (지금은 userid/password/username만) =====
+        // 4) DTO 구성 (+ movie_style 저장용)
         MemberDTO dto = new MemberDTO(userid, password, username);
-
-        // (⭐ 앞으로 6/7, 7/7에서 MemberDTO/DAO 수정하면 여기서 genres도 같이 DTO에 넣거나 별도 테이블에 Insert하면 됨)
-        // 예를 들어 나중에는:
-        // dto.setPreferredGenres(genres);
-        // 같은 식으로 확장할 수 있음.
+        dto.setMovieStyle(genres); // ✅ movie_style 컬럼에 저장될 값
 
         int result = dao.join(dto);
 
-        // ===== 4) 결과 처리 =====
+        // 5) 결과 처리
         if (result == 1) {
-            
             HttpSession session = request.getSession();
+
+            // ✅ 회원가입 때 선택한 장르 기록 (intro / recommend에서 사용 가능)
             session.setAttribute("signupGenres", genres);
 
-            // 회원가입 성공 → 고급 alert.jsp 팝업 후 로그인 페이지로 이동
-            request.setAttribute("alertType", "success");
-            request.setAttribute("alertMsg", "회원가입이 완료되었습니다. 로그인 후 이용해주세요.");
-            request.setAttribute("redirectUrl", request.getContextPath() + "/login.jsp");
-            request.getRequestDispatcher("/common/alert.jsp").forward(request, response);
+            // ✅ (선택) 자동 로그인: recommend에서 로그인 검사 통과시키려면 필요
+            // recommend 서블릿이 "로그인 필수"면 이 줄이 사실상 필수다.
+            session.setAttribute("loginUser", dto);
+
+            // ✅ intro로 이동 → intro가 /recommend로 자동 이동
+            response.sendRedirect(request.getContextPath() + "/intro.jsp");
+            return;
 
         } else {
-            // DB 오류 등
             request.setAttribute("alertType", "error");
             request.setAttribute("alertMsg", "회원가입 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
             request.setAttribute("redirectUrl", request.getContextPath() + "/join.jsp");

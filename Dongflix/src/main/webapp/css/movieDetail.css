@@ -1,237 +1,646 @@
-
-        body {
-            background-color: #111;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        .detail-banner {
-            width: 100%;
-            height: 400px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-
-        .detail-banner::after {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 400px;
-            top: 0;
-            left: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #111 100%);
-        }
-        
-.banner-detail-btn {
-    display: inline-block;
-    margin-top: 18px;
-    padding: 10px 18px;
-    font-size: 16px;
-    color: #fff;
-    background: rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.4);
-    border-radius: 6px;
-    text-decoration: none !important;   
-    transition: all 0.25s ease;
+/* ==================================================
+   GLOBAL RESET & THEME
+================================================== */
+* {
+  box-sizing: border-box;
 }
 
-.banner-detail-btn:hover {
-    text-decoration: none !important;   
-    background: rgba(255,255,255,0.15);
-    border-color: #fff;
-    transform: translateY(-3px);
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(70,100,255,0.14), transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(120,150,255,0.12), transparent 55%),
+    #060814;
+  color: #eef1ff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  line-height: 1.6;
 }
 
-        .detail-banner-content {
-            position: absolute;
-            bottom: 20px;
-            left: 40px;
-            z-index: 10;
-        }
+/* ==================================================
+   HERO BANNER (PARALLAX READY)
+================================================== */
+.detail-banner {
+  position: relative;
+  height: 480px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
 
-        .detail-banner-content h1 {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
+/* dark gradient overlay */
+.detail-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(6,8,20,0.15) 0%,
+    rgba(6,8,20,0.85) 70%,
+    #060814 100%
+  );
+  z-index: 1;
+}
 
-        .detail-container {
-            display: flex;
-            gap: 30px;
-            padding: 40px;
-        }
+/* banner content */
+.detail-banner-content {
+  position: absolute;
+  bottom: 64px;
+  left: 64px;
+  z-index: 2;
+  max-width: 720px;
+}
 
-        .detail-poster {
-            width: 260px;
-            border-radius: 10px;
-        }
+.detail-banner-content h1 {
+  font-size: 44px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
 
-        .detail-info {
-            max-width: 700px;
-        }
+.detail-banner-content p {
+  font-size: 15px;
+  color: #cfd6ff;
+  margin: 6px 0;
+}
 
-        .detail-info h2 {
-            margin-bottom: 10px;
-        }
+/* ==================================================
+   MAIN CONTENT LAYOUT (NEVER BREAKS)
+================================================== */
+.detail-container {
+  max-width: 1200px;
+  margin: 72px auto;
+  padding: 0 48px;
 
-        .back-btn {
-            margin-top: 20px;
-            display: inline-block;
-            padding: 10px 15px;
-            color: #fff;
-            background: #2036CA;
-            text-decoration: none;
-            border-radius: 5px;
-        }
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 64px;
+}
 
-        .wish-btn {
-            margin-top: 10px;
-            padding: 10px 15px;
-            background: #444;
-            border-radius: 5px;
-            cursor: pointer;
-            display: inline-block;
-            color: #fff;
-        }
+/* ==================================================
+   POSTER (DEPTH + BLUR HOVER)
+================================================== */
+.detail-poster {
+  width: 100%;
+  border-radius: 18px;
+  transition: transform .4s ease,
+              box-shadow .4s ease,
+              filter .4s ease;
+}
 
-        .wish-btn:hover {
-            background: #666;
-        }
-        
-        .wish-btn.active {
-		    background-color: #2036CA;   
-		    color: white;
-		    box-shadow: 0 8px 25px rgba(32, 54, 202, 0.5);
-		    transform: scale(1.03);
-		}
-		
-		.wish-btn.active:hover {
-		    background-color: #0A1A44;
-		}
+.detail-poster:hover {
+  transform: translateY(-12px) scale(1.04);
+  filter: brightness(1.05);
+  box-shadow:
+    0 40px 90px rgba(0,0,0,0.85),
+    0 0 0 1px rgba(120,150,255,0.25);
+}
 
-        .review-section {
-            margin: 40px;
-            border-top: 1px solid #333;
-            padding-top: 20px;
-        }
+/* ==================================================
+   INFO AREA
+================================================== */
+.detail-info h2 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
 
-        .review-section h3 {
-            margin-bottom: 10px;
-        }
-        
-        .diary-btn {
-	    display:inline-block;
-	    margin-top:15px;
-	    padding:10px 16px;
-	    background:#2036CA;
-	    color:#fff;
-	    border-radius:8px;
-	    text-decoration:none;
-	    font-weight:600;
-	    transition:0.2s;
-	}
-	
-	.diary-btn:hover {
-	    background:#0A1A88;
-	}
+.detail-info p {
+  font-size: 15px;
+  color: #d6dcff;
+}
 
+/* ==================================================
+   ACTION BUTTONS (PERFECT ALIGN)
+================================================== */
+.detail-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 26px;
+}
 
+.wish-btn,
+.diary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 600;
+
+  border-radius: 14px;
+  cursor: pointer;
+  text-decoration: none;
+
+  background: rgba(20,26,60,0.85);
+  color: #eef1ff;
+  border: 1px solid rgba(120,150,255,0.35);
+
+  transition: all .25s ease;
+}
+
+.wish-btn:hover,
+.diary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.6);
+  border-color: #6f8cff;
+}
+
+.wish-btn.active {
+  background: linear-gradient(135deg, #4f7cff, #6f8cff);
+  border-color: transparent;
+  box-shadow: 0 12px 36px rgba(80,120,255,0.6);
+}
+
+/* ==================================================
+   REVIEW SECTION (PREMIUM OTT)
+================================================== */
+.review-section {
+  max-width: 1200px;
+  margin: 96px auto;
+  padding: 0 48px;
+}
+
+.review-section h3 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 28px;
+  color: #f1f3ff;
+  letter-spacing: -0.3px;
+}
+
+/* ==================================================
+   REVIEW WRITE BUTTON
+================================================== */
 .review-write-btn {
-    padding: 10px 16px;
-    background: transparent;
-    color: #9db3ff;
-    border: 1px solid #4c5fbf;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.25s ease;
-    font-size: 14px;
+  margin-top: 12px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: rgba(20,26,60,0.9);
+  border: 1px solid rgba(120,150,255,0.35);
+  color: #dfe4ff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .22s ease;
 }
 
 .review-write-btn:hover {
-    background: rgba(76, 95, 191, 0.2);
-    color: #dce3ff;
-    transform: translateY(-2px);
+  background: #3f6fff;
+  border-color: #3f6fff;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(80,120,255,0.45);
 }
 
-.review-box {
-    background: #1a1a1a;
-    padding: 18px;
-    border-radius: 10px;
-    margin-top: 15px;
-    border: 1px solid #2a2a2a;
-}
-
-.review-action-btn {
-    padding: 6px 10px;
-    font-size: 13px;
-    border-radius: 5px;
-    background: #2c2c2c;
-    color: #ddd;
-    border: 1px solid #444;
-    cursor: pointer;
-    transition: 0.2s ease;
-    margin-right: 5px;
-}
-
-.review-action-btn:hover {
-    background: #3b3b3b;
-    color: white;
-    border-color: #666;
-}
- 
-.review-action-btn.delete {
-    border: 1px solid #b14a4a;
-    color: #ffb3b3;
-}
-
-.review-action-btn.delete:hover {
-    background: #8a2e2e;
-    color: white;
-}
-
+/* ==================================================
+   REVIEW FORM WRAPPER (⭐ 핵심 ⭐)
+================================================== */
 .review-form-wrapper {
-    margin-top: 20px;
-    padding: 20px;
-    background: #181818;
-    border: 1px solid #2c2c2c;
-    border-radius: 10px;
+  margin-top: 26px;
+  padding: 32px 30px 30px;
+  background: rgba(12,16,36,0.92);
+  border-radius: 26px;
+  border: 1px solid rgba(120,150,255,0.18);
+  box-shadow: 0 28px 70px rgba(20,30,70,0.85);
 }
 
+/* ==================================================
+   STAR RATING (CENTER & GLOW)
+================================================== */
+.star-rating,
+.edit-star-rating {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.star-rating .star,
+.edit-star-rating .star {
+  font-size: 32px;
+  color: #3b4170;
+  cursor: pointer;
+  transition: transform .2s ease, color .2s ease, text-shadow .2s ease;
+}
+
+.star-rating .star:hover,
+.edit-star-rating .star:hover {
+  transform: scale(1.25);
+  color: #ffd966;
+}
+
+.star-rating .star.selected,
+.edit-star-rating .star.selected {
+  color: #ffd966;
+  text-shadow:
+    0 0 12px rgba(255,217,102,0.85),
+    0 0 26px rgba(255,217,102,0.55);
+}
+
+/* ==================================================
+   REVIEW TEXTAREA (PREMIUM)
+================================================== */
 .review-form-wrapper textarea {
-    width: 100%;
-    padding: 12px;
-    background: #111;
-    border: 1px solid #333;
-    border-radius: 6px;
-    color: #eee;
-    resize: none;
-    margin-top: 10px;
+  width: 100%;
+  min-height: 140px;
+  padding: 18px 20px;
+  margin-top: 12px;
+
+  border-radius: 18px;
+  border: 1px solid rgba(100,120,210,0.32);
+  background: #0f1328;
+
+  color: #f3f4ff;
+  font-size: 15px;
+  line-height: 1.7;
+  resize: none;
+
+  transition: .22s ease;
+}
+
+.review-form-wrapper textarea::placeholder {
+  color: #8f98c9;
 }
 
 .review-form-wrapper textarea:focus {
-    outline: none;
-    border-color: #4c5fbf;
+  outline: none;
+  background: #131a34;
+  border-color: #3f6fff;
+  box-shadow:
+    0 0 0 2px rgba(80,120,255,0.45),
+    0 12px 36px rgba(30,50,120,0.65);
 }
 
+/* ==================================================
+   REVIEW SUBMIT BUTTON
+================================================== */
 .review-submit-btn {
-    margin-top: 3px;
-    padding: 10px 15px;
-    background: #2036CA;
-    border: none;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.25s ease;
-}
+  margin-top: 18px;
+  padding: 14px 0;
+  width: 100%;
 
-.review-write-btn {
-	margin-top: 10px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+
+  background: #3f6fff;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+
+  transition: .22s ease;
 }
 
 .review-submit-btn:hover {
-    background: #162a8c;
-    transform: translateY(-2px);
+  background: #678aff;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(80,120,255,0.55);
+}
+
+/* ==================================================
+   REVIEW CARD
+================================================== */
+.review-item {
+  background: rgba(10,14,32,0.9);
+  border-radius: 22px;
+  padding: 30px;
+  margin-bottom: 28px;
+
+  border: 1px solid rgba(120,150,255,0.18);
+  transition: .28s ease;
+}
+
+.review-item:hover {
+  transform: translateY(-6px);
+  border-color: #6f8cff;
+  box-shadow: 0 26px 60px rgba(0,0,0,0.65);
+}
+
+/* ==================================================
+   REVIEW HEADER
+================================================== */
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.review-author-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #f1f3ff;
+}
+
+.review-rating {
+  font-size: 14px;
+  color: #ffd966;
+}
+
+/* ==================================================
+   LIKE BUTTON (ANIMATION UPGRADE)
+================================================== */
+.like-btn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(20,26,60,0.85);
+  border: 1px solid rgba(120,150,255,0.35);
+  color: #dfe4ff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .22s ease;
+}
+
+.like-btn:hover {
+  background: #e50914;
+  border-color: #e50914;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.like-btn.liked {
+  background: #e50914;
+  border-color: #e50914;
+  color: #fff;
+  animation: likePop .35s ease;
+}
+
+@keyframes likePop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* ==================================================
+   REVIEW CONTENT
+================================================== */
+.review-content {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #e3e6ff;
+  margin-bottom: 14px;
+}
+
+/* ==================================================
+   REVIEW FOOTER
+================================================== */
+.review-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-date {
+  font-size: 13px;
+  color: #8e95c9;
+}
+
+.review-action-btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(20,26,60,0.85);
+  border: 1px solid rgba(120,150,255,0.35);
+  color: #dfe4ff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .22s ease;
+}
+
+.review-action-btn:hover {
+  background: #3f6fff;
+  border-color: #3f6fff;
+  color: #fff;
+}
+
+.review-action-btn.delete:hover {
+  background: #e50914;
+  border-color: #e50914;
+  color: #fff;
+}
+
+/* ==================================================
+   🔒 OVERRIDE CSS (FINAL)
+   목적:
+   1) 리뷰 목록 정렬 + 고급감 보정
+   2) 찜하기 / 영화 일기 버튼 정렬·크기 통일
+   ⚠ 기존 CSS 수정 없음 (덮어쓰기 전용)
+================================================== */
+
+
+/* ===============================
+   REVIEW LIST 정렬 안정화
+=============================== */
+
+/* 리뷰 리스트를 하나의 컬럼 흐름으로 고정 */
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;                 /* 카드 간 리듬 통일 */
+}
+
+/* 리뷰 카드 여백 미세 조정 (기존 디자인 유지) */
+.review-item {
+  padding: 28px 30px;
+}
+
+/* 리뷰 헤더 요소 수직 정렬 안정 */
+.review-header {
+  align-items: center;
+}
+
+/* 리뷰 하단 날짜 + 버튼 정렬 */
+.review-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+}
+
+/* 리뷰 액션 버튼 그룹 정렬 */
+.review-actions {
+  display: flex;
+  gap: 8px;
+}
+
+
+
+/* ===============================
+   ACTION BUTTON 통일 (찜 / 일기)
+=============================== */
+
+/* form 기본 여백 제거 */
+.detail-info form {
+  margin: 0;
+}
+
+/* 버튼 그룹을 한 줄로 고정 */
+.detail-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 26px;
+}
+
+/* 찜하기 / 영화 일기 버튼 완전 통일 */
+.wish-btn,
+.diary-btn {
+  height: 46px;                 /* 🔥 높이 통일 */
+  padding: 0 26px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+
+  border-radius: 999px;
+}
+
+/* a 태그 버튼 baseline 문제 방지 */
+.diary-btn {
+  text-decoration: none;
+}
+
+/* 찜 활성화 상태에서도 높이 유지 */
+.wish-btn.active {
+  height: 46px;
+}
+/* ==================================================
+   🔒 REVIEW CARD OVERRIDE (FINAL)
+   목적:
+   1) 리뷰 카드 hover 효과 제거
+   2) 리뷰 카드 자체를 프리미엄·몽환 톤으로 정리
+================================================== */
+
+
+/* ===============================
+   1. 리뷰 카드 hover 완전 제거
+=============================== */
+.review-item:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: rgba(120,150,255,0.18) !important;
+}
+
+
+/* ===============================
+   2. 리뷰 카드 베이스 재정의
+=============================== */
+.review-item {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(14,18,40,0.88),
+      rgba(10,14,30,0.88)
+    ) !important;
+
+  border-radius: 22px;
+  border: 1px solid rgba(120,150,255,0.18);
+  padding: 26px 28px;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.02),
+    0 18px 42px rgba(0,0,0,0.55);
+}
+
+
+/* ===============================
+   리뷰 헤더 정렬 정돈
+=============================== */
+.review-header {
+  align-items: center;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+
+.review-author-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #f1f3ff;
+}
+
+.review-rating {
+  font-size: 14px;
+  color: #ffd966;
+}
+
+
+/* ===============================
+   리뷰 본문 가독성 개선
+=============================== */
+.review-content {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #e3e6ff;
+  margin: 10px 0 16px;
+}
+
+
+/* ===============================
+   리뷰 하단 영역 정렬
+=============================== */
+.review-footer {
+  align-items: center;
+}
+
+.review-date {
+  font-size: 13px;
+  color: #8e95c9;
+}
+
+
+/* ===============================
+   수정 / 삭제 버튼 미니멀화
+=============================== */
+.review-action-btn {
+  height: 34px;
+  padding: 0 14px;
+
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+
+  background: rgba(18,24,60,0.85);
+  border: 1px solid rgba(120,150,255,0.28);
+  color: #dfe4ff;
+}
+
+.review-action-btn:hover {
+  background: rgba(30,40,90,0.95);
+  border-color: #6f8cff;
+  color: #fff;
+}
+
+.review-action-btn.delete:hover {
+  background: rgba(120,30,30,0.85);
+  border-color: #e50914;
+  color: #fff;
+}
+
+
+/* ===============================
+   추천 버튼 (톤만 정리, 과장 X)
+=============================== */
+.like-btn {
+  height: 36px;
+  padding: 0 16px;
+
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+
+  background: rgba(18,24,60,0.85);
+  border: 1px solid rgba(120,150,255,0.28);
+  color: #dfe4ff;
+}
+
+.like-btn.liked {
+  background: rgba(229,9,20,0.95);
+  border-color: #e50914;
+  color: #fff;
 }

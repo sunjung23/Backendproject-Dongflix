@@ -230,25 +230,33 @@
         <h2>줄거리</h2>
         <p><%= movie.getOverview() %></p>
 
-        <!-- 찜하기 -->
-        <form action="wish" method="post">
-            <input type="hidden" name="movie_id" value="<%= movie.getId() %>" />
-            <input type="hidden" name="movie_title" value="<%= movie.getTitle() %>" />
-            <input type="hidden" name="poster_path" value="<%= movie.getPosterPath() %>" />
+        <!-- ===== 액션 버튼 영역 ===== -->
+        <div class="detail-actions">
 
-			<button type="submit" 
-			        class="wish-btn <%= (Boolean.TRUE.equals(request.getAttribute("isWished"))) ? "active" : "" %>">
-			
-			    <%= (Boolean.TRUE.equals(request.getAttribute("isWished"))) 
-			            ? "찜 취소" 
-			            : "❤️ 찜하기" %>
-			</button>
-        </form>
-			<a href="<%= request.getContextPath() %>/writeDiary?movieId=<%= movie.getId() %>" class="diary-btn">
-		    📘 영화 일기 작성하기
-		</a>
+            <!-- 찜하기 -->
+            <form action="wish" method="post" class="action-form">
+                <input type="hidden" name="movie_id" value="<%= movie.getId() %>" />
+                <input type="hidden" name="movie_title" value="<%= movie.getTitle() %>" />
+                <input type="hidden" name="poster_path" value="<%= movie.getPosterPath() %>" />
+
+                <button type="submit"
+                        class="wish-btn <%= (Boolean.TRUE.equals(request.getAttribute("isWished"))) ? "active" : "" %>">
+                    <%= (Boolean.TRUE.equals(request.getAttribute("isWished"))) 
+                            ? "찜 취소" 
+                            : "❤️ 찜하기" %>
+                </button>
+            </form>
+
+            <!-- 영화 일기 -->
+            <a href="<%= request.getContextPath() %>/writeDiary?movieId=<%= movie.getId() %>"
+               class="diary-btn">
+                📘 영화 일기 작성하기
+            </a>
+
+        </div>
     </div>
 </div>
+
 
 <!-- ===== 리뷰 섹션 ===== -->
 <div class="review-section">
