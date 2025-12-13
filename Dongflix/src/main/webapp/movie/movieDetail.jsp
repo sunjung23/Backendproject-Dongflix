@@ -4,6 +4,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.dongyang.dongflix.dto.ReviewDTO" %>
 <%@ page import="com.dongyang.dongflix.dao.MemberDAO" %>
+<%@ page import="com.dongyang.dongflix.dto.MemberDTO" %>
 
 <%
     TMDBmovie movie = (TMDBmovie) request.getAttribute("movie");
@@ -14,7 +15,9 @@
 
     List<ReviewDTO> topReviews = (List<ReviewDTO>) request.getAttribute("topReviews");
     List<ReviewDTO> otherReviews = (List<ReviewDTO>) request.getAttribute("otherReviews");
-    String detailLoginUser = (String) session.getAttribute("userid");
+    MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
+    String detailLoginUser = (loginUser != null) ? loginUser.getUserid() : null;
+
 %>
 
 <!DOCTYPE html>

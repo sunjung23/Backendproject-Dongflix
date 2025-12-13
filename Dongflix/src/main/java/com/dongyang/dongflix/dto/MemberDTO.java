@@ -13,7 +13,9 @@ public class MemberDTO {
     private String grade;
     private String email;
     private Timestamp createdAt;
-    private String movieStyle;  // 🔥 추가
+    private String genres;       // ✅ 회원가입 장르
+    private String movieStyle;   // ✅ 취향 테스트 결과 (A/B/C/D)
+
 
     // 기본 생성자
     public MemberDTO() {}
@@ -109,8 +111,13 @@ public class MemberDTO {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+    public String getGenres() {
+        return genres;
+    }
+    public void setGenres(String genres) {
+        this.genres = genres;
+    }
 
-    // 🔥 추가
     public String getMovieStyle() {
         return movieStyle;
     }

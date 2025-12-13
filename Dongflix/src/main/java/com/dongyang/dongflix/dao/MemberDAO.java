@@ -11,11 +11,12 @@ import com.dongyang.dongflix.dto.MemberDTO;
 
 public class MemberDAO {
 
-  // ====================== 회원가입 ======================
+	// ====================== 회원가입 ======================
 	public int join(MemberDTO dto) {
 
-	    String sql = "INSERT INTO member(userid, userpw, name, grade, movie_style) " +
-	                 "VALUES (?, ?, ?, ?, ?)";
+	    String sql =
+	        "INSERT INTO member (userid, userpw, name, grade, genres) " +
+	        "VALUES (?, ?, ?, ?, ?)";
 
 	    try (Connection conn = DBConnection.getConnection();
 	         PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -23,13 +24,12 @@ public class MemberDAO {
 	        ps.setString(1, dto.getUserid());
 	        ps.setString(2, dto.getPassword());
 	        ps.setString(3, dto.getUsername());
-	        ps.setString(4, "bronze");               // 기본 등급
-	        ps.setString(5, dto.getMovieStyle());    // ⭐ 핵심
+	        ps.setString(4, "bronze");
+	        ps.setString(5, dto.getGenres());   // ✅ genres만 저장
 
 	        return ps.executeUpdate();
 
 	    } catch (Exception e) {
-	        System.out.println(">>> 회원가입 실패");
 	        e.printStackTrace();
 	    }
 	    return 0;

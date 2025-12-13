@@ -3,6 +3,7 @@ package com.dongyang.dongflix.controller;
 import java.io.IOException;
 
 import com.dongyang.dongflix.dao.DiaryDAO;
+import com.dongyang.dongflix.dto.MemberDTO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -20,12 +21,15 @@ public class SaveDiaryServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
 
         HttpSession session = req.getSession();
-        String userid = (String) session.getAttribute("userid");
+    	MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
 
-        if (userid == null) {
-            resp.sendRedirect(req.getContextPath() + "/login.jsp");
-            return;
-        }
+    	if (loginUser == null) {
+    	    resp.sendRedirect(req.getContextPath() + "/login.jsp");
+    	    return;
+    	}
+
+    	String userid = loginUser.getUserid();
+
 
         int movieId = Integer.parseInt(req.getParameter("movieId"));
         String movieTitle = req.getParameter("movieTitle");

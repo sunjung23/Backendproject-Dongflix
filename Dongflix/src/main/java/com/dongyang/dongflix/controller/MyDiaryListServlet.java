@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.dongyang.dongflix.dao.DiaryDAO;
 import com.dongyang.dongflix.dto.DiaryDTO;
+import com.dongyang.dongflix.dto.MemberDTO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,13 +18,16 @@ public class MyDiaryListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        HttpSession session = req.getSession();
-        String userid = (String) session.getAttribute("userid");
+    	HttpSession session = req.getSession();
+    	MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
 
-        if (userid == null) {
-            resp.sendRedirect(req.getContextPath() + "/login.jsp");
-            return;
-        }
+    	if (loginUser == null) {
+    	    resp.sendRedirect(req.getContextPath() + "/login.jsp");
+    	    return;
+    	}
+
+    	String userid = loginUser.getUserid();
+
 
         DiaryDAO dao = new DiaryDAO();
         List<DiaryDTO> diaryList = dao.getMyDiaryList(userid);

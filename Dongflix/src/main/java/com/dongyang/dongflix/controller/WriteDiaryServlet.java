@@ -9,12 +9,14 @@ import java.net.URL;
 import org.json.JSONObject;
 
 import com.dongyang.dongflix.model.TMDBmovie;
+import com.dongyang.dongflix.dto.MemberDTO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/writeDiary")
 public class WriteDiaryServlet extends HttpServlet {
@@ -26,6 +28,20 @@ public class WriteDiaryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
+        /* ===============================
+           🔒 로그인 가드 (이게 핵심)
+        =============================== */
+        HttpSession session = req.getSession();
+        MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            resp.sendRedirect(req.getContextPath() + "/login.jsp");
+            return;
+        }
+
+        /* ===============================
+           movieId 파라미터 검사
+        =============================== */
         String movieId = req.getParameter("movieId");
 
         if (movieId == null || movieId.isEmpty()) {

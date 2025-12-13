@@ -61,28 +61,28 @@ public class JoinServlet extends HttpServlet {
             return;
         }
 
-        // 4) DTO 구성 (+ movie_style 저장용)
+        // 4) DTO 구성 
         MemberDTO dto = new MemberDTO(userid, password, username);
-        dto.setMovieStyle(genres); // ✅ movie_style 컬럼에 저장될 값
+        dto.setGenres(genres);      // ✅ 회원가입 장르
+        // ❌ dto.setMovieStyle(...) 절대 넣지 말 것
 
         int result = dao.join(dto);
+
 
         // 5) 결과 처리
         if (result == 1) {
             HttpSession session = request.getSession();
 
-            // ✅ 회원가입 때 선택한 장르 기록 (intro / recommend에서 사용 가능)
             session.setAttribute("signupGenres", genres);
 
-            // ✅ (선택) 자동 로그인: recommend에서 로그인 검사 통과시키려면 필요
-            // recommend 서블릿이 "로그인 필수"면 이 줄이 사실상 필수다.
-            session.setAttribute("loginUser", dto);
+            // 🔥 DB에서 다시 조회 (grade 포함됨)
+            MemberDTO loginUser = dao.login(userid, password);
+            session.setAttribute("loginUser", loginUser);
 
-            // ✅ intro로 이동 → intro가 /recommend로 자동 이동
             response.sendRedirect(request.getContextPath() + "/intro.jsp");
             return;
-
-        } else {
+        }
+        	else {
             request.setAttribute("alertType", "error");
             request.setAttribute("alertMsg", "회원가입 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
             request.setAttribute("redirectUrl", request.getContextPath() + "/join.jsp");

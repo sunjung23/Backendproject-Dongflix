@@ -54,7 +54,7 @@ public class ProfileVisitDAO {
         List<MemberDTO> list = new ArrayList<>();
 
         String sql =
-            "SELECT m.userid, m.userpw, m.username, m.nickname, m.phone, m.birth, " +
+            "SELECT m.userid, m.userpw, m.name, m.nickname, m.phone, m.birth, " +
             "       m.profile_img, m.grade, m.movie_style " +
             "FROM profile_visit v " +
             "JOIN member m ON v.visitor_userid = m.userid " +
@@ -75,7 +75,7 @@ public class ProfileVisitDAO {
                     MemberDTO dto = new MemberDTO(
                         rs.getString("userid"),
                         rs.getString("userpw"),
-                        rs.getString("username"),
+                        rs.getString("name"),
                         rs.getString("nickname"),
                         rs.getString("phone"),
                         rs.getString("birth"),
