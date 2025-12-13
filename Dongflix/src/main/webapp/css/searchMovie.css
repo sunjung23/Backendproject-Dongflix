@@ -203,3 +203,25 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.suggest-box {
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    background:#111;
+    border-radius:10px;
+    border:1px solid rgba(80,120,255,0.3);
+    margin-top:6px;
+    z-index:99;
+    display:none;
+}
+
+.suggest-box div {
+    padding:10px 14px;
+    cursor:pointer;
+    color:#fff;
+}
+
+.suggest-box div:hover {
+    background:#3f6fff;
+}

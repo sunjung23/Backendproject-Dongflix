@@ -49,7 +49,7 @@ public class ProfileVisitDAO {
         return count;
     }
 
-    // 3) 최근 방문자 목록 (닉네임/프로필 이미지까지)
+ // 3) 최근 방문자 목록 (중복 제거 + 최신 방문 기준)
     public List<MemberDTO> getRecentVisitors(String ownerUserid, int limit) {
         List<MemberDTO> list = new ArrayList<>();
 
@@ -59,7 +59,8 @@ public class ProfileVisitDAO {
             "FROM profile_visit v " +
             "JOIN member m ON v.visitor_userid = m.userid " +
             "WHERE v.owner_userid = ? " +
-            "ORDER BY v.visited_at DESC " +
+            "GROUP BY v.visitor_userid " +
+            "ORDER BY MAX(v.visited_at) DESC " +
             "LIMIT ?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -71,7 +72,6 @@ public class ProfileVisitDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
 
-                    // 생성자 8개 필드 세팅
                     MemberDTO dto = new MemberDTO(
                         rs.getString("userid"),
                         rs.getString("userpw"),
@@ -83,7 +83,6 @@ public class ProfileVisitDAO {
                         rs.getString("grade")
                     );
 
-                    // movie_style 추가로 세터 처리
                     dto.setMovieStyle(rs.getString("movie_style"));
 
                     list.add(dto);
@@ -96,5 +95,6 @@ public class ProfileVisitDAO {
 
         return list;
     }
+
 
 }

@@ -10,6 +10,10 @@
 /* ================================
    PREMIUM NAVY / ROYAL BLUE OTT STYLE
 ================================ */
+* {
+    box-sizing: border-box; /* 🔥 정렬 안정화 핵심 */
+}
+
 body {
     margin:0;
     padding:0;
@@ -18,7 +22,6 @@ body {
     color:#fff;
     font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-    /* 배경 하이라이트 */
     background:
         radial-gradient(circle at 20% 15%, rgba(80,120,255,0.27), transparent 55%),
         radial-gradient(circle at 80% 85%, rgba(140,170,255,0.23), transparent 55%),
@@ -33,7 +36,6 @@ body {
 .login-wrapper {
     width:100%;
     max-width:430px;
-
     background:rgba(12,15,35,0.92);
     padding:48px 38px 42px;
     border-radius:28px;
@@ -63,6 +65,9 @@ h2 {
 /* 입력 그룹 */
 .form-group {
     margin-bottom:18px;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
 }
 
 label {
@@ -70,24 +75,35 @@ label {
     font-weight:500;
     color:#dbe1ff;
     margin-bottom:6px;
-    display:block;
 }
 
 /* 입력창 */
 .form-input {
     width:100%;
     padding:13px 15px;
-
     border-radius:12px;
     border:1px solid rgba(100,120,220,0.32);
     background:#0f1325;
-
     font-size:15px;
     color:#f3f4ff;
+    display:block;
 
     transition:.22s;
 }
 
+/* 🔥 비밀번호 input 브라우저 기본 UI 제거 */
+input[type="password"] {
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+}
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display:none;
+}
+
+/* 포커스 */
 .form-input:focus {
     outline:none;
     background:#131a34;
@@ -101,12 +117,10 @@ label {
     padding:14px 0;
     border:none;
     border-radius:999px;
-
     background:#3f6fff;
     font-size:16px;
     font-weight:700;
     color:#fff;
-
     cursor:pointer;
     margin-top:6px;
     transition:.22s;
@@ -137,7 +151,7 @@ label {
     color:#c4d3ff;
 }
 
-/* 모바일 반응형 */
+/* 모바일 */
 @media (max-width: 500px){
     .login-wrapper {
         padding:38px 22px 32px;
