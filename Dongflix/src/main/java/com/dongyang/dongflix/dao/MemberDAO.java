@@ -100,10 +100,10 @@ public class MemberDAO {
     }
 
 
-    // ====================== 전체 회원 목록 조회 (관리자) ======================
+ // ====================== 전체 회원 목록 조회 (관리자) ======================
     public List<MemberDTO> getAllMembers() {
         List<MemberDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM member ORDER BY userid";
+        String sql = "SELECT * FROM member WHERE grade != 'admin' ORDER BY userid"; 
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -226,11 +226,11 @@ public class MemberDAO {
         return 0;
     }
     
-    // 아이디로 회원 검색
+ // 아이디로 회원 검색
     public List<MemberDTO> searchByUserid(String keyword) {
         List<MemberDTO> list = new ArrayList<>();
         String sql = "SELECT userid, userpw, name, nickname, phone, birth, profile_img, grade " +
-                     "FROM member WHERE userid LIKE ? ORDER BY userid";
+                     "FROM member WHERE userid LIKE ? AND grade != 'admin' ORDER BY userid";  
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -242,7 +242,7 @@ public class MemberDAO {
                 MemberDTO dto = new MemberDTO();
                 dto.setUserid(rs.getString("userid"));
                 dto.setPassword(rs.getString("userpw"));
-                dto.setUsername(rs.getString("name"));  // name → username
+                dto.setUsername(rs.getString("name"));
                 dto.setNickname(rs.getString("nickname"));
                 dto.setPhone(rs.getString("phone"));
                 dto.setBirth(rs.getString("birth"));
