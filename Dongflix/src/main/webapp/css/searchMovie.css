@@ -1,56 +1,204 @@
+/* ===============================
+   GLOBAL
+=============================== */
 body {
-    background: #111;
-    padding: 80px 0 0 0;
-    color: white;
-    font-family: Arial;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(70,100,255,0.18), transparent 55%),
+    radial-gradient(circle at 85% 80%, rgba(120,150,255,0.14), transparent 55%),
+    #060814;
+  color: #eef1ff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  letter-spacing: -0.2px;
 }
 
-
+/* ===============================
+   SEARCH PANEL – ULTIMATE OTT
+=============================== */
 .search-container {
-    width: 90%;
-    margin: 40px auto;
-    text-align: center;
+  max-width: 900px;
+  margin: 44px auto 48px;
+  padding: 10px 12px;
+
+  background: rgba(8,12,30,0.55);
+  border-radius: 16px;                 /* ⬅ 살짝 더 둥글게 */
+  border: 1px solid rgba(120,150,255,0.14);
+
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 8px 22px rgba(0,0,0,0.45),
+    inset 0 0 0 1px rgba(255,255,255,0.02);
+
+  transition: box-shadow .2s ease, border-color .2s ease;
 }
 
+/* ✨ focus 시 전체 glow */
+.search-container:focus-within {
+  border-color: rgba(110,140,255,0.55);
+  box-shadow:
+    0 0 0 1px rgba(110,140,255,0.35),
+    0 14px 36px rgba(80,120,255,0.45);
+}
+
+/* ===============================
+   ONE LINE BAR
+=============================== */
+.search-container form {
+  display: grid;
+  grid-template-columns: 1fr 120px 74px;
+  gap: 10px;
+  align-items: center;
+}
+
+/* ===============================
+   INPUT – SEARCH ICON EMBEDDED
+=============================== */
 .search-input {
-    width: 350px;
-    padding: 12px;
-    border-radius: 6px;
-    border: none;
+  height: 38px;
+  padding: 0 14px 0 38px;   /* ⬅ 아이콘 자리 */
+  font-size: 13.5px;
+  font-weight: 500;
+
+  border-radius: 12px;
+  background:
+    rgba(12,16,36,0.9)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%238f98cc' stroke-width='2' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E")
+    no-repeat 12px center;
+
+  border: 1px solid rgba(120,150,255,0.18);
+  color: #f1f3ff;
+
+  transition:
+    border-color .15s ease,
+    box-shadow .15s ease,
+    background .15s ease;
 }
 
+.search-input::placeholder {
+  color: #8e97c8;
+}
+
+.search-input:focus {
+  outline: none;
+  background:
+    rgba(16,22,50,0.95)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23b3c3ff' stroke-width='2' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E")
+    no-repeat 12px center;
+
+  border-color: #6f8cff;
+  box-shadow: 0 0 0 1px rgba(110,140,255,0.32);
+}
+
+/* ===============================
+   SELECT – SOFT MATCH
+=============================== */
 .select-box {
-    padding: 12px;
-    border-radius: 6px;
-    margin-left: 10px;
+  height: 38px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 500;
+
+  border-radius: 12px;
+  background: rgba(12,16,36,0.9);
+  border: 1px solid rgba(120,150,255,0.18);
+  color: #eef1ff;
+  cursor: pointer;
+
+  transition: border-color .14s, box-shadow .14s;
 }
 
+.select-box:focus {
+  outline: none;
+  border-color: #6f8cff;
+  box-shadow: 0 0 0 1px rgba(110,140,255,0.28);
+}
+
+/* ===============================
+   BUTTON – OTT ACTION
+=============================== */
 .search-btn {
-    padding: 12px 20px;
-    margin-left: 10px;
-    border-radius: 6px;
-    border: none;
-    background: #2036CA;
-    color: #fff;
-    cursor: pointer;
+  height: 38px;
+  font-size: 13px;
+  font-weight: 600;
+
+  border-radius: 12px;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #5a7cff, #6f8cff);
+  color: #ffffff;
+  border: none;
+
+  box-shadow: none;
+  transition: filter .14s ease;
 }
 
+.search-btn:hover {
+  filter: brightness(1.08);
+}
+
+.search-btn:active {
+  filter: brightness(0.95);
+}
+
+/* ===============================
+   MOVIE GRID
+=============================== */
 .movie-grid {
-    width: 90%;
-    margin: 40px auto;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 25px;
+  max-width: 1400px;
+  margin: 0 auto 90px;
+  padding: 0 32px;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 28px;
+}
+
+/* ===============================
+   MOVIE CARD
+=============================== */
+.movie-card {
+  background: linear-gradient(
+    180deg,
+    rgba(14,18,44,0.95),
+    rgba(9,12,30,0.95)
+  );
+
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(120,150,255,0.22);
+
+  transition:
+    transform .28s ease,
+    box-shadow .28s ease,
+    border-color .28s ease;
 }
 
 .movie-card img {
-    width: 180px;
-    height: 270px;
-    object-fit: cover;
-    border-radius: 10px;
-    transition: transform 0.2s ease;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
 }
 
+.movie-card:hover {
+  transform: translateY(-6px) scale(1.045);
+  border-color: #4f7cff;
+  box-shadow:
+    0 0 28px rgba(79,124,255,0.6),
+    0 20px 48px rgba(0,0,0,0.7);
+}
+
+/* ===============================
+   TITLE
+=============================== */
 .movie-title {
-	margin: 5px;
+  padding: 12px 14px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  color: #e8ebff;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

@@ -8,11 +8,13 @@ html body {
   padding-top: 88px !important;
 }
 
-/* header reset */
-.df-header,
-.df-header * {
-  all: unset;
+/* ❗ header 내부에서만 안전하게 reset */
+.df-header *,
+.df-header *::before,
+.df-header *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 /* header shell */

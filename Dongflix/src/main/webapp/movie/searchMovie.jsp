@@ -1,15 +1,20 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ include file="/common/header.jsp" %>
 <%@ page import="java.util.*" %>
 <%@ page import="com.dongyang.dongflix.model.TMDBmovie" %>
 
 <html>
 <head>
+    <!-- ① header.css 먼저 -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
+    <!-- ② 페이지 전용 CSS는 항상 마지막 -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/searchMovie.css">
     <title>Dongflix - 탐색</title>
 </head>
 
 <body>
+
+<%@ include file="/common/header.jsp" %>
+
 
 <div class="search-container">
 <form action="${pageContext.request.contextPath}/searchMovie" method="get">
