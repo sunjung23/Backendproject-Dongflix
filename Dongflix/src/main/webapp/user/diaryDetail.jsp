@@ -23,7 +23,7 @@
 
 <style>
 /* ===============================
-   PREMIUM OTT DIARY DETAIL (UNIFIED)
+   PREMIUM OTT DIARY DETAIL (REFINED)
 =============================== */
 :root{
     --bg:#000;
@@ -35,7 +35,6 @@
     --muted:#b6bfea;
 
     --accent:#3f6fff;
-    --accent-soft:#8fa7ff;
     --danger:#e50914;
 
     --radius-lg:26px;
@@ -57,8 +56,8 @@ body {
     position:fixed;
     inset:0;
     background:
-        radial-gradient(circle at 20% 15%, rgba(120,140,255,0.35), transparent 55%),
-        radial-gradient(circle at 80% 85%, rgba(160,120,255,0.28), transparent 55%),
+        radial-gradient(circle at 20% 15%, rgba(120,140,255,0.30), transparent 55%),
+        radial-gradient(circle at 80% 85%, rgba(160,120,255,0.24), transparent 55%),
         url('<%= poster %>');
     background-size:cover;
     background-position:center;
@@ -102,14 +101,12 @@ body {
     object-fit:cover;
     flex-shrink:0;
     box-shadow:
-        0 0 24px rgba(120,150,255,0.55),
+        0 0 24px rgba(120,150,255,0.45),
         0 36px 70px rgba(0,0,0,0.7);
 }
 
 /* ===== INFO ===== */
-.info {
-    flex:1;
-}
+.info { flex:1; }
 
 .meta {
     font-size:13px;
@@ -118,13 +115,17 @@ body {
     letter-spacing:0.2px;
 }
 
+/* 🔥 제목: 과하지 않은 프리미엄 */
 .title {
     font-size:32px;
-    font-weight:900;
-    margin-bottom:8px;
+    font-weight:800;
+    margin-bottom:10px;
+    color:#f2f5ff;
+
+    /* 아주 미세한 깊이감만 */
     text-shadow:
-        0 0 16px rgba(120,150,255,0.85),
-        0 0 32px rgba(120,150,255,0.35);
+        0 1px 0 rgba(0,0,0,0.55),
+        0 6px 18px rgba(120,150,255,0.25);
 }
 
 .date {
@@ -175,8 +176,8 @@ body {
 .btn-edit:hover {
     transform:translateY(-2px);
     box-shadow:
-        0 12px 26px rgba(80,120,255,0.55),
-        0 0 18px rgba(120,150,255,0.55);
+        0 12px 26px rgba(80,120,255,0.45),
+        0 0 18px rgba(120,150,255,0.35);
 }
 
 /* delete */
@@ -187,8 +188,8 @@ body {
 .btn-delete:hover {
     transform:translateY(-2px);
     box-shadow:
-        0 12px 26px rgba(255,60,80,0.55),
-        0 0 18px rgba(255,60,80,0.45);
+        0 12px 26px rgba(255,60,80,0.45),
+        0 0 18px rgba(255,60,80,0.35);
 }
 
 /* helper */
