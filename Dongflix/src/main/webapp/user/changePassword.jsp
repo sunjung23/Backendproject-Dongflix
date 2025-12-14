@@ -15,10 +15,7 @@
 <meta charset="UTF-8">
 <title>비밀번호 변경 - DONGFLIX</title>
 
-<style>
-/* ================================
-   GLOBAL PREMIUM NAVY / ROYAL BLUE
-================================ */
+<style>/
 body {
     margin:0;
     background:#000;
@@ -187,10 +184,7 @@ input:focus {
 
 
 </body>
-
-<!-- ============================
-     Premium Navy Alert Modal
-============================ -->
+'
 <style>
 .alert-overlay {
     position:fixed;

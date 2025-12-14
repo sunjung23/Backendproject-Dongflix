@@ -19,9 +19,6 @@
 <title>영화 일기 작성 - <%= movie.getTitle() %></title>
 
 <style>
-/* ===============================
-   PREMIUM OTT DIARY WRITE
-=============================== */
 body {
     margin:0;
     padding:0;
@@ -65,6 +62,7 @@ body {
 
 .diary-sub {
     font-size:14px;
+    display: block;
     color:#b6bfea;
 }
 
@@ -126,6 +124,12 @@ body {
     min-height:200px;
     resize:none;
     line-height:1.55;
+}
+
+input[type="date"].diary-input {
+    background: #f5f7ff;
+    color: #222;
+    border: 1px solid #c7d0ff;
 }
 
 /* 버튼 */
@@ -198,7 +202,7 @@ body {
             <label class="diary-sub">✏ 날짜</label>
             <input type="date" name="date" class="diary-input" required>
 
-            <label class="diary-sub" style="margin-top:18px;">📝 일기 내용</label>
+            <label class="diary-sub" style="margin-top:28px;">📝 일기 내용</label>
             <textarea name="content"
                       class="diary-textarea"
                       placeholder="이 영화를 보며 어떤 감정이 들었나요?

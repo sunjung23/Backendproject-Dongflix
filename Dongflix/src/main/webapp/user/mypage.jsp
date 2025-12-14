@@ -72,9 +72,6 @@
 
 <style>
 
-/* -----------------------------------------
-   GLOBAL NAVY PREMIUM THEME
------------------------------------------ */
 body {
     margin:0;
     background:#000;
@@ -110,9 +107,7 @@ body {
     to   { opacity:1; transform:translateY(0); }
 }
 
-/* -----------------------------------------
-   PROFILE AREA
------------------------------------------ */
+
 .profile-section {
     display:flex;
     align-items:center;
@@ -184,9 +179,6 @@ body {
     color:white;
 }
 
-/* -----------------------------------------
-   ACTIVITY STATS GRID
------------------------------------------ */
 .stats-grid {
     margin-top:32px;
     display:grid;
@@ -229,9 +221,7 @@ body {
     color:#9ea7d9;
 }
 
-/* -----------------------------------------
-   SECTION HEADER
------------------------------------------ */
+
 .section-header {
     display:flex;
     justify-content:space-between;
@@ -255,9 +245,6 @@ body {
     color:#cbd5ff;
 }
 
-/* -----------------------------------------
-   INFO GRID
------------------------------------------ */
 /* 내 정보 3개 그리드 */
 .info-grid {
     display:grid;
@@ -300,9 +287,6 @@ body {
     color:#e4e8ff;
 }
 
-/* -----------------------------------------
-   캐러셀 공통
------------------------------------------ */
 .carousel-container {
     position:relative;
     width:100%;
@@ -339,9 +323,6 @@ body {
     background:rgba(80,110,255,0.95);
 }
 
-/* ==========================================
-   ★ 축소형 영화 카드 (캐러셀용)
-========================================== */
 .carousel-item.movie-item {
     min-width:130px;
     max-width:130px;
@@ -372,9 +353,6 @@ body {
     transform:translateY(-3px);
 }
 
-/* ==========================================
-   ★ 축소형 리뷰 카드 (+ 고급 hover 효과)
-========================================== */
 .carousel-item.review-item {
     min-width:320px;
     max-width:320px;
@@ -450,12 +428,7 @@ body {
     }
 }
 
-/* -----------------------------------------
-   평균 평점 카드
------------------------------------------ */
-/* ===============================
-   RATING CARD (성향 카드)
-=============================== */
+
 .rating-card {
     display:inline-flex;
     align-items:center;
@@ -497,9 +470,7 @@ body {
     color:#aab4e8;
 }
 
-/* ===============================
-   TYPE COLORS
-=============================== */
+
 .rating-wait {
     background:rgba(120,120,120,0.15);
     border-color:rgba(160,160,160,0.35);
@@ -537,9 +508,6 @@ body {
 }
 
 
-/* -----------------------------------------
-   게시글 GRID + 페이징 (B안)
------------------------------------------ */
 /* 게시글 목록 그리드 3개 배치 */
 .board-list {
     display:grid;
@@ -613,12 +581,10 @@ body {
     color:#040615;
     border-color:#8fa4ff;
 }
-/* ===============================
-   PROFILE BADGES ALIGN & SIZE FIX
-=============================== */
+
 .profile-badges {
     display: flex;
-    align-items: center;     /* 🔥 세 카드 수직 정렬 핵심 */
+    align-items: center;     
     gap: 10px;
     margin-top: 8px;
     flex-wrap: wrap;
@@ -631,7 +597,7 @@ body {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    line-height: 1;          /* 🔥 baseline 이슈 제거 */
+    line-height: 1;      
 }
 
 /* 기존 배지 미세 조정 */
@@ -647,14 +613,10 @@ body {
     font-size: 13px;
 }
 
-/* 🔥 이모지 baseline 보정 */
 .rating-card {
     transform: translateY(2px);
 }
 
-/* ===============================
-   RATING SUMMARY (AVG + BAR + GUIDE)
-=============================== */
 .rating-summary{
     margin-top:18px;
     padding:16px 18px;
@@ -863,9 +825,6 @@ window.addEventListener("load", setupBoardPagination);
 <div class="mypage-bg">
 <div class="mypage-container">
 
-<!-- ================================
-     PROFILE SECTION
-================================ -->
 <div class="profile-section">
 
     <div class="profile-img"
@@ -912,7 +871,6 @@ window.addEventListener("load", setupBoardPagination);
         </div>
 
     </div>
-    <!-- 🔼 profile-badges 끝 -->
 
   
 
@@ -928,9 +886,6 @@ window.addEventListener("load", setupBoardPagination);
 </div>
 
 
-<!-- ================================
-     ACTIVITY SUMMARY
-================================ -->
 <div class="stats-grid">
 
     <div class="stat-card" onclick="scrollToSection('liked-section')">
@@ -992,9 +947,6 @@ window.addEventListener("load", setupBoardPagination);
 </div>
 
 
-<!-- ================================
-     INFO SECTION
-================================ -->
 <div class="section-header">
     <div class="section-title">내 정보</div>
 </div>
@@ -1032,9 +984,6 @@ window.addEventListener("load", setupBoardPagination);
 </div>
 
 
-<!-- ================================
-     내가 찜한 영화 (캐러셀)
-================================ -->
 <div id="liked-section" class="section-header">
     <div class="section-title">내가 찜한 영화</div>
     <div class="section-badge">총 <%= likeCount %>편</div>
@@ -1089,9 +1038,7 @@ window.addEventListener("load", setupBoardPagination);
     </a>
 </div>
 
-<!-- ================================
-     내가 작성한 리뷰 (캐러셀)
-================================ -->
+
 <div id="review-section" class="section-header">
     <div class="section-title">내가 작성한 리뷰</div>
     <div class="section-badge">총 <%= reviewCount %>개</div>
@@ -1206,9 +1153,6 @@ window.addEventListener("load", setupBoardPagination);
 
 
 
-<!-- ================================
-     ⭐ 내가 작성한 게시글 — B안(그리드 + 프론트 페이징)
-================================ -->
 <div id="board-section" class="section-header">
     <div class="section-title">내가 작성한 게시글</div>
     <div class="section-badge">총 <%= boardCount %>개</div>
@@ -1248,7 +1192,6 @@ window.addEventListener("load", setupBoardPagination);
 
 </div>
 
-<!-- ===== 페이징 버튼 영역 ===== -->
 <div class="board-pagination-wrapper" id="board-pagination"></div>
 
 <% } %>

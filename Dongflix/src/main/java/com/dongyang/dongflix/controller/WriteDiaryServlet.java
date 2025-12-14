@@ -28,9 +28,7 @@ public class WriteDiaryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        /* ===============================
-           🔒 로그인 가드 (이게 핵심)
-        =============================== */
+        /*  로그인 가드 */
         HttpSession session = req.getSession();
         MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
 
@@ -39,9 +37,7 @@ public class WriteDiaryServlet extends HttpServlet {
             return;
         }
 
-        /* ===============================
-           movieId 파라미터 검사
-        =============================== */
+        /* movieId 파라미터 검사 */
         String movieId = req.getParameter("movieId");
 
         if (movieId == null || movieId.isEmpty()) {

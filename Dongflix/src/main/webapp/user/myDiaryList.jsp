@@ -15,9 +15,6 @@
 <title>내 영화 일기장</title>
 
 <style>
-/* =============================
-   PREMIUM OTT DIARY SLIDER + TIMELINE (FINAL)
-============================= */
 :root{
     --bg:#000;
     --panel:#0f1325;

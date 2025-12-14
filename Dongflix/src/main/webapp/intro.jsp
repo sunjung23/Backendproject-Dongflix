@@ -19,9 +19,6 @@
     <title>DONGFLIX 취향 분석</title>
 
     <style>
-        /* ===============================
-           GLOBAL THEME
-        =============================== */
         body {
             margin:0;
             height:100vh;

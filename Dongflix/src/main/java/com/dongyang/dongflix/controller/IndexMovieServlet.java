@@ -38,9 +38,6 @@ public class IndexMovieServlet extends HttpServlet {
 
         try {
 
-            /* ============================================================
-               1) 기본 장르 추천: 기존 영화 목록 로딩
-            ============================================================ */
             Map<String, List<TMDBmovie>> movieLists = new HashMap<>();
 
             for (Map.Entry<String, String> entry : GENRES.entrySet()) {
@@ -48,9 +45,6 @@ public class IndexMovieServlet extends HttpServlet {
                 movieLists.put(entry.getKey(), list);
             }
 
-            /* ============================================================
-               2) 배너용 랜덤 영화 선택
-            ============================================================ */
             List<TMDBmovie> allMovies = new ArrayList<>();
             for (List<TMDBmovie> list : movieLists.values()) {
                 allMovies.addAll(list);
@@ -62,9 +56,6 @@ public class IndexMovieServlet extends HttpServlet {
                 bannerMovie = allMovies.get(0);
             }
 
-            /* ============================================================
-               3) 로그인 사용자 기반 개인화 추천 로직
-            ============================================================ */
             HttpSession session = request.getSession();
             MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
 
@@ -87,14 +78,14 @@ public class IndexMovieServlet extends HttpServlet {
 
                         String tmdbId = genreToTMDB(g);
                         if (tmdbId != null) {
-                            // 선호 장르 영화 fetch (하나당 10개 로드)
+                            // 선호 장르 영화 fetch (하나당 10개)
                             List<TMDBmovie> temp = fetchByGenre(tmdbId);
                             Collections.shuffle(temp);
                             personalRecommend.addAll(temp.subList(0, Math.min(temp.size(), 10)));
                         }
                     }
 
-                    // 추천을 너무 편중되지 않게 약간 섞어줌
+                    // 추천 섞음
                     Collections.shuffle(personalRecommend);
 
                     // 최대 20개만
@@ -104,18 +95,13 @@ public class IndexMovieServlet extends HttpServlet {
                 }
             }
 
-            /* ============================================================
-               4) recommend 리스트가 비어 있으면 fallback
-            ============================================================ */
             if (personalRecommend == null || personalRecommend.isEmpty()) {
                 // 전체 인기 영화에서 랜덤 12개 제공
                 Collections.shuffle(allMovies);
                 personalRecommend = allMovies.subList(0, Math.min(12, allMovies.size()));
             }
 
-            /* ============================================================
-               5) JSP 전달
-            ============================================================ */
+            /*  JSP 전달 */
             request.setAttribute("bannerMovie", bannerMovie);
             request.setAttribute("movieLists", movieLists);
             request.setAttribute("personalRecommend", personalRecommend);
@@ -129,9 +115,7 @@ public class IndexMovieServlet extends HttpServlet {
         }
     }
 
-    /* ============================================================
-       TMDB 장르 변환 (한글 → TMDB ID)
-    ============================================================ */
+    /* TMDB 장르 변환 */
     private String genreToTMDB(String genre) {
 
         switch (genre) {
@@ -148,9 +132,7 @@ public class IndexMovieServlet extends HttpServlet {
         }
     }
 
-    /* ============================================================
-       TMDB API로 장르별 영화 로드
-    ============================================================ */
+    /*  TMDB API로 장르별 영화 로드 */
     private List<TMDBmovie> fetchByGenre(String genreId) throws Exception {
 
         Random rnd = new Random();

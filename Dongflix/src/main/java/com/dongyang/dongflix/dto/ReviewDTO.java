@@ -14,9 +14,8 @@ public class ReviewDTO {
     private String movieTitle;
     private String movieImg;
     
-    // 🔥 추천 기능 추가
-    private int likeCount;      // 추천 수
-    private boolean isLiked;    // 현재 사용자가 추천했는지 여부
+    private int likeCount;      
+    private boolean isLiked;   
 
     public ReviewDTO() {}
 
@@ -84,7 +83,6 @@ public class ReviewDTO {
     public String getMovieImg() { return movieImg; }
     public void setMovieImg(String movieImg) { this.movieImg = movieImg; }
 
-    // 🔥 추천 기능 getter/setter
     public int getLikeCount() { return likeCount; }
     public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
 

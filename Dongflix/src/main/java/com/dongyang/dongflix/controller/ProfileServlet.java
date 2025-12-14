@@ -25,14 +25,14 @@ public class ProfileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // 1) 쿼리 파라미터에서 userid 받기 (프로필 주인)
+        // 쿼리 파라미터에서 userid 받기 (프로필 주인)
         String userid = request.getParameter("userid");
         if (userid == null || userid.trim().isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/indexMovie");
             return;
         }
         
-        // 2) 프로필 주인 정보 조회 (🔥 getMember 사용 - movie_style 포함)
+        // 프로필 주인 정보 조회 
         MemberDAO mdao = new MemberDAO();
         MemberDTO owner = mdao.getMember(userid);
         
@@ -41,29 +41,29 @@ public class ProfileServlet extends HttpServlet {
             return;
         }
         
-        // 3) 현재 로그인한 사람(방문자) 조회
+        // 현재 로그인한 사람(방문자) 조회
         HttpSession session = request.getSession();
         MemberDTO viewer = (MemberDTO) session.getAttribute("loginUser");
         
-        // 4) 자기 자신이 아닌 경우에만 방문 기록 남기기
+        // 자기 자신이 아닌 경우에만 방문 기록 남기기
         if (viewer != null && !viewer.getUserid().equals(owner.getUserid())) {
             ProfileVisitDAO vdao = new ProfileVisitDAO();
             vdao.addVisit(owner.getUserid(), viewer.getUserid());
         }
         
-        // 5) 그 사람의 게시글 / 리뷰 목록
+        // 그 사람의 게시글 / 리뷰 목록
         BoardDAO bdao = new BoardDAO();
         List<BoardDTO> boards = bdao.getByUser(owner.getUserid());
         
         ReviewDAO rdao = new ReviewDAO();
         List<ReviewDTO> reviews = rdao.getReviewsByUser(owner.getUserid());
         
-        // 6) 프로필 방문 통계
+        // 프로필 방문 통계
         ProfileVisitDAO vdao = new ProfileVisitDAO();
         int visitCount = vdao.getVisitCount(owner.getUserid());
         List<MemberDTO> recentVisitors = vdao.getRecentVisitors(owner.getUserid(), 10);
         
-        // 7) JSP로 전달
+        // JSP로 전달
         request.setAttribute("owner", owner);
         request.setAttribute("boards", boards);
         request.setAttribute("reviews", reviews);
@@ -82,7 +82,7 @@ public class ProfileServlet extends HttpServlet {
             avgRating = sum / reviewCount;
         }
 
-        // ===== 성향 분석 (마이페이지 로직 그대로) =====
+        // ===== 성향 분석 =====
         String ratingType = "";
         String ratingClass = "";
 
@@ -106,7 +106,7 @@ public class ProfileServlet extends HttpServlet {
             ratingClass = "rating-happy";
         }
 
-        // ===== JSP 전달 =====
+        // JSP 전달
         request.setAttribute("avgRating", avgRating);
         request.setAttribute("reviewCount", reviewCount);
         request.setAttribute("ratingType", ratingType);
@@ -119,7 +119,6 @@ public class ProfileServlet extends HttpServlet {
         request.setAttribute("visitCount", visitCount);
         request.setAttribute("recentVisitors", recentVisitors);
 
-        // ✅ forward는 무조건 마지막
         request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
 
     }

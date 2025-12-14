@@ -22,9 +22,6 @@
 <title><%= d.getMovieTitle() %> - 영화 일기</title>
 
 <style>
-/* ===============================
-   PREMIUM OTT DIARY DETAIL (REFINED)
-=============================== */
 :root{
     --bg:#000;
     --glass:rgba(14,18,45,0.82);
@@ -51,7 +48,6 @@ body {
     font-family:-apple-system, BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
-/* ===== BACKGROUND ===== */
 .detail-bg {
     position:fixed;
     inset:0;
@@ -65,7 +61,6 @@ body {
     z-index:-2;
 }
 
-/* ===== LAYOUT ===== */
 .detail-wrap {
     max-width:1100px;
     margin:120px auto 70px;

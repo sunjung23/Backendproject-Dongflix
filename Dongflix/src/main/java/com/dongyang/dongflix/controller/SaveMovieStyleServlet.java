@@ -43,7 +43,7 @@ public class SaveMovieStyleServlet extends HttpServlet {
                 user.setMovieStyle(movieStyle);
                 session.setAttribute("loginUser", user);
                 
-                // 🔥 마이페이지로 리다이렉트
+                // 마이페이지로 리다이렉트
                 response.sendRedirect("mypage.do");
             } else {
                 response.sendRedirect("user/movieTest.jsp?error=1");

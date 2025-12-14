@@ -13,8 +13,8 @@ public class MemberDTO {
     private String grade;
     private String email;
     private Timestamp createdAt;
-    private String genres;       // ✅ 회원가입 장르
-    private String movieStyle;   // ✅ 취향 테스트 결과 (A/B/C/D)
+    private String genres;   
+    private String movieStyle;   
 
 
     // 기본 생성자

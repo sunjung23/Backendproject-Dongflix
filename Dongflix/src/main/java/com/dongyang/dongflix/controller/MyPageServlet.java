@@ -51,7 +51,7 @@ public class MyPageServlet extends HttpServlet {
 
 
         
-        // ⭐ 내가 쓴 게시글 목록
+        // 내가 쓴 게시글 목록
         BoardDAO bdao = new BoardDAO();
         List<BoardDTO> myBoards = bdao.getByUser(user.getUserid());   // ★ 여기!!!
         request.setAttribute("myBoards", myBoards);
