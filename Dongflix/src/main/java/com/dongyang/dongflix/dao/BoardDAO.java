@@ -105,19 +105,48 @@ public class BoardDAO {
         return 0;
     }
 
-    // 삭제
+ // 삭제
     public int delete(int id) {
-        String sql = "DELETE FROM board WHERE board_id=?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        String deleteComments = "DELETE FROM board_comment WHERE board_id=?";
+        String deleteLikes = "DELETE FROM board_like WHERE board_id=?";
+        String deleteBoard = "DELETE FROM board WHERE board_id=?";
 
-            ps.setInt(1, id);
-            return ps.executeUpdate();
+        try (Connection conn = DBConnection.getConnection()) {
+
+            conn.setAutoCommit(false); 
+
+            try (
+                PreparedStatement ps1 = conn.prepareStatement(deleteComments);
+                PreparedStatement ps2 = conn.prepareStatement(deleteLikes);
+                PreparedStatement ps3 = conn.prepareStatement(deleteBoard)
+            ) {
+                // 댓글 삭제
+                ps1.setInt(1, id);
+                ps1.executeUpdate();
+
+                //  좋아요 삭제
+                ps2.setInt(1, id);
+                ps2.executeUpdate();
+
+                // 게시글 삭제
+                ps3.setInt(1, id);
+                int result = ps3.executeUpdate();
+
+                conn.commit(); // 성공 시 커밋
+                return result;
+
+            } catch (Exception e) {
+                conn.rollback(); // 실패 롤백
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return 0;
     }
 
