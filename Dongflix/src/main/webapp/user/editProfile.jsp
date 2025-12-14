@@ -16,9 +16,6 @@
 <title>회원정보 수정 - DONGFLIX</title>
 
 <style>
-/* ================================
-   GLOBAL PREMIUM NAVY UI
-================================ */
 body {
     margin:0;
     background:#000;

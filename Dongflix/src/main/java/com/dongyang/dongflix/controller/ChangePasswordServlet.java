@@ -51,7 +51,7 @@ public class ChangePasswordServlet extends HttpServlet {
         int result = dao.updatePassword(user.getUserid(), newPw);
 
         if (result == 1) {
-            // 세션 비밀번호도 갱신
+            // 세션 비밀번호 갱신
             user.setPassword(newPw);
             session.setAttribute("loginUser", user);
 

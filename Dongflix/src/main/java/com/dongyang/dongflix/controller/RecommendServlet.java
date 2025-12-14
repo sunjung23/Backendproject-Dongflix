@@ -33,7 +33,7 @@ public class RecommendServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
 
-        // 1) 로그인 사용자 확인
+        // 로그인 사용자 확인
         MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
         if (user == null) {
             request.setAttribute("alertType", "error");
@@ -43,11 +43,11 @@ public class RecommendServlet extends HttpServlet {
             return;
         }
 
-        // 2) 회원 가입 시 저장해둔 선호 장르 (예: "액션,로맨스,코미디")
+        // 회원 가입 시 저장해둔 선호 장르 (예: "액션,로맨스,코미디")
         String signupGenres = (String) session.getAttribute("signupGenres");
         if (signupGenres == null) signupGenres = "";
 
-        // 3) 화면에 보여줄 이름 (닉네임 > 이름 > 아이디)
+        // 화면에 보여줄 이름 (닉네임 > 이름 > 아이디)
         String displayName;
         if (user.getNickname() != null && !user.getNickname().trim().isEmpty()) {
             displayName = user.getNickname();
@@ -57,30 +57,30 @@ public class RecommendServlet extends HttpServlet {
             displayName = user.getUserid();
         }
 
-        // 4) 선호 장르 문자열 → 리스트
+        //  선호 장르 문자열 → 리스트
         List<String> genreTokens = new ArrayList<>();
         if (!signupGenres.trim().isEmpty()) {
             genreTokens = Arrays.asList(signupGenres.split("\\s*,\\s*"));
         }
 
-        // 5) 선호 장르 목록을 TMDB 장르 ID CSV로 매핑 (예: "28,10749,16")
+        // 선호 장르 목록을 TMDB 장르 ID CSV로 매핑 (예: "28,10749,16")
         String tmdbGenreCsv = mapGenresToTmdbIds(genreTokens);
 
         List<TMDBmovie> tasteMovies   = new ArrayList<>();
         List<TMDBmovie> popularMovies = new ArrayList<>();
 
         try {
-            // 6) 선호 장르 기반 추천 (최대 30편 정도)
+            // 선호 장르 기반 추천 (최대 30편 정도)
             if (tmdbGenreCsv != null && !tmdbGenreCsv.isEmpty()) {
                 tasteMovies = fetchByGenres(tmdbGenreCsv, 30);
             }
 
-            // 7) 전체 인기 영화 (최대 30편 정도)
+            // 전체 인기 영화 (최대 30편 정도)
             popularMovies = fetchPopular(30);
 
         } catch (Exception e) {
             e.printStackTrace();
-            // API 오류 등 발생 시, 기본 인기 영화만이라도 추천
+            // 오류 등 발생 시 기본 인기 영화만이라도 추천
             try {
                 popularMovies = fetchPopular(30);
             } catch (Exception ex) {
@@ -88,19 +88,15 @@ public class RecommendServlet extends HttpServlet {
             }
         }
 
-        // 8) 리스트 셔플해서 좀 더 생동감 있게
+        // 리스트 셔플
         Collections.shuffle(tasteMovies);
         Collections.shuffle(popularMovies);
 
-        // 9) 하이브리드 구성
-        //    - primaryList: 선호 기반 TOP 추천 (최대 12편)
-        //    - tasteMoreList: 선호 기반 확장 추천 (최대 12편)
-        //    - trendingList: 전체 인기작 (최대 12편, 중복 최소화)
         List<TMDBmovie> primaryList   = new ArrayList<>();
         List<TMDBmovie> tasteMoreList = new ArrayList<>();
         List<TMDBmovie> trendingList  = new ArrayList<>();
 
-        // 선호 기반 리스트에서 1, 2 섹션 채우기
+
         for (int i = 0; i < tasteMovies.size(); i++) {
             TMDBmovie m = tasteMovies.get(i);
             if (i < 12) {
@@ -112,7 +108,6 @@ public class RecommendServlet extends HttpServlet {
             }
         }
 
-        // 선호 장르가 거의 없을 수도 있으니, 부족하면 인기작으로 보충
         int needForPrimary = 12 - primaryList.size();
         int needForTasteMore = 12 - tasteMoreList.size();
 
@@ -130,7 +125,6 @@ public class RecommendServlet extends HttpServlet {
             }
         }
 
-        // 이제 남은 popularMovies 중에서, 앞에서 쓰지 않은 것들로 trendingList 구성
         Set<Integer> usedIds = new HashSet<>();
         for (TMDBmovie m : primaryList)   usedIds.add(m.getId());
         for (TMDBmovie m : tasteMoreList) usedIds.add(m.getId());
@@ -143,7 +137,6 @@ public class RecommendServlet extends HttpServlet {
             }
         }
 
-        // 10) JSP에 전달
         request.setAttribute("fromRecommendServlet", true);
         request.setAttribute("displayName", displayName);
         request.setAttribute("genres", signupGenres);
@@ -154,9 +147,6 @@ public class RecommendServlet extends HttpServlet {
         request.getRequestDispatcher("/recommend.jsp").forward(request, response);
     }
 
-    /* ============================
-       선호 장르 → TMDB 장르 ID 매핑
-       ============================ */
     private String mapGenresToTmdbIds(List<String> genres) {
         if (genres == null || genres.isEmpty()) return null;
 
@@ -186,12 +176,9 @@ public class RecommendServlet extends HttpServlet {
         return String.join(",", set);
     }
 
-    /* ============================
-       선호 장르 기반 discover
-       ============================ */
     private List<TMDBmovie> fetchByGenres(String genreCsv, int maxCount) throws Exception {
 
-        // 1~3 페이지 중 랜덤으로 하나 골라서 다양성 확보
+
         Random rnd = new Random();
         int randomPage = rnd.nextInt(3) + 1;  // 1~3
 
@@ -206,9 +193,7 @@ public class RecommendServlet extends HttpServlet {
         return fetchMovieList(apiUrl, maxCount);
     }
 
-    /* ============================
-       전체 인기 영화 (popular)
-       ============================ */
+
     private List<TMDBmovie> fetchPopular(int maxCount) throws Exception {
         String apiUrl = BASE_URL +
                 "/movie/popular?api_key=" + API_KEY +
@@ -218,9 +203,7 @@ public class RecommendServlet extends HttpServlet {
         return fetchMovieList(apiUrl, maxCount);
     }
 
-    /* ============================
-       공통 TMDB 호출 + 파싱
-       ============================ */
+
     private List<TMDBmovie> fetchMovieList(String apiUrl, int maxCount) throws Exception {
         URL url = new URL(apiUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -257,9 +240,7 @@ public class RecommendServlet extends HttpServlet {
         return list;
     }
 
-    /* ============================
-       중복 체크용 헬퍼
-       ============================ */
+
     private boolean containsMovie(List<TMDBmovie> list, TMDBmovie target) {
         if (list == null || target == null) return false;
         for (TMDBmovie m : list) {

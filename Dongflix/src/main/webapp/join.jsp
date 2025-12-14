@@ -7,9 +7,7 @@
 <title>DONGFLIX - 회원가입</title>
 
 <style>
-/* ================================
-   PREMIUM NAVY / ROYAL BLUE THEME
-================================ */
+
 body {
     margin:0;
     padding:40px 0;

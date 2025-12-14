@@ -36,9 +36,7 @@
             overflow-x:hidden;
         }
 
-        /* =============================
-           전체 배경 & 레이아웃
-        ============================== */
+
         .recommend-wrap {
             min-height:100vh;
             background:
@@ -53,9 +51,7 @@
             margin:0 auto;
         }
 
-        /* =============================
-           HERO SECTION
-        ============================== */
+
         .hero {
             text-align:left;
             margin-bottom:40px;
@@ -101,9 +97,7 @@
             color:#8e96c9;
         }
 
-        /* =============================
-           SECTION 제목
-        ============================== */
+
         .section {
             margin-bottom:40px;
         }
@@ -125,9 +119,7 @@
             color:#a9b2e3;
         }
 
-        /* =============================
-           MOVIE SLIDER
-        ============================== */
+
         .movie-slider {
             position:relative;
         }
@@ -230,9 +222,7 @@
             overflow:hidden;
         }
 
-        /* =============================
-           슬라이더 좌우 버튼 (옵션)
-        ============================== */
+
         .slide-btn {
             position:absolute;
             top:40%;
@@ -264,9 +254,7 @@
             background:#3f6fff;
         }
 
-        /* =============================
-           하단 버튼
-        ============================== */
+
         .btn-area {
             text-align:center;
             margin:40px 0 10px;

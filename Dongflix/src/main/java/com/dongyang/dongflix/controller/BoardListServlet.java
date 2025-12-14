@@ -23,16 +23,15 @@ public class BoardListServlet extends HttpServlet {
         String category = request.getParameter("category");
         String sort = request.getParameter("sort");
 
-        // ★ 로그인 사용자 확인
+        // 로그인 사용자 확인
         MemberDTO user = (MemberDTO) request.getSession().getAttribute("loginUser");
 
-     // ★ 비밀게시판 전체 목록 접근 제한 (GOLD ONLY)
+     // 비밀게시판 전체 목록 접근 제한 
         if ("secret".equals(category)) {
 
             if (user == null || user.getGrade() == null ||
                 !user.getGrade().equalsIgnoreCase("gold")) {
 
-                // 🚨 기존 alert() → JSP 팝업으로 변경
                 request.setAttribute("alertType", "error");
                 request.setAttribute("alertMsg", "비밀게시판은 GOLD 회원만 접근 가능합니다.");
 
@@ -50,15 +49,15 @@ public class BoardListServlet extends HttpServlet {
         BoardDAO dao = new BoardDAO();
         List<BoardDTO> list;
 
-        // ⭐ 정렬이 우선
+        // 정렬
         if (sort != null) {
             list = dao.getSortedList(sort);
         }
-        // ⭐ 전체 카테고리(list?category=all)
+        // 전체 카테고리
         else if (category == null || category.equals("all")) {
             list = dao.getAll();
         }
-        // ⭐ 특정 카테고리
+        // 특정 카테고리
         else {
             list = dao.getByCategory(category);
         }

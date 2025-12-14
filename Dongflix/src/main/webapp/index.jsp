@@ -12,11 +12,9 @@
    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 
 
-    <!-- 메인 페이지 전용 프리미엄 스타일 -->
+    <!-- 메인 페이지 -->
     <style>
-        /* ============================
-           GLOBAL
-        ============================ */
+
         body {
             margin:0;
             padding:0;
@@ -31,9 +29,7 @@
         }
         a { text-decoration:none; color:inherit; }
 
-        /* ============================
-           MAIN BANNER
-        ============================ */
+
         .main-banner {
             width:100%;
             height:560px;
@@ -79,9 +75,7 @@
             box-shadow:0 12px 28px rgba(80,120,255,0.55);
         }
 
-        /* ============================
-           SECTION TITLE
-        ============================ */
+
         .section-title {
             font-size:22px;
             font-weight:700;
@@ -89,9 +83,7 @@
             color:#dce1ff;
         }
 
-        /* ============================
-           MOVIE SLIDER
-        ============================ */
+
         .slider-wrap {
             position:relative;
         }
@@ -151,9 +143,7 @@
             overflow:hidden;
         }
 
-        /* ============================
-           SLIDER BUTTONS
-        ============================ */
+     
         .slide-btn {
             position:absolute;
             top:50%;
@@ -178,9 +168,7 @@
             transform:translateY(-50%) scale(1.1);
         }
 
-      /* ============================
-   FLOATING TEST BUTTON (OTT PREMIUM FINAL)
-============================ */
+
 .floating-test-btn {
     position: fixed;
     right: 26px;
@@ -239,7 +227,7 @@
 
 <body>
 
-<!-- 🔹 상단 프리미엄 헤더 -->
+
 <%@ include file="/common/header.jsp" %>
 
 <%
@@ -294,9 +282,7 @@
     </div>
 </div>
 
-<!-- ============================
-     PERSONAL RECOMMENDATIONS
-============================ -->
+
 <% if (showPersonal) { %>
     <div class="section-title">
         <%
@@ -331,9 +317,7 @@
     </div>
 <% } %>
 
-<!-- ============================
-     CATEGORY SECTIONS
-============================ -->
+
 <%
     if (movieLists != null) {
         for (Map.Entry<String, List<TMDBmovie>> entry : movieLists.entrySet()) {
@@ -383,15 +367,10 @@
     } // if movieLists
 %>
 
-<!-- ============================
-     FLOATING TEST BUTTON
-============================ -->
 <a href="${pageContext.request.contextPath}/movieTest.jsp"
    class="floating-test-btn">🎬</a>
 
-<!-- ============================
-     SLIDER JS
-============================ -->
+
 <script>
     function slideLeft(key) {
         var row = document.getElementById("row-" + key);

@@ -25,7 +25,7 @@ public class MemberDAO {
 	        ps.setString(2, dto.getPassword());
 	        ps.setString(3, dto.getUsername());
 	        ps.setString(4, "bronze");
-	        ps.setString(5, dto.getGenres());   // ✅ genres만 저장
+	        ps.setString(5, dto.getGenres()); 
 
 	        return ps.executeUpdate();
 

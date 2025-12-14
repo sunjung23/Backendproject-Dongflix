@@ -7,11 +7,9 @@
 <title>DONGFLIX - 로그인</title>
 
 <style>
-/* ================================
-   PREMIUM NAVY / ROYAL BLUE OTT STYLE
-================================ */
+
 * {
-    box-sizing: border-box; /* 🔥 정렬 안정화 핵심 */
+    box-sizing: border-box; 
 }
 
 body {
@@ -91,7 +89,6 @@ label {
     transition:.22s;
 }
 
-/* 🔥 비밀번호 input 브라우저 기본 UI 제거 */
 input[type="password"] {
     appearance:none;
     -webkit-appearance:none;

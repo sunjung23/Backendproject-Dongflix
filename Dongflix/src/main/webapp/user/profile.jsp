@@ -76,9 +76,7 @@
 <title><%= owner.getUserid() %> 프로필 - DONGFLIX</title>
 
 <style>
-/* ============================================
-   GLOBAL NAVY / ROYAL BLUE PREMIUM THEME
-============================================ */
+
 * {
     box-sizing: border-box;
 }
@@ -111,9 +109,7 @@ body {
     backdrop-filter:blur(7px);
 }
 
-/* ============================================
-   상단 프로필 영역
-============================================ */
+
 .profile-top {
     display:flex;
     gap:26px;
@@ -166,9 +162,6 @@ body {
     font-weight:600;
 }
 
-/* ============================================
-   통계 영역 (작성글, 리뷰, 방문수, 취향)
-============================================ */
 .profile-stats {
     margin-top:22px;
     display:grid;
@@ -263,9 +256,7 @@ body {
     color:#dbe1ff;
 }
 
-/* ============================================
-   최근 방문자 (칩 + 가로 스크롤)
-============================================ */
+
 .visitor-list {
     display:flex;
     flex-wrap:wrap;
@@ -293,9 +284,6 @@ body {
     background-position:center;
 }
 
-/* ============================================
-   게시글 / 리뷰 카드 그리드 (3×2)
-============================================ */
 .card-grid {
     display:grid;
     grid-template-columns:repeat(3, minmax(0,1fr));
@@ -378,9 +366,7 @@ body {
     margin-top:auto;
 }
 
-/* ============================================
-   페이지네이션
-============================================ */
+
 .pagination {
     margin-top:18px;
     display:flex;
@@ -575,9 +561,6 @@ body {
 <div class="profile-bg">
 <div class="profile-container">
 
-    <!-- ================================
-         상단 프로필 정보
-    ================================= -->
     <div class="profile-top">
         <div class="profile-avatar"
              style="background-image:url('<%= 
@@ -626,9 +609,6 @@ body {
         </div>
     </div>
 
-    <!-- ================================
-         통계 + 영화 취향 유형
-    ================================= -->
     <div class="profile-stats">
         <div class="profile-stat-box">
             <div class="profile-stat-label">게시글</div>
@@ -680,9 +660,7 @@ body {
         </div>
     </div>
 
-    <!-- ================================
-         최근 프로필 방문자
-    ================================= -->
+    <!-- 최근 프로필 방문자-->
     <div class="section-header" style="margin-top:30px;">
         <div class="section-title">최근 프로필 방문자</div>
         <div class="section-badge"><%= (recentVisitors != null) ? recentVisitors.size() : 0 %>명</div>
@@ -772,9 +750,7 @@ body {
 
     <% } %>
 
-    <!-- ================================
-         작성한 리뷰 (3×2 + 페이지네이션)
-    ================================= -->
+
     <div class="section-header">
         <div class="section-title">작성한 리뷰</div>
         <div class="section-badge">총 <%= reviewCount %>개</div>
