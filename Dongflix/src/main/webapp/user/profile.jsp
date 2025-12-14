@@ -21,7 +21,15 @@
             : 0;
 
     int boardCount = (boards != null) ? boards.size() : 0;
-    int reviewCount = (reviews != null) ? reviews.size() : 0;
+ 
+    
+    String ratingType = (String) request.getAttribute("ratingType");
+    String ratingClass = (String) request.getAttribute("ratingClass");
+    Integer reviewCountObj = (Integer) request.getAttribute("reviewCount");
+    int reviewCount = (reviewCountObj != null) ? reviewCountObj : 0;
+    Double avgRatingObj = (Double) request.getAttribute("avgRating");
+    double avgRating = (avgRatingObj != null) ? avgRatingObj : 0.0;
+
 
     // ========= 게시글 페이지네이션 (6개 = 3×2) =========
     int boardPageSize = 6;
@@ -408,9 +416,140 @@ body {
     cursor:default;
 }
 
-/* ============================================
-   반응형
-============================================ */
+.profile-badge-row {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:6px;
+}
+
+/* 공통 뱃지 규격 */
+.profile-badge-row .badge-chip,
+.profile-badge-row .rating-card {
+    height:34px;
+    padding:0 14px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+    line-height:1;
+    white-space:nowrap;
+    box-sizing:border-box;
+}
+
+/* 성향 카드 (마이페이지랑 동일) */
+.rating-card {
+    position:relative;
+    border:1px solid;
+    backdrop-filter:blur(6px);
+}
+
+/* 성향 타입 컬러 */
+.rating-wait {
+    background:rgba(120,120,120,0.15);
+    border-color:rgba(160,160,160,0.35);
+    color:#d0d0d0;
+}
+.rating-cold {
+    background:rgba(120,180,255,0.15);
+    border-color:#6fa4ff;
+    color:#cfe3ff;
+}
+.rating-real {
+    background:rgba(150,160,200,0.18);
+    border-color:#8fa0d9;
+    color:#dde3ff;
+}
+.rating-balance {
+    background:rgba(90,200,160,0.18);
+    border-color:#6fe0b8;
+    color:#dffaf0;
+}
+.rating-warm {
+    background:rgba(255,200,120,0.22);
+    border-color:#ffcf6b;
+    color:#fff1c7;
+}
+.rating-happy {
+    background:rgba(255,160,200,0.25);
+    border-color:#ff8fcf;
+    color:#ffe4f2;
+}
+
+.rating-card {
+    height: 34px;
+    padding: 0 14px;
+    font-size: 13px;
+}
+
+/* ===============================
+   PROFILE RATING MINI BAR
+=============================== */
+.profile-rating-summary {
+    margin:12px 0 22px;
+    padding:14px 16px;
+    border-radius:14px;
+    background:linear-gradient(180deg, rgba(18,24,56,0.75), rgba(10,14,32,0.7));
+    border:1px solid rgba(120,150,255,0.18);
+}
+
+.prs-top {
+     display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+    margin-bottom:8px;
+}
+
+.prs-left {
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    color:#e4e8ff;
+}
+
+
+.prs-score {
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:0.02em;
+}
+
+.prs-max {
+    font-size:13px;
+    color:#9aa4d1;
+    font-weight:500;
+    margin-left:2px;
+}
+
+.prs-type {
+    font-weight:700;
+    color:#cfe3ff;
+}
+
+.prs-bar {
+    height:9px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.08);
+    overflow:hidden;
+}
+
+.prs-bar-fill {
+    height:100%;
+    border-radius:999px;
+    background:linear-gradient(
+        90deg,
+        #3f6fff,
+        #6fa4ff,
+        #7fffd4,
+        #b48cff
+    );
+    box-shadow:0 0 14px rgba(111,164,255,0.55);
+}
+
 @media (max-width:900px) {
     .card-grid {
         grid-template-columns:repeat(2,minmax(0,1fr));
@@ -457,21 +596,33 @@ body {
                 @<%= owner.getUserid() %> 
             </div>
 
-            <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
-                <span class="grade-badge 
-                    <%
-                        String g = owner.getGrade() != null ? owner.getGrade().toLowerCase() : "";
-                        if("bronze".equals(g)) out.print("grade-bronze");
-                        else if("silver".equals(g)) out.print("grade-silver");
-                        else if("gold".equals(g)) out.print("grade-gold");
-                    %>">
-                    <%= owner.getGrade() %>
-                </span>
+       <div class="profile-badge-row">
 
-                <% if (owner.getMovieStyle() != null && !owner.getMovieStyle().isEmpty()) { %>
-                    <span class="movie-style-badge"><%= owner.getMovieStyle() %></span>
-                <% } %>
-            </div>
+    <span class="badge-chip grade-badge 
+        <%
+            String g = owner.getGrade() != null ? owner.getGrade().toLowerCase() : "";
+            if("bronze".equals(g)) out.print("grade-bronze");
+            else if("silver".equals(g)) out.print("grade-silver");
+            else if("gold".equals(g)) out.print("grade-gold");
+        %>">
+        <%= owner.getGrade() %>
+    </span>
+
+    <% if (owner.getMovieStyle() != null && !owner.getMovieStyle().isEmpty()) { %>
+        <span class="badge-chip movie-style-badge">
+            <%= owner.getMovieStyle() %>
+        </span>
+    <% } %>
+
+ 
+
+    <span class="rating-card <%= ratingClass %>">
+        <%= ratingType %>
+    </span>
+
+</div>
+
+
         </div>
     </div>
 
@@ -628,6 +779,30 @@ body {
         <div class="section-title">작성한 리뷰</div>
         <div class="section-badge">총 <%= reviewCount %>개</div>
     </div>
+        <% if (reviewCount > 0) { 
+    int ratingPercent = (int)Math.round((avgRating / 5.0) * 100);
+%>
+
+<div class="profile-rating-summary">
+    <div class="prs-top">
+    <div class="prs-left">
+        ⭐ 평균 평점
+        <span class="prs-score">
+            <strong><%= String.format("%.2f", avgRating) %></strong>
+            <span class="prs-max"> / 5.0</span>
+        </span>
+    </div>
+
+    <span class="prs-type"><%= ratingType %></span>
+</div>
+
+
+    <div class="prs-bar">
+        <div class="prs-bar-fill" style="width:<%= ratingPercent %>%"></div>
+    </div>
+</div>
+
+<% } %>
 
     <% if (reviews == null || reviews.isEmpty()) { %>
         <p style="font-size:14px; color:#bfc6e6;">작성한 리뷰가 없습니다.</p>
@@ -673,7 +848,9 @@ body {
                 <span class="disabled">다음</span>
             <% } %>
         </div>
+        
 
+        
     <% } %>
 
 </div>

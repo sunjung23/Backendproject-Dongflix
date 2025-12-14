@@ -19,6 +19,7 @@
 
     Object avgObj = request.getAttribute("avgRating");
     double avgRating = avgObj != null ? (Double) avgObj : 0.0;
+    
 
     int likeCount = likedMovies != null ? likedMovies.size() : 0;
     int reviewCount = reviews != null ? reviews.size() : 0;
@@ -26,6 +27,38 @@
     int visitCount = request.getAttribute("visitCount") != null
             ? (Integer) request.getAttribute("visitCount")
             : 0;
+    
+    String ratingType = "";
+    String ratingDesc = "";
+    String ratingClass = "";
+
+    if (reviewCount == 0) {
+        ratingType = "📝 아직 평가 중";
+        ratingDesc = "리뷰를 남기면 나의 영화 취향이 분석돼요";
+        ratingClass = "rating-wait";
+    } else if (avgRating < 2.0) {
+        ratingType = "🧊 혹독한 비평가형";
+        ratingDesc = "웬만해선 별점을 주지 않는 냉철한 평가자";
+        ratingClass = "rating-cold";
+    } else if (avgRating < 3.0) {
+        ratingType = "🧐 현실적인 비평가형";
+        ratingDesc = "장단점을 분명히 따지는 타입";
+        ratingClass = "rating-real";
+    } else if (avgRating < 3.7) {
+        ratingType = "🎯 균형 잡힌 관객형";
+        ratingDesc = "재미와 완성도를 공정하게 평가";
+        ratingClass = "rating-balance";
+    } else if (avgRating < 4.4) {
+        ratingType = "😊 호의적인 감상자형";
+        ratingDesc = "좋은 점을 먼저 보는 긍정적 관객";
+        ratingClass = "rating-warm";
+    } else {
+        ratingType = "🌈 뭐든 재밌는 낙관자형";
+        ratingDesc = "영화는 즐기라고 보는 타입";
+        ratingClass = "rating-happy";
+    }
+
+
 
     List<MemberDTO> recentVisitors =
         (List<MemberDTO>) request.getAttribute("recentVisitors");
@@ -420,17 +453,89 @@ body {
 /* -----------------------------------------
    평균 평점 카드
 ----------------------------------------- */
-.avg-card {
-    margin-top:10px;
+/* ===============================
+   RATING CARD (성향 카드)
+=============================== */
+.rating-card {
     display:inline-flex;
-    gap:8px;
     align-items:center;
-    padding:8px 14px;
-    background:#101426;
+    padding:8px 16px;
     border-radius:999px;
-    border:1px solid rgba(80,110,255,0.25);
-    color:#ffdf00;
+    font-size:13px;
+    font-weight:600;
+    position:relative;
+    cursor:default;
+    border:1px solid;
+    backdrop-filter:blur(6px);
 }
+
+/* 툴팁 */
+.rating-tooltip {
+    position:absolute;
+    bottom:-48px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#0f1428;
+    color:#dbe3ff;
+    padding:8px 12px;
+    border-radius:10px;
+    font-size:12px;
+    white-space:nowrap;
+    opacity:0;
+    pointer-events:none;
+    transition:.2s;
+    box-shadow:0 10px 24px rgba(0,0,0,.6);
+}
+
+.rating-card:hover .rating-tooltip {
+    opacity:1;
+}
+
+.rating-sub {
+    margin-top:4px;
+    font-size:11px;
+    color:#aab4e8;
+}
+
+/* ===============================
+   TYPE COLORS
+=============================== */
+.rating-wait {
+    background:rgba(120,120,120,0.15);
+    border-color:rgba(160,160,160,0.35);
+    color:#d0d0d0;
+}
+
+.rating-cold {
+    background:rgba(120,180,255,0.15);
+    border-color:#6fa4ff;
+    color:#cfe3ff;
+}
+
+.rating-real {
+    background:rgba(150,160,200,0.18);
+    border-color:#8fa0d9;
+    color:#dde3ff;
+}
+
+.rating-balance {
+    background:rgba(90,200,160,0.18);
+    border-color:#6fe0b8;
+    color:#dffaf0;
+}
+
+.rating-warm {
+    background:rgba(255,200,120,0.22);
+    border-color:#ffcf6b;
+    color:#fff1c7;
+}
+
+.rating-happy {
+    background:rgba(255,160,200,0.25);
+    border-color:#ff8fcf;
+    color:#ffe4f2;
+}
+
 
 /* -----------------------------------------
    게시글 GRID + 페이징 (B안)
@@ -508,12 +613,182 @@ body {
     color:#040615;
     border-color:#8fa4ff;
 }
+/* ===============================
+   PROFILE BADGES ALIGN & SIZE FIX
+=============================== */
+.profile-badges {
+    display: flex;
+    align-items: center;     /* 🔥 세 카드 수직 정렬 핵심 */
+    gap: 10px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+/* 세 배지 공통 높이 & 정렬 */
+.profile-badges > * {
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    line-height: 1;          /* 🔥 baseline 이슈 제거 */
+}
+
+/* 기존 배지 미세 조정 */
+.grade-badge,
+.movie-style-badge {
+    padding: 0 14px;
+    font-size: 13px;
+}
+
+/* 성향 카드 크기 통일 */
+.rating-card {
+    padding: 0 14px;
+    font-size: 13px;
+}
+
+/* 🔥 이모지 baseline 보정 */
+.rating-card {
+    transform: translateY(2px);
+}
+
+/* ===============================
+   RATING SUMMARY (AVG + BAR + GUIDE)
+=============================== */
+.rating-summary{
+    margin-top:18px;
+    padding:16px 18px;
+    background:linear-gradient(180deg, rgba(18,24,56,0.78), rgba(10,14,32,0.72));
+    border:1px solid rgba(120,150,255,0.18);
+    border-radius:16px;
+    box-shadow:0 18px 44px rgba(0,0,0,0.55);
+}
+
+.rating-summary-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+}
+
+.rating-summary-score{
+    font-size:15px;
+    font-weight:700;
+    color:#e9edff;
+}
+
+.rating-summary-chip{
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:700;
+    background:rgba(120,150,255,0.12);
+    border:1px solid rgba(120,150,255,0.22);
+    color:#dbe3ff;
+}
+
+.rating-bar{
+    width:100%;
+    height:10px;
+    border-radius:999px;
+    overflow:hidden;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(120,150,255,0.12);
+}
+
+.rating-bar-fill{
+    height:100%;
+    width:0%;
+    border-radius:999px;
+    background:
+        linear-gradient(
+            90deg,
+            #3f6fff 0%,     /* 딥 네이비 블루 */
+            #6fa4ff 35%,    /* 소프트 블루 */
+            #7fffd4 65%,    /* 오로라 민트 */
+            #b48cff 100%    /* 몽환 퍼플 */
+        );
+    box-shadow:
+        0 0 14px rgba(111,164,255,0.55),
+        0 0 26px rgba(127,255,212,0.25);
+
+    transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+
+
+.rating-summary-bottom{
+    margin-top:12px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.rating-summary-desc{
+    font-size:13px;
+    color:#cfd7ff;
+    line-height:1.35;
+}
+
+.rating-summary-note{
+    font-size:12px;
+    color:#aab4e8;
+    opacity:0.95;
+}
+
+/* 접히는 "기준 보기" — 깔끔하게 */
+.rating-guide{
+    margin-top:6px;
+    padding-top:6px;
+    border-top:1px solid rgba(120,150,255,0.12);
+}
+
+.rating-guide > summary{
+    cursor:pointer;
+    list-style:none;
+    font-size:12.5px;
+    color:#9fb0ff;
+    user-select:none;
+}
+.rating-guide > summary::-webkit-details-marker{ display:none; }
+
+.rating-guide-body{
+    margin-top:10px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.rating-guide-row{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    font-size:12.5px;
+    color:#dbe3ff;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(120,150,255,0.10);
+    border-radius:10px;
+    padding:8px 10px;
+}
+
+.rg-range{
+    color:#aab4e8;
+    font-variant-numeric:tabular-nums;
+}
+
+.rg-type{
+    font-weight:700;
+    color:#e9edff;
+}
+
 
 /* 반응형 */
 @media (max-width:700px){
     .mypage-container { padding:26px 18px; }
     .profile-section { flex-direction:column; align-items:flex-start; }
 }
+
 </style>
 
 <script>
@@ -600,22 +875,48 @@ window.addEventListener("load", setupBoardPagination);
             : "img/default_profile.png"
          %>');"></div>
 
-    <div>
-        <div class="user-name"><%= user.getUsername() %> 님</div>
+	   <div>
+    <div class="user-name"><%= user.getUsername() %> 님</div>
 
+    <!-- 🔽 배지 3종 통합 컨테이너 -->
+    <div class="profile-badges">
+
+        <!-- 등급 배지 -->
         <span class="grade-badge 
             <%
-                String g=user.getGrade().toLowerCase();
-                if(g.equals("bronze")) out.print("grade-bronze");
-                else if(g.equals("silver")) out.print("grade-silver");
-                else if(g.equals("gold")) out.print("grade-gold");
+                String g = user.getGrade().toLowerCase();
+                if (g.equals("bronze")) out.print("grade-bronze");
+                else if (g.equals("silver")) out.print("grade-silver");
+                else if (g.equals("gold")) out.print("grade-gold");
             %>">
             등급 : <%= user.getGrade() %>
         </span>
 
-        <% if(user.getMovieStyle()!=null && !user.getMovieStyle().isEmpty()) { %>
+        <!-- 취향 배지 -->
+        <% if (user.getMovieStyle() != null && !user.getMovieStyle().isEmpty()) { %>
             <span class="movie-style-badge"><%= user.getMovieStyle() %></span>
         <% } %>
+
+        <!-- 성향 카드 -->
+        <div class="rating-card <%= ratingClass %>">
+            <div class="rating-title"><%= ratingType %></div>
+
+            <div class="rating-tooltip">
+                <%= ratingDesc %>
+                <% if (reviewCount < 3) { %>
+                    <div class="rating-sub">
+                        현재 리뷰 수: <%= reviewCount %>개
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+    </div>
+    <!-- 🔼 profile-badges 끝 -->
+
+  
+
+        
 
         <div class="mypage-actions">
             <a href="<%=request.getContextPath()%>/editProfileForm" class="mp-btn">회원정보 수정</a>
@@ -845,10 +1146,61 @@ window.addEventListener("load", setupBoardPagination);
 
 </div>
 
-<!-- 평균 평점 -->
-<div class="avg-card">
-    ⭐ 평균 평점 <strong><%= String.format("%.2f", avgRating) %> / 5.0</strong>
+<%
+    // 막대바 퍼센트(0~100) 계산
+    double safeAvg = avgRating;
+    if (safeAvg < 0) safeAvg = 0;
+    if (safeAvg > 5) safeAvg = 5;
+
+    int ratingPercent = (int)Math.round((safeAvg / 5.0) * 100);
+
+    // 리뷰 3개 미만이면 "데이터 부족" 안내
+    boolean lowData = (reviewCount < 3);
+
+    // 평균 평점에 따른 성향(기존 로직 재사용)
+    String barType = ratingType;      // 너가 위에서 만든 ratingType 그대로 사용
+    String barDesc = ratingDesc;      // 너가 위에서 만든 ratingDesc 그대로 사용
+%>
+
+<div class="rating-summary">
+    <div class="rating-summary-top">
+        <div class="rating-summary-score">
+            ⭐ 평균 평점 <strong><%= String.format("%.2f", avgRating) %></strong> / 5.0
+        </div>
+        <div class="rating-summary-chip">
+            <%= barType %>
+        </div>
+    </div>
+
+    <div class="rating-bar">
+        <div class="rating-bar-fill" style="width:<%= ratingPercent %>%;"></div>
+    </div>
+
+    <div class="rating-summary-bottom">
+        <div class="rating-summary-desc">
+            <%= barDesc %>
+        </div>
+
+        <% if(lowData) { %>
+            <div class="rating-summary-note">
+                ⚠ 리뷰 <%= reviewCount %>개로는 성향 정확도가 낮을 수 있어요. (3개 이상부터 안정적)
+            </div>
+        <% } %>
+
+        <!-- "몇 점이면 무슨 형" 설명(깔끔하게 접히는 형태) -->
+        <details class="rating-guide">
+            <summary>성향 분류 기준 보기</summary>
+            <div class="rating-guide-body">
+                <div class="rating-guide-row"><span class="rg-range">0.0 ~ 1.99</span><span class="rg-type">🧊 혹독한 비평가형</span></div>
+                <div class="rating-guide-row"><span class="rg-range">2.0 ~ 2.99</span><span class="rg-type">🧐 현실적인 비평가형</span></div>
+                <div class="rating-guide-row"><span class="rg-range">3.0 ~ 3.69</span><span class="rg-type">🎯 균형 잡힌 관객형</span></div>
+                <div class="rating-guide-row"><span class="rg-range">3.7 ~ 4.39</span><span class="rg-type">😊 호의적인 감상자형</span></div>
+                <div class="rating-guide-row"><span class="rg-range">4.4 ~ 5.0</span><span class="rg-type">🌈 뭐든 재밌는 낙관자형</span></div>
+            </div>
+        </details>
+    </div>
 </div>
+
 
 <% } %>
 

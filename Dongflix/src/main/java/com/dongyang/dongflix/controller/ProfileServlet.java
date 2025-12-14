@@ -70,6 +70,57 @@ public class ProfileServlet extends HttpServlet {
         request.setAttribute("visitCount", visitCount);
         request.setAttribute("recentVisitors", recentVisitors);
         
+     // ===== 평균 평점 계산 =====
+        double avgRating = 0.0;
+        int reviewCount = (reviews != null) ? reviews.size() : 0;
+
+        if (reviewCount > 0) {
+            double sum = 0.0;
+            for (ReviewDTO r : reviews) {
+                sum += r.getRating();
+            }
+            avgRating = sum / reviewCount;
+        }
+
+        // ===== 성향 분석 (마이페이지 로직 그대로) =====
+        String ratingType = "";
+        String ratingClass = "";
+
+        if (reviewCount == 0) {
+            ratingType = "📝 아직 평가 중";
+            ratingClass = "rating-wait";
+        } else if (avgRating < 2.0) {
+            ratingType = "🧊 혹독한 비평가형";
+            ratingClass = "rating-cold";
+        } else if (avgRating < 3.0) {
+            ratingType = "🧐 현실적인 비평가형";
+            ratingClass = "rating-real";
+        } else if (avgRating < 3.7) {
+            ratingType = "🎯 균형 잡힌 관객형";
+            ratingClass = "rating-balance";
+        } else if (avgRating < 4.4) {
+            ratingType = "😊 호의적인 감상자형";
+            ratingClass = "rating-warm";
+        } else {
+            ratingType = "🌈 뭐든 재밌는 낙관자형";
+            ratingClass = "rating-happy";
+        }
+
+        // ===== JSP 전달 =====
+        request.setAttribute("avgRating", avgRating);
+        request.setAttribute("reviewCount", reviewCount);
+        request.setAttribute("ratingType", ratingType);
+        request.setAttribute("ratingClass", ratingClass);
+
+        // 기존 것들
+        request.setAttribute("owner", owner);
+        request.setAttribute("boards", boards);
+        request.setAttribute("reviews", reviews);
+        request.setAttribute("visitCount", visitCount);
+        request.setAttribute("recentVisitors", recentVisitors);
+
+        // ✅ forward는 무조건 마지막
         request.getRequestDispatcher("/user/profile.jsp").forward(request, response);
+
     }
 }
