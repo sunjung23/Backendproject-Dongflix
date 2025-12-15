@@ -346,51 +346,40 @@ body {
     color:#dbe3ff;
 }
 
-/* 영화 hover */
-.carousel-item.movie-item:hover {
-    border-color:#3f6fff;
-    box-shadow:0 8px 18px rgba(63,111,255,0.25);
-    transform:translateY(-3px);
+.carousel-item.review-item {
+    min-width: 220px;
+    max-width: 220px;
+    border-radius: 18px;
+    padding: 0;
+    background: #0f1325;
+    border: 1px solid rgba(120,150,255,0.25);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.45);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-.carousel-item.review-item {
-    min-width:320px;
-    max-width:320px;
-    background:linear-gradient(145deg,#121628,#161b33);
-    border-radius:16px;
-    padding:14px;
-    border:1px solid rgba(90,120,255,0.22);
+.carousel-item.review-item:hover {
+    transform: translateY(-5px);
+    border-color: rgba(120,150,255,0.55);
+    box-shadow:
+        0 0 16px rgba(63,111,255,0.18),
+        0 18px 44px rgba(0,0,0,0.55);
+}
+
+.carousel-item.review-item img {
+    width: 100%;
+    height: 270px;
+    object-fit: cover;
+    filter: saturate(1.03) contrast(1.03);
+}
+.review-content-wrap{
+    padding:12px 14px 14px;
     display:flex;
     flex-direction:column;
-    gap:8px;
-    transition:.22s;
-    position:relative;
-    overflow:hidden;
-}
-.carousel-item.review-item img {
-    width:100%;
-    height:170px;
-    object-fit:cover;
-    border-radius:10px;
+    gap:6px;
 }
 
-/* 리뷰 카드 hover 시 살짝 떠오르는 효과 + 글로우 */
-.carousel-item.review-item::before {
-    content:"";
-    position:absolute;
-    inset:0;
-    background:radial-gradient(circle at top left, rgba(80,110,255,0.18), transparent 55%);
-    opacity:0;
-    transition:.25s;
-}
-.carousel-item.review-item:hover {
-    transform:translateY(-4px);
-    box-shadow:0 14px 30px rgba(63,111,255,0.3);
-    border-color:#4f7aff;
-}
-.carousel-item.review-item:hover::before {
-    opacity:1;
-}
 
 .review-title {
     font-size:15px;
@@ -744,6 +733,40 @@ body {
     color:#e9edff;
 }
 
+/* ===== REVIEW POSTER OVERLAY INFO ===== */
+.review-poster-overlay{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+
+    padding:10px 12px;
+    background:linear-gradient(
+        to top,
+        rgba(0,0,0,0.78),
+        rgba(0,0,0,0.35) 55%,
+        transparent
+    );
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    font-size:12px;
+    color:#e8ecff;
+}
+
+.review-poster-rating{
+    font-weight:800;
+    letter-spacing:.2px;
+}
+
+.review-poster-date{
+    font-size:11px;
+    color:#b6bfea;
+}
+
+
 
 /* 반응형 */
 @media (max-width:700px){
@@ -1063,16 +1086,15 @@ window.addEventListener("load", setupBoardPagination);
         <div class="carousel-item review-item">
 
             <img src="<%= r.getMovieImg() != null ? r.getMovieImg() : "img/default_movie.png" %>">
-
+           
+           
+           <div class="review-content-wrap">
             <div class="review-title"><%= r.getMovieTitle() %></div>
 
-            <div class="review-info-small">
-                ⭐ <%= r.getRating() %> | <%= r.getCreatedAt() %>
-            </div>
-
+            
             <div class="review-preview">
-                <%= r.getContent().length() > 90
-                    ? r.getContent().substring(0, 90) + "…"
+                <%= r.getContent().length() > 70
+                    ? r.getContent().substring(0, 70) + "…"
                     : r.getContent()
                 %>
             </div>
@@ -1081,7 +1103,7 @@ window.addEventListener("load", setupBoardPagination);
                href="movieDetail?movieId=<%= r.getMovieId() %>">
                 자세히 보기 →
             </a>
-
+            </div>
         </div>
 
         <% } %>
