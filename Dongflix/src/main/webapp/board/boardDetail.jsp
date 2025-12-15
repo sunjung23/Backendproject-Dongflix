@@ -328,6 +328,36 @@ body {
     color:#ff6b6b;
 }
 
+/* ===== COMMENT PROFILE AVATAR (CHARCOAL BLACK / SOLID) ===== */
+.profile-avatar {
+    width:32px;
+    height:32px;
+    border-radius:50%;
+
+    /* ✅ 단색 차콜 블랙 */
+    background: #14161b;
+
+    border:1px solid rgba(120,150,255,0.35);
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.03),
+        0 0 10px rgba(30,60,255,0.25);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    flex-shrink:0;
+}
+
+.profile-avatar img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+
+
+
 </style>
 </head>
 
@@ -345,19 +375,40 @@ body {
            style="display:flex; align-items:center; gap:10px; text-decoration:none; color:#fff;">
 
             <%
+                // ✅ 기본 이미지 (img 폴더 기준)
+                String defaultImg = request.getContextPath() + "/img/default_profile.png";
+
                 String profile = writerProfileImg;
-                boolean isUrl = (profile != null && profile.startsWith("http"));
-                String imgSrc =
-                    (profile == null || profile.trim().isEmpty())
-                    ? request.getContextPath()+"/assets/default_profile.png"
-                    : (isUrl
-                        ? profile
-                        : request.getContextPath()+"/upload/profile/"+profile);
+
+                String imgSrc = defaultImg;
+
+                if (profile != null) {
+                    String p = profile.trim();
+
+                    // ✅ "이미지 없음" 취급: null/빈값/"null"/기본파일명
+                    if (p.isEmpty()
+                            || "null".equalsIgnoreCase(p)
+                            || "default_profile.png".equalsIgnoreCase(p)
+                            || "default_profile_blue.png".equalsIgnoreCase(p)) {
+                        imgSrc = defaultImg;
+
+                    } else if (p.startsWith("http")) {
+                        imgSrc = p;
+
+                    } else if (p.startsWith("/")) {
+                        // DB에 "/upload/profile/xxx" 또는 "/img/xxx"처럼 저장된 경우
+                        imgSrc = request.getContextPath() + p;
+
+                    } else {
+                        imgSrc = request.getContextPath() + "/upload/profile/" + p;
+                    }
+                }
             %>
 
-            <img src="<%= imgSrc %>"
-                 onerror="this.src='<%=request.getContextPath()%>/assets/default_profile.png';"
-                 style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:1px solid #3F6FFF;">
+            <div class="profile-avatar" style="width:40px; height:40px;">
+    <img src="<%= imgSrc %>"
+         onerror="this.style.display='none';">
+</div>
 
             <span style="font-size:15px; font-weight:600;">
                 <%= writerNickname %>
@@ -439,21 +490,43 @@ body {
             <div class="comment-header">
 
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <%
-                        String cProfile = (c.getMember() != null) ? c.getMember().getProfileImg() : null;
-                        boolean cIsUrl = (cProfile != null && cProfile.startsWith("http"));
+                  <%
+                      // ✅ 기본 이미지 (img 폴더 기준)
+                      String cDefaultImg = request.getContextPath() + "/img/default_profile.png";
 
-                        String cImgSrc =
-                            (cProfile == null || cProfile.trim().isEmpty())
-                            ? request.getContextPath()+"/assets/default_profile.png"
-                            : (cIsUrl
-                                ? cProfile
-                                : request.getContextPath()+"/upload/profile/"+cProfile);
-                    %>
+                      String cProfile = null;
+                      if (c.getMember() != null) {
+                          cProfile = c.getMember().getProfileImg();
+                      }
 
-                    <img src="<%= cImgSrc %>"
-                         onerror="this.src='<%= request.getContextPath() %>/assets/default_profile.png';"
-                         style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid #3F6FFF;">
+                      String cImgSrc = cDefaultImg;
+
+                      if (cProfile != null) {
+                          String p = cProfile.trim();
+
+                          // ✅ "이미지 없음" 취급: null/빈값/"null"/기본파일명
+                          if (p.isEmpty()
+                                  || "null".equalsIgnoreCase(p)
+                                  || "default_profile.png".equalsIgnoreCase(p)
+                                  || "default_profile_blue.png".equalsIgnoreCase(p)) {
+                              cImgSrc = cDefaultImg;
+
+                          } else if (p.startsWith("http")) {
+                              cImgSrc = p;
+
+                          } else if (p.startsWith("/")) {
+                              cImgSrc = request.getContextPath() + p;
+
+                          } else {
+                              cImgSrc = request.getContextPath() + "/upload/profile/" + p;
+                          }
+                      }
+                  %>
+
+                  <div class="profile-avatar">
+    <img src="<%= cImgSrc %>"
+         onerror="this.style.display='none';">
+</div>
 
                     <span class="comment-author">
                         <%= (c.getMember()!=null && c.getMember().getNickname()!=null && !c.getMember().getNickname().isEmpty())
@@ -489,5 +562,6 @@ body {
 </div>
 
 </body>
+
 <%@ include file="/common/alert.jsp" %>
 </html>
