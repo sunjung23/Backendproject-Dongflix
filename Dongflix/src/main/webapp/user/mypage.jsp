@@ -346,7 +346,8 @@ body {
     color:#dbe3ff;
 }
 
-.carousel-item.review-item {
+.carousel-item.review-item{
+    position: relative;
     min-width: 220px;
     max-width: 220px;
     border-radius: 18px;
@@ -358,7 +359,12 @@ body {
     display: flex;
     flex-direction: column;
 }
-
+.review-poster-wrap{
+    position: relative;   /* 🔥 여기! */
+    width: 100%;
+    height: 270px;
+    overflow: hidden;
+}
 .carousel-item.review-item:hover {
     transform: translateY(-5px);
     border-color: rgba(120,150,255,0.55);
@@ -367,18 +373,7 @@ body {
         0 18px 44px rgba(0,0,0,0.55);
 }
 
-.carousel-item.review-item img {
-    width: 100%;
-    height: 270px;
-    object-fit: cover;
-    filter: saturate(1.03) contrast(1.03);
-}
-.review-content-wrap{
-    padding:12px 14px 14px;
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-}
+
 
 
 .review-title {
@@ -397,13 +392,7 @@ body {
     white-space:normal;
     line-height:1.4;
 }
-.review-detail-link {
-    font-size:13px;
-    margin-top:auto;
-    color:#8fa4ff;
-    text-decoration:none;
-}
-.review-detail-link:hover { text-decoration:underline; }
+
 
 /* 작은 화면일 때 리뷰 / 영화 카드 폭 조정 */
 @media (max-width:600px){
@@ -734,38 +723,56 @@ body {
 }
 
 /* ===== REVIEW POSTER OVERLAY INFO ===== */
-.review-poster-overlay{
-    position:absolute;
-    left:0;
-    right:0;
-    bottom:0;
+.review-poster{
+ width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: saturate(1.03) contrast(1.03);
+}
 
-    padding:10px 12px;
-    background:linear-gradient(
+.review-poster-overlay{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    padding: 10px 12px;
+    background: linear-gradient(
         to top,
         rgba(0,0,0,0.78),
         rgba(0,0,0,0.35) 55%,
         transparent
     );
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-    font-size:12px;
-    color:#e8ecff;
+    font-size: 12px;
+    color: #e8ecff;
+    pointer-events: none; /* 클릭 방해 방지 */
 }
 
-.review-poster-rating{
-    font-weight:800;
-    letter-spacing:.2px;
+.review-poster-rating{ font-weight: 900; }
+.review-poster-date{ font-size: 11px; color: #b6bfea; }
+
+.review-content-wrap{
+    padding: 12px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.review-poster-date{
-    font-size:11px;
-    color:#b6bfea;
+/* 링크는 맨 아래 고정 */
+.review-detail-link{
+    margin-top: auto;
+    padding-top: 6px;
+    font-size: 13px;
+    color: #8fa4ff;
+    text-decoration: none;
 }
-
+.review-detail-link:hover{ text-decoration: underline; }
 
 
 /* 반응형 */
@@ -1083,28 +1090,41 @@ window.addEventListener("load", setupBoardPagination);
 
         <% for(ReviewDTO r : reviews) { %>
 
-        <div class="carousel-item review-item">
+      <div class="carousel-item review-item">
 
-            <img src="<%= r.getMovieImg() != null ? r.getMovieImg() : "img/default_movie.png" %>">
-           
-           
-           <div class="review-content-wrap">
-            <div class="review-title"><%= r.getMovieTitle() %></div>
+    <!-- ✅ 포스터 영역 래퍼 (오버레이는 여기 기준으로 붙음) -->
+    <div class="review-poster-wrap">
+        <img class="review-poster"
+             src="<%= r.getMovieImg() != null ? r.getMovieImg() : "img/default_movie.png" %>"
+             alt="포스터">
 
-            
-            <div class="review-preview">
-                <%= r.getContent().length() > 70
-                    ? r.getContent().substring(0, 70) + "…"
-                    : r.getContent()
-                %>
-            </div>
-
-            <a class="review-detail-link"
-               href="movieDetail?movieId=<%= r.getMovieId() %>">
-                자세히 보기 →
-            </a>
-            </div>
+        <div class="review-poster-overlay">
+            <div class="review-poster-rating">★ <%= r.getRating() %></div>
+            <div class="review-poster-date"><%= r.getCreatedAt() %></div>
         </div>
+    </div>
+
+    <!-- ✅ 콘텐츠 영역 (오버레이 영향 없음) -->
+    <div class="review-content-wrap">
+        <div class="review-title"><%= r.getMovieTitle() %></div>
+
+        <div class="review-preview">
+            <%= r.getContent().length() > 70
+                ? r.getContent().substring(0, 70) + "…"
+                : r.getContent()
+            %>
+        </div>
+
+        <a class="review-detail-link"
+           href="movieDetail?movieId=<%= r.getMovieId() %>">
+            자세히 보기 →
+        </a>
+    </div>
+
+</div>
+
+
+       
 
         <% } %>
 
