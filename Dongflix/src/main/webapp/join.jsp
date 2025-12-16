@@ -337,9 +337,6 @@ h2 {
 (function(){
     const ctx = "<%= request.getContextPath() %>";
 
-    /* -----------------------------
-       요소 가져오기
-    ------------------------------*/
     const useridInput = document.getElementById("userid");
     const btnCheckId = document.getElementById("btnCheckId");
     const statusEl = document.getElementById("id-status");
@@ -353,9 +350,7 @@ h2 {
     const selectedGenresInput = document.getElementById("selectedGenres");
 
 
-    /* =========================
-       1) 아이디 입력 시 상태 초기화
-    ==========================*/
+    /*  1) 아이디 입력 시 상태 초기화*/
     useridInput.addEventListener("input", () => {
         useridInput.classList.remove("valid", "invalid");
         statusEl.className = "";
@@ -364,9 +359,7 @@ h2 {
     });
 
 
-    /* =========================
-       2) 아이디 중복 확인
-    ==========================*/
+    /*  2) 아이디 중복 확인*/
     btnCheckId.addEventListener("click", () => {
         const id = useridInput.value.trim();
 
@@ -411,9 +404,7 @@ h2 {
     });
 
 
-    /* =========================
-       3) 비밀번호 강도 측정
-    ==========================*/
+    /*  3) 비밀번호 강도 측정*/
     function calcStrength(pw){
         let score = 0;
         if (pw.length >= 8) score++;
@@ -458,9 +449,7 @@ h2 {
 
 
 
-    /* =========================
-       4) 장르 선택 (최대 3개)
-    ==========================*/
+    /* 4) 장르 선택 (최대 3개)*/
     const genreCards = document.querySelectorAll(".genre-card");
 
     genreCards.forEach(card => {
@@ -508,9 +497,7 @@ h2 {
 
 
 
-    /* =========================
-       5) 회원가입 제출 전 검증
-    ==========================*/
+    /*  5) 회원가입 제출 전 검증*/
     joinForm.addEventListener("submit", (e) => {
 
         if (useridInput.value.trim() === "") {

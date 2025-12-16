@@ -47,7 +47,7 @@ public class BoardDAO {
                     rs.getString("created_at"),
                     rs.getString("category")
                 );
-                dto.setViews(rs.getInt("views"));  // ⭐ 조회수
+                dto.setViews(rs.getInt("views"));  // 조회수
                 list.add(dto);
             }
 
@@ -76,7 +76,7 @@ public class BoardDAO {
                     rs.getString("created_at"),
                     rs.getString("category")
                 );
-                dto.setViews(rs.getInt("views"));  // ⭐ 조회수
+                dto.setViews(rs.getInt("views"));  // 조회수
                 return dto;
             }
 
@@ -170,7 +170,7 @@ public class BoardDAO {
                     rs.getString("created_at"),
                     rs.getString("category")
                 );
-                dto.setViews(rs.getInt("views"));  // ⭐ 조회수
+                dto.setViews(rs.getInt("views"));  // 조회수
                 list.add(dto);
             }
 
@@ -206,7 +206,7 @@ public class BoardDAO {
                     rs.getString("created_at"),
                     rs.getString("category")
                 );
-                dto.setViews(rs.getInt("views"));  // ⭐ 조회수
+                dto.setViews(rs.getInt("views"));  // 조회수
                 list.add(dto);
             }
 
@@ -237,7 +237,7 @@ public class BoardDAO {
                     rs.getString("created_at"),
                     rs.getString("category")
                 );
-                dto.setViews(rs.getInt("views"));  // ⭐ 조회수
+                dto.setViews(rs.getInt("views"));  // 조회수
                 list.add(dto);
             }
 

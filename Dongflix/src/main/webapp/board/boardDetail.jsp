@@ -44,9 +44,7 @@
 <title><%= b.getTitle() %> - DONGFLIX</title>
 
 <style>
-/* ===========================================
-   GLOBAL Premium Blue Style
-=========================================== */
+
 * { box-sizing:border-box; }
 
 body {
@@ -56,9 +54,7 @@ body {
     font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
 }
 
-/* ===========================================
-   BACKGROUND (Deep Navy + Blue Glow)
-=========================================== */
+
 .detail-bg {
     min-height:100vh;
     padding:100px 16px 60px;
@@ -70,9 +66,7 @@ body {
     justify-content:center;
 }
 
-/* ===========================================
-   MAIN CONTENT BOX (Glass Navy)
-=========================================== */
+
 .detail-container {
     width:100%;
     max-width:900px;
@@ -100,9 +94,7 @@ body {
 
 .detail-container > * { position:relative; z-index:2; }
 
-/* ===========================================
-   TITLE
-=========================================== */
+
 .post-title {
     font-size:30px;
     font-weight:800;
@@ -112,9 +104,7 @@ body {
     color:transparent;
 }
 
-/* ===========================================
-   POST META
-=========================================== */
+
 .post-meta {
     padding:14px 18px;
     border-left:3px solid #3F6FFF;
@@ -126,9 +116,7 @@ body {
     margin-bottom:26px;
 }
 
-/* ===========================================
-   CONTENT BOX
-=========================================== */
+
 .post-content {
     background:#0b1328;
     border:1px solid rgba(120,150,255,0.28);
@@ -140,9 +128,7 @@ body {
     box-shadow:0 16px 40px rgba(0,0,0,0.7);
 }
 
-/* ===========================================
-   LIKE AREA
-=========================================== */
+
 .like-area {
     margin-top:18px;
     margin-bottom:18px;
@@ -173,9 +159,7 @@ body {
     color:#fff;
 }
 
-/* ===========================================
-   ACTION BUTTONS
-=========================================== */
+
 .post-actions {
     margin-top:12px;
     display:flex;
@@ -223,9 +207,7 @@ body {
     box-shadow:0 10px 24px rgba(229,9,20,0.6);
 }
 
-/* ===========================================
-   COMMENT SECTION
-=========================================== */
+
 .comment-title {
     margin-top:28px;
     font-size:18px;
@@ -275,9 +257,6 @@ body {
     background:linear-gradient(135deg,#3250ff,#00d4ff);
 }
 
-/* ===========================================
-   COMMENT LIST
-=========================================== */
 .comment-list {
     margin-top:16px;
     display:flex;
@@ -328,13 +307,12 @@ body {
     color:#ff6b6b;
 }
 
-/* ===== COMMENT PROFILE AVATAR (CHARCOAL BLACK / SOLID) ===== */
 .profile-avatar {
     width:32px;
     height:32px;
     border-radius:50%;
 
-    /* ✅ 단색 차콜 블랙 */
+
     background: #14161b;
 
     border:1px solid rgba(120,150,255,0.35);
@@ -375,7 +353,7 @@ body {
            style="display:flex; align-items:center; gap:10px; text-decoration:none; color:#fff;">
 
             <%
-                // ✅ 기본 이미지 (img 폴더 기준)
+                // 기본 이미지 
                 String defaultImg = request.getContextPath() + "/img/default_profile.png";
 
                 String profile = writerProfileImg;
@@ -385,7 +363,7 @@ body {
                 if (profile != null) {
                     String p = profile.trim();
 
-                    // ✅ "이미지 없음" 취급: null/빈값/"null"/기본파일명
+                    // 이미지 없음 취급: null/빈값/"null"/기본파일명
                     if (p.isEmpty()
                             || "null".equalsIgnoreCase(p)
                             || "default_profile.png".equalsIgnoreCase(p)
@@ -491,7 +469,7 @@ body {
 
                 <div style="display:flex; align-items:center; gap:8px;">
                   <%
-                      // ✅ 기본 이미지 (img 폴더 기준)
+                      // 기본 이미지 
                       String cDefaultImg = request.getContextPath() + "/img/default_profile.png";
 
                       String cProfile = null;
@@ -504,7 +482,7 @@ body {
                       if (cProfile != null) {
                           String p = cProfile.trim();
 
-                          // ✅ "이미지 없음" 취급: null/빈값/"null"/기본파일명
+                          // 이미지 없음 취급: null/빈값/"null"/기본파일명
                           if (p.isEmpty()
                                   || "null".equalsIgnoreCase(p)
                                   || "default_profile.png".equalsIgnoreCase(p)

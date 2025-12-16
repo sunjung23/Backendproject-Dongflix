@@ -23,9 +23,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
 
 <style>
-/* ===============================================================
-   GLOBAL Navy / Royal Blue Theme
-=============================================================== */
+
 body {
     margin:0;
     background:#05080f;
@@ -33,9 +31,7 @@ body {
     font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ===============================================================
-   Background Area
-=============================================================== */
+
 .bg-area {
     min-height:100vh;
     padding:100px 16px;
@@ -48,9 +44,7 @@ body {
         #05080f;
 }
 
-/* ===============================================================
-   Write Container (Glass Navy)
-=============================================================== */
+
 .write-container {
     width:100%;
     max-width:780px;
@@ -76,9 +70,7 @@ body {
 
 .write-container > * { position:relative; z-index:2; }
 
-/* ===============================================================
-   Title
-=============================================================== */
+
 .title-box h2 {
     font-size:30px;
     font-weight:800;
@@ -94,9 +86,7 @@ body {
     margin-bottom:26px;
 }
 
-/* ===============================================================
-   Label
-=============================================================== */
+
 label {
     display:block;
     font-size:15px;
@@ -104,9 +94,7 @@ label {
     margin-bottom:8px;
 }
 
-/* ===============================================================
-   Inputs & Select
-=============================================================== */
+
 select, input {
     width:100%;
     padding:12px 14px;
@@ -126,9 +114,7 @@ select:focus, input:focus {
     box-shadow:0 0 8px rgba(63,111,255,0.45);
 }
 
-/* ===============================================================
-   Summernote Dark Blue
-=============================================================== */
+
 .note-editor.note-frame {
     background:#0d1321 !important;
     border:1px solid #27335a !important;
@@ -164,9 +150,7 @@ select:focus, input:focus {
 .dropdown-item { color:#e6ebff !important; }
 .dropdown-item:hover { background:#1e2742 !important; }
 
-/* ===============================================================
-   Error Message
-=============================================================== */
+
 .error-msg {
     color:#ff6d6d;
     font-size:13px;
@@ -175,9 +159,7 @@ select:focus, input:focus {
     display:none;
 }
 
-/* ===============================================================
-   Submit Button
-=============================================================== */
+
 .write-btn {
     width:100%;
     padding:14px;
@@ -197,9 +179,7 @@ select:focus, input:focus {
     transform:translateY(-2px);
 }
 
-/* ===============================================================
-   Responsive
-=============================================================== */
+
 @media (max-width:600px) {
     .write-container { padding:26px 20px; }
     .title-box h2 { font-size:26px; }

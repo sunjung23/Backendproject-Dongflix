@@ -6,9 +6,9 @@
 <%@ include file="/common/header.jsp" %>
 
 <%
-    // -----------------------------
+
     // 기본 데이터 세팅
-    // -----------------------------
+
     List<BoardDTO> list = (List<BoardDTO>) request.getAttribute("list");
     String category = (String) request.getAttribute("category");
     String sort = (String) request.getAttribute("sort");
@@ -19,15 +19,15 @@
     MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
     MemberDAO mdao = new MemberDAO();
 
-    // -----------------------------
+
     // 비밀게시판 필터링 + 페이지네이션용 리스트 구성
-    // -----------------------------
+    
     List<BoardDTO> visibleList = new java.util.ArrayList<BoardDTO>();
     if (list != null) {
         for (BoardDTO b : list) {
             boolean isSecret = "secret".equals(b.getCategory());
             boolean isGold = (loginUser != null && "gold".equalsIgnoreCase(loginUser.getGrade()));
-            // 비밀게시판인데 GOLD가 아니면 아예 보이지 않게
+            // 비밀게시판 GOLD가 아니면 아예 보이지 않게
             if (isSecret && !isGold) continue;
             visibleList.add(b);
         }
@@ -61,9 +61,7 @@
 <title>게시판 목록 - DONGFLIX</title>
 
 <style>
-/* ============================================
-   GLOBAL — Premium Dark Navy UI
-============================================ */
+
 * {
     box-sizing: border-box;
 }
@@ -75,9 +73,7 @@ body {
     font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ============================================
-   배경 — 절제된 Deep Navy Gradient
-============================================ */
+
 .board-wrapper {
     min-height:100vh;
     padding:100px 16px 40px;
@@ -86,9 +82,7 @@ body {
         linear-gradient(180deg, #05080f 0%, #070b12 40%, #05080f 100%);
 }
 
-/* ============================================
-   메인 카드 컨테이너 (Glass + Minimal)
-============================================ */
+
 .board-container {
     max-width:960px;
     margin:0 auto;
@@ -115,9 +109,7 @@ body {
     margin-bottom:22px;
 }
 
-/* ============================================
-   카테고리 탭 — 심플한 칩 형태
-============================================ */
+
 .board-tabs {
     display:flex;
     gap:10px;
@@ -147,9 +139,7 @@ body {
     box-shadow:0 0 10px rgba(32,95,242,0.4);
 }
 
-/* ============================================
-   정렬 버튼 + 글쓰기 버튼
-============================================ */
+
 .sort-area {
     display:flex;
     justify-content:space-between;
@@ -198,9 +188,7 @@ body {
     border-color:#205FF2;
 }
 
-/* ============================================
-   게시글 카드 — Vertical List
-============================================ */
+
 .board-item {
     background:#0b111d;
     padding:18px;
@@ -241,9 +229,7 @@ body {
     font-weight:700;
 }
 
-/* ============================================
-   메타 정보 (작성자, 날짜)
-============================================ */
+
 .board-meta {
     margin:8px 0 10px;
     color:#9da8bc;
@@ -264,9 +250,7 @@ body {
     opacity:0.4;
 }
 
-/* ============================================
-   본문 미리보기
-============================================ */
+
 .board-preview {
     color:#cfd4df;
     font-size:14px;
@@ -276,9 +260,7 @@ body {
     text-overflow:ellipsis;
 }
 
-/* ============================================
-   페이지네이션 (네이비 프리미엄 스타일)
-============================================ */
+
 .pagination {
     margin-top:24px;
     display:flex;
@@ -315,9 +297,7 @@ body {
     pointer-events:none;
 }
 
-/* ============================================
-   반응형
-============================================ */
+
 @media (max-width:768px) {
     .sort-area { flex-direction:column-reverse; align-items:flex-start; }
     .write-btn { align-self:flex-end; }
