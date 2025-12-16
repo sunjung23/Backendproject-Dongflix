@@ -38,7 +38,7 @@ body {
 /* 메인 컨테이너 */
 .edit-container {
     width:100%;
-    max-width:540px; /* 🔥 기존 520 → 540으로 넓힘 */
+    max-width:540px;
     padding:38px 32px 34px;
     background:rgba(12,14,30,0.94);
     border:1px solid rgba(120,150,255,0.18);
@@ -98,11 +98,11 @@ input[disabled] {
 /* 이름+닉네임 두 칸 */
 .input-row {
     display:flex;
-    gap:12px; /* 🔥 기존 gap 14 → 12 */
+    gap:12px; 
 }
 
 .input-row .form-group {
-    flex:1 1 0; /* 🔥 두 칸 비율 균등하게 */
+    flex:1 1 0; 
     margin-bottom:0;
 }
 
@@ -154,7 +154,7 @@ input[disabled] {
 
 @media(max-width:540px){
     .input-row{
-        flex-direction:column; /* 🔥 모바일에서 자동으로 정렬 문제 해결 */
+        flex-direction:column;
         gap:14px;
     }
 }

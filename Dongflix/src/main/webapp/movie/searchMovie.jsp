@@ -8,9 +8,7 @@
     <title>Dongflix - 탐색</title>
 
     <style>
-    /* ===============================
-       PAGE BACKGROUND (UNIFIED OTT)
-    =============================== */
+
     body{
         margin:0;
         padding:0;
@@ -31,9 +29,7 @@
         padding:0 24px;
     }
 
-    /* ===============================
-       SEARCH PANEL
-    =============================== */
+
     .search-panel{
         background:
             linear-gradient(180deg, rgba(18,24,56,0.92), rgba(10,14,32,0.86));
@@ -45,9 +41,7 @@
             0 24px 56px rgba(0,0,0,0.75);
     }
 
-    /* ===============================
-       SEARCH BOX (MAIN – SLIM)
-    =============================== */
+
     .search-box{
         position:relative;
         display:flex;
@@ -76,9 +70,7 @@
         box-shadow:0 0 0 2px rgba(80,120,255,0.35);
     }
 
-    /* ===============================
-       RIGHT ICON (VOICE)
-    =============================== */
+
     #voiceBtn{
         position:absolute;
         right:8px;
@@ -100,9 +92,7 @@
         background:#3f6fff;
     }
 
-    /* ===============================
-       AUTO COMPLETE / SUGGEST
-    =============================== */
+
     .suggest-box{
         position:absolute;
         top:52px;
@@ -127,9 +117,7 @@
         background:#3f6fff;
     }
 
-    /* ===============================
-       SEARCH HISTORY (INPUT DROPDOWN)
-    =============================== */
+
     .history-box{
         position:absolute;
         top:52px;
@@ -191,9 +179,7 @@
         cursor:pointer;
     }
 
-    /* ===============================
-       OPTIONS BAR
-    =============================== */
+
     .search-options{
         display:flex;
         justify-content:space-between;
@@ -217,9 +203,7 @@
         font-size:13px;
     }
 
-    /* ===============================
-       SEARCH BUTTON (SLIM)
-    =============================== */
+
     .search-btn{
         margin-top:16px;
         width:100%;
@@ -238,9 +222,7 @@
         background:#678aff;
     }
 
-    /* ===============================
-       MOVIE GRID
-    =============================== */
+
     .movie-grid{
         max-width:1200px;
         margin:42px auto;
@@ -464,7 +446,7 @@ clearBtn.onclick = () => {
 /* 검색창 포커스 시 표시 */
 input.addEventListener("focus", renderHistory);
 
-/* ✅ (요청) 검색 영역 밖 클릭 시 모두 닫기 */
+/* 검색 영역 밖 클릭 시 모두 닫기 */
 document.addEventListener("click", (e) => {
     if (!e.target.closest(".search-box")) {
         suggestBox.style.display = "none";
@@ -472,7 +454,7 @@ document.addEventListener("click", (e) => {
     }
 });
 
-/* ✅ (요청) 검색 영역 내부 클릭은 버블링 막기 */
+/*  검색 영역 내부 클릭은 버블링 막기 */
 document.querySelector(".search-box").addEventListener("click", (e) => {
     e.stopPropagation();
 });

@@ -290,7 +290,6 @@
 <div class="recommend-wrap">
     <div class="inner">
 
-        <!-- ================= HERO ================= -->
         <div class="hero">
             <div class="hero-title"><%= name %>님을 위한 맞춤 추천</div>
 
@@ -322,7 +321,7 @@
             </div>
         </div>
 
-        <!-- ============ SECTION 1: 핵심 추천 ============ -->
+        <!-- ============ 핵심 추천 ============ -->
         <div class="section">
             <div class="section-header">
                 <div class="section-title">나를 위한 핵심 추천</div>
@@ -410,7 +409,7 @@
             </div>
         </div>
 
-        <!-- ============ SECTION 3: 전체 인기 영화 ============ -->
+        <!-- ============ 전체 인기 영화 ============ -->
         <div class="section">
             <div class="section-header">
                 <div class="section-title">지금 가장 인기 있는 영화</div>

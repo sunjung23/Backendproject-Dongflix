@@ -18,9 +18,7 @@
 <title><%= d.getMovieTitle() %> - 일기 수정</title>
 
 <style>
-/* ===============================
-   PREMIUM OTT DIARY EDIT
-=============================== */
+
 body {
     margin:0;
     padding:0;

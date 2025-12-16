@@ -52,7 +52,6 @@ public class BoardDTO {
     public int getViews() { return views; }
     public void setViews(int views) { this.views = views; }
 
-    // ⭐ 추가된 getter/setter
     public String getProfileImg() { return profileImg; }
     public void setProfileImg(String profileImg) { this.profileImg = profileImg; }
 }

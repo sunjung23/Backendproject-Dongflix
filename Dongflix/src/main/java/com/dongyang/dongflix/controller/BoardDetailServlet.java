@@ -81,12 +81,12 @@ public class BoardDetailServlet extends HttpServlet {
         BoardCommentDAO cdao = new BoardCommentDAO();
         List<BoardCommentDTO> comments = cdao.getByBoard(id);
 
-        // ⭐ 댓글 작성자 profileImg, nickname 포함 MemberDTO 주입
+        // 댓글 작성자 profileImg, nickname 포함 MemberDTO 주입
         MemberDAO mdao = new MemberDAO();
         if (comments != null) {
             for (BoardCommentDTO c : comments) {
                 MemberDTO writer = mdao.getByUserid(c.getUserid());
-                c.setMember(writer);   // ⭐ 여기 반드시 있어야 profile 이미지 뜬다!
+                c.setMember(writer);  
             }
         }
 

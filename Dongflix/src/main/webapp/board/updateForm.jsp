@@ -22,9 +22,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
 
 <style>
-/* ===============================================================
-   GLOBAL - Navy / Royal Blue Premium Theme
-=============================================================== */
+
 body {
     margin: 0;
     padding: 0;
@@ -33,9 +31,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ===============================================================
-   배경 영역
-=============================================================== */
+
 .update-bg {
     min-height: 100vh;
     padding: 100px 16px;
@@ -47,9 +43,7 @@ body {
         #05080f;
 }
 
-/* ===============================================================
-   메인 컨테이너 (Glass Blue)
-=============================================================== */
+
 .update-container {
     width: 100%;
     max-width: 830px;
@@ -78,9 +72,7 @@ body {
     z-index: 2;
 }
 
-/* ===============================================================
-   제목
-=============================================================== */
+
 .update-container h2 {
     font-size: 30px;
     font-weight: 800;
@@ -90,9 +82,7 @@ body {
     color: transparent;
 }
 
-/* ===============================================================
-   INPUT & LABEL
-=============================================================== */
+
 label {
     display: block;
     margin-bottom: 8px;
@@ -119,9 +109,7 @@ label {
     box-shadow: 0 0 8px rgba(63,111,255,0.5);
 }
 
-/* ===============================================================
-   ERROR MESSAGE
-=============================================================== */
+
 .error-msg {
     font-size: 13px;
     margin-top: 5px;
@@ -129,9 +117,7 @@ label {
     display: none;
 }
 
-/* ===============================================================
-   BUTTON AREA
-=============================================================== */
+
 .btn-area {
     margin-top: 26px;
     display: flex;
@@ -172,9 +158,7 @@ label {
     color: #fff;
 }
 
-/* ===============================================================
-   SUMMERNOTE - DARK BLUE CUSTOM
-=============================================================== */
+
 .note-editor.note-frame {
     background: #0d1321 !important;
     border: 1px solid #27335a !important;
@@ -203,9 +187,7 @@ label {
     background: #1e2742 !important;
 }
 
-/* ===============================================================
-   RESPONSIVE
-=============================================================== */
+
 @media (max-width: 600px) {
     .update-container { padding: 26px 22px; }
     .btn-area { flex-direction: column; }

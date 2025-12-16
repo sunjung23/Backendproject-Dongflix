@@ -39,7 +39,7 @@ public class WishAddServlet extends HttpServlet {
 
         try (Connection conn = DBConnection.getConnection()) {
 
-            // 1️⃣ 이미 찜한 영화인지 확인
+            //️⃣ 이미 찜한 영화인지 확인
             String checkSql = "SELECT COUNT(*) FROM wish WHERE user_id = ? AND movie_id = ?";
             PreparedStatement checkPs = conn.prepareStatement(checkSql);
             checkPs.setString(1, userId);
@@ -50,7 +50,7 @@ public class WishAddServlet extends HttpServlet {
             int count = rs.getInt(1);
 
             if (count > 0) {
-                // 2️⃣ 이미 존재 → DELETE(찜 취소)
+                //  이미 존재 → DELETE
                 String deleteSql = "DELETE FROM wish WHERE user_id = ? AND movie_id = ?";
                 PreparedStatement del = conn.prepareStatement(deleteSql);
                 del.setString(1, userId);
@@ -60,7 +60,7 @@ public class WishAddServlet extends HttpServlet {
                 System.out.println(">>> Wish Removed!");
 
             } else {
-                // 3️⃣ 존재하지 않음 → INSERT(찜 추가)
+                // 3존재하지 않음 → INSERT
                 String insertSql =
                     "INSERT INTO wish (user_id, movie_id, movie_title, poster_path) VALUES (?, ?, ?, ?)";
 

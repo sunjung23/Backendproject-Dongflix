@@ -35,7 +35,7 @@ public class BoardWriteServlet extends HttpServlet {
         String content = request.getParameter("content");
         String category = request.getParameter("category");
 
-        // ⭐ 비밀 게시판 작성 권한 체크 (GOLD만 작성 가능)
+        //  비밀 게시판 작성 권한 체크 
         if ("secret".equals(category)) {
             if (user.getGrade() == null || 
                 !user.getGrade().equalsIgnoreCase("gold")) {
